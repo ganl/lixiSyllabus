@@ -376,6 +376,10 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 // this.finish();
                 // System.runFinalizersOnExit(true);
                 // System.exit(0);
+            case R.id.menu_help:
+                /**
+                 * need to be added in the future
+                 */
                 break;
             default:
                 break;

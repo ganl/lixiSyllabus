@@ -20,13 +20,13 @@ public class SyllabusApplication extends Application
     
     public boolean isDataHasBeenMotifyed = false;
     
-    public int notificationID;
+    public int notificationID; // use to identify the notification, which is self-increasing
     
     private List<Activity> activityList = new LinkedList<Activity>();
     
     private static SyllabusApplication instance;
     
-    private SyllabusApplication()
+    public SyllabusApplication()
     {
     }
     
@@ -83,10 +83,6 @@ public class SyllabusApplication extends Application
             editor.putInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
         }
         editor.putInt(CommonConstants.WEEK_IN_YEAR, currentWeekOfYear);
-        // if (preferences.getBoolean(CommonConstants.IS_FIRST_RUN, true))
-        // {
-        // editor.putBoolean(CommonConstants.IS_FIRST_RUN, true);
-        // }
         
         editor.commit();
         notificationID = 2;
