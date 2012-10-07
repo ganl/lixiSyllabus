@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fladdimage"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/transparent" >
+
+    <ImageView
+        android:id="@+id/addcourse"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bcg_item_course"
+        android:src="@drawable/bcg_add_two" />
+
+</FrameLayout>

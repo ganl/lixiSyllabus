@@ -1,0 +1,309 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bcg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/common_head" >
+    </include>
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bcg_short_text"
+                    android:gravity="center"
+                    android:text="课程名："
+                    android:textColor="@color/white" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/coursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/editor"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bcg_short_text"
+                    android:gravity="center"
+                    android:text="上课地点："
+                    android:textColor="@color/white" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/courseaddress"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/editor"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bcg_short_text"
+                    android:gravity="center"
+                    android:text="授课老师："
+                    android:textColor="@color/white" >
+                </TextView>
+
+                <EditText
+                    android:id="@+id/courseteacher"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/editor"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:padding="5dp" >
+
+                <TextView
+                    android:id="@+id/startweek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/bcg_short_text"
+                    android:gravity="center"
+                    android:text="起始周："
+                    android:textColor="@color/white" >
+                </TextView>
+                <!--
+                <Spinner 
+                    android:id="@+id/startweek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+                -->
+
+                <TextView
+                    android:id="@+id/endweek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/bcg_short_text"
+                    android:gravity="center"
+                    android:text="结束周："
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/divider"
+                android:orientation="horizontal" >
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/istwo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:background="@drawable/btn_bcg"
+                android:gravity="center"
+                android:text="本周还有此课程"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/secondCourse"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/bcg_textview"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp" >
+
+                    <TextView
+                        android:id="@+id/secondweekandindex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="left|center_vertical"
+                        android:layout_weight="2"
+                        android:gravity="right|center_vertical"
+                        android:text="此课程还有一节在"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/secondcoursedayofweek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:text="周一"
+                        android:textColor="@color/yellow" />
+
+                    <TextView
+                        android:id="@+id/secondcourseindex"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_weight="2"
+                        android:gravity="left|center_vertical"
+                        android:text="第一节课"
+                        android:textColor="@color/yellow" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="5dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/bcg_short_text"
+                        android:gravity="center"
+                        android:text="上课地点："
+                        android:textColor="@color/white" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/secondcourseaddress"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/editor"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="5dp" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/bcg_short_text"
+                        android:gravity="center"
+                        android:text="授课老师："
+                        android:textColor="@color/white" >
+                    </TextView>
+
+                    <EditText
+                        android:id="@+id/secondcourseteacher"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/editor"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal"
+                    android:padding="5dp" >
+
+                    <TextView
+                        android:id="@+id/secondcoursestartweek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/bcg_short_text"
+                        android:gravity="center"
+                        android:text="起始周："
+                        android:textColor="@color/white" >
+                    </TextView>
+                    <!--
+                <Spinner 
+                    android:id="@+id/startweek"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+                    -->
+
+                    <TextView
+                        android:id="@+id/secondcourseendweek"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/bcg_short_text"
+                        android:gravity="center"
+                        android:text="结束周："
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/bcg_item_course"
+    android:gravity="center"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/dayimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:src="@drawable/coursetwo" />
+
+    <LinearLayout
+        android:id="@+id/dayofweek"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/firstcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/firstcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/firstcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="2"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/secondcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/secondcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/secondcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="3"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/thirdcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/thirdcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/thirdcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="4"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/fourthcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/fourthcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/fourthcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="5"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/fifthcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/fifthcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/fifthcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="left|center_vertical"
+                android:gravity="center"
+                android:text="6"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <FrameLayout
+                android:id="@+id/sixthcourse"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_gravity="right|center_vertical" >
+
+                <TextView
+                    android:id="@+id/sixthcoursename"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="5dp"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/shalowyellow"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/sixthcourseroom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="right|center_vertical"
+                    android:gravity="right|center_vertical"
+                    android:paddingRight="5dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp" />
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
