@@ -209,6 +209,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
             {
                 System.out.println("dayOfWeek is english");
                 dayOfWeek = CommonConstants.getDayOfWeekFromEng(str);
+                str = CommonConstants.getStrFromWeekNum(dayOfWeek);
             }
             else
             {

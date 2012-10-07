@@ -269,7 +269,8 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
                 }
                 break;
             case R.id.tvTitle:
-                shelfView.getShelf();
+                // shelfView.getShelf();
+                break;
             default:
                 break;
         }
