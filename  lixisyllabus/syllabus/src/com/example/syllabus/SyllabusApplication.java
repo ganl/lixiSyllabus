@@ -1,12 +1,15 @@
 package com.example.syllabus;
 
-import cn.appmedia.adshelf.AdshelfManager;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.example.syllabus.utils.CommonConstants;
-
+import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import cn.appmedia.adshelf.AdshelfManager;
+
+import com.example.syllabus.utils.CommonConstants;
 
 public class SyllabusApplication extends Application
 {
@@ -18,6 +21,40 @@ public class SyllabusApplication extends Application
     public boolean isDataHasBeenMotifyed = false;
     
     public int notificationID;
+    
+    private List<Activity> activityList = new LinkedList<Activity>();
+    
+    private static SyllabusApplication instance;
+    
+    private SyllabusApplication()
+    {
+    }
+    
+    public static SyllabusApplication getInstance()
+    {
+        if (null == instance)
+        {
+            instance = new SyllabusApplication();
+        }
+        return instance;
+    }
+    
+    public void addActivity(Activity activity)
+    {
+        activityList.add(activity);
+    }
+    
+    public void exitApplication()
+    {
+        for (Activity activity : activityList)
+        {
+            if (null != activity)
+            {
+                activity.finish();
+            }
+        }
+        System.exit(0);
+    }
     
     static
     {

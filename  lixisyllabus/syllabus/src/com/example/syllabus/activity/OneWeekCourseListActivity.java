@@ -23,6 +23,7 @@ import android.widget.Toast;
 import cn.appmedia.adshelf.ShelfView;
 
 import com.example.syllabus.R;
+import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.adapter.OneDayCourseAdapter;
 import com.example.syllabus.bean.Course;
 import com.example.syllabus.db.CourseDao;
@@ -68,6 +69,7 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.oneweekcourselist);
+        SyllabusApplication.getInstance().addActivity(this);
         
         groupList = new ArrayList<Map<String, String>>();
         

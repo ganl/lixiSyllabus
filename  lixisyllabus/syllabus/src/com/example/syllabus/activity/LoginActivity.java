@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.syllabus.R;
+import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.utils.CommonConstants;
 
 /**
@@ -59,6 +60,7 @@ public class LoginActivity extends Activity implements OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        SyllabusApplication.getInstance().addActivity(this);
         
         preferences = CommonConstants.getMyPreferences(this);
         

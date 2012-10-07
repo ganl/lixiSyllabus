@@ -126,6 +126,7 @@ public class SetUpActivity extends Activity implements OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.setupactivity);
         
+        SyllabusApplication.getInstance().addActivity(this);
         preference = CommonConstants.getMyPreferences(this);
         tvStartTimeList = new ArrayList<TextView>();
         tvEndTimeList = new ArrayList<TextView>();

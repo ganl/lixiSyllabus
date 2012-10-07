@@ -100,6 +100,8 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.addcourse);
         
+        SyllabusApplication.getInstance().addActivity(this);
+        
         Intent intent = getIntent();
         
         courseID = intent.getLongExtra("courseid", -1); // detect whehter to add or modify the course

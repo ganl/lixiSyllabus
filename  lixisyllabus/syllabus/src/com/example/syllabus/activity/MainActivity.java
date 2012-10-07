@@ -108,6 +108,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mainactivity);
         
+        SyllabusApplication.getInstance().addActivity(this);
+        
         preferences = CommonConstants.getMyPreferences(this);
         inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -370,9 +372,10 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 this.finish();
                 break;
             case R.id.memu_exiting:
+                SyllabusApplication.getInstance().exitApplication();
                 // this.finish();
-                System.runFinalizersOnExit(true);
-                System.exit(0);
+                // System.runFinalizersOnExit(true);
+                // System.exit(0);
                 break;
             default:
                 break;
