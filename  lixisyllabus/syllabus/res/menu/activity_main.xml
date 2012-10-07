@@ -3,7 +3,7 @@
     <item
         android:id="@+id/menu_login"
         android:orderInCategory="100"
-        android:title="登录"/>
+        android:title="下载课程"/>
     <item
         android:id="@+id/menu_settings"
         android:orderInCategory="101"
@@ -12,5 +12,6 @@
         android:id="@+id/memu_exiting"
         android:orderInCategory="102"
         android:title="退出"/>
+    <item android:id="@+id/menu_help" android:title="帮助" android:orderInCategory="103"></item>
 
 </menu>
