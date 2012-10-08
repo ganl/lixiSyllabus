@@ -114,8 +114,17 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         
+        if (!preferences.getBoolean(CommonConstants.SHOW_WELCOME, false))
+        {
+            Intent intent = new Intent();
+            intent.setClass(this, WelcomeActivity.class);
+            startActivity(intent);
+            isTurningToAnotherActivity = true;
+            this.finish();
+        }
+        
         // if not logined already, turn around to the login activity
-        if (!preferences.getBoolean(CommonConstants.LOGINED, false)
+        if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
             && !preferences.getBoolean(CommonConstants.SKIPPED, false))
         {
             Intent intent = new Intent();
@@ -381,6 +390,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 /**
                  * need to be added in the future
                  */
+                intent = new Intent(this, WelcomeActivity.class);
+                startActivity(intent);
                 break;
             default:
                 break;

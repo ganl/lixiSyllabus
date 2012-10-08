@@ -23,6 +23,8 @@ public class CommonConstants
     
     public static final String SKIPPED = "skipped";
     
+    public static final String SHOW_WELCOME = "showWelcome";
+    
     public static final String CLASSID = "classid";
     
     public static final String IS_FIRST_RUN = "isFirstRun";
