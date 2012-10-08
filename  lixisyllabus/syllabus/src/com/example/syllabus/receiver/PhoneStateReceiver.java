@@ -1,5 +1,9 @@
 package com.example.syllabus.receiver;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +13,7 @@ import android.util.Log;
 
 import com.example.syllabus.service.PhoneStateService;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.Lunar;
 
 public class PhoneStateReceiver extends BroadcastReceiver
 {
@@ -18,6 +23,8 @@ public class PhoneStateReceiver extends BroadcastReceiver
     private String incomingNumber;
     
     private AudioManager mAudioManager;
+    
+    private boolean isHoliday;
     
     @Override
     public void onReceive(Context context, Intent intent)
@@ -31,7 +38,34 @@ public class PhoneStateReceiver extends BroadcastReceiver
         // preserve the state of AudioManager
         mAudioManager = (AudioManager)context.getSystemService(Context.AUDIO_SERVICE);
         
-        if (PHONE_STATE.equals(intent.getAction()) && null != incomingNumber)
+        Calendar today = Calendar.getInstance();
+        today.setTime(new Date(System.currentTimeMillis()));
+        Lunar lunar = new Lunar(today);
+        
+        Log.i("PhoneStateReceiver", "lunar to string:" + lunar.toString());
+        for (int i = 0; i < Lunar.CHINA_HOLIDAYS.length; i++)
+        {
+            if (lunar.toString().equals(Lunar.CHINA_HOLIDAYS[i]))
+            {
+                isHoliday = true;
+            }
+        }
+        if (!isHoliday)
+        {
+            Date date = new Date(System.currentTimeMillis());
+            SimpleDateFormat formatter = new SimpleDateFormat("MM-dd");
+            String current = formatter.format(date);
+            Log.i("PhoneStateReceiver", "current is " + current);
+            for (int i = 0; i < Lunar.NATIONAL_HOLIDAYS.length; i++)
+            {
+                if (current.equals(Lunar.NATIONAL_HOLIDAYS[i]))
+                {
+                    isHoliday = true;
+                }
+            }
+        }
+        
+        if (PHONE_STATE.equals(intent.getAction()) && null != incomingNumber && !isHoliday)
         {// 电话状态改变
          // notifyIncomingCallAndCallBack(context);
             if (AudioManager.RINGER_MODE_SILENT != mAudioManager.getRingerMode())
