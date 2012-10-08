@@ -1,16 +1,33 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/bcg" >
 
-    <include layout="@layout/common_head" />
+    <include
+        android:id="@+id/included"
+        android:layout_alignParentTop="true"
+        layout="@layout/common_head" />
+
+    <Button
+        android:id="@+id/addcourse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/btn_bcg"
+        android:text="添加课程"
+        android:textColor="@color/shalowyellow"
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/showlist"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/bcg"
+        android:layout_above="@id/addcourse"
+        android:layout_below="@id/included"
         android:orientation="horizontal" >
 
         <ImageView
@@ -34,4 +51,4 @@
             android:src="@drawable/bt_right_arrows" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

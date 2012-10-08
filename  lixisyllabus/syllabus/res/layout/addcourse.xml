@@ -73,8 +73,9 @@
                     android:background="@drawable/editor"
                     android:gravity="center" />
             </LinearLayout>
-
+
             <LinearLayout
+                android:id="@+id/addteacher"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
@@ -235,8 +236,9 @@
                         android:background="@drawable/editor"
                         android:gravity="center" />
                 </LinearLayout>
-
+
                 <LinearLayout
+                    android:id="@+id/addsecondteacher"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
