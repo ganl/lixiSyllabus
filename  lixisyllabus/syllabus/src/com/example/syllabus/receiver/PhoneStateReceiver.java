@@ -63,11 +63,11 @@ public class PhoneStateReceiver extends BroadcastReceiver
                     isHoliday = true;
                 }
             }
+            
         }
         
         if (PHONE_STATE.equals(intent.getAction()) && null != incomingNumber && !isHoliday)
         {// 电话状态改变
-         // notifyIncomingCallAndCallBack(context);
             if (AudioManager.RINGER_MODE_SILENT != mAudioManager.getRingerMode())
             {
                 // mute the phone until the ring is stopped
@@ -75,7 +75,6 @@ public class PhoneStateReceiver extends BroadcastReceiver
                 mAudioManager.setRingerMode(AudioManager.RINGER_MODE_SILENT);
                 Log.i(context.toString(), "RINGER MODE has been set to silent");
             }
-            // Log.i("PhoneStateReceiver", "-------in PHONESTATE--------");
             Intent phoneintent = new Intent(context, PhoneStateService.class);
             context.startService(phoneintent);
         }
