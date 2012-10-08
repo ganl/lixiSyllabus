@@ -94,6 +94,8 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
     
     private Long courseID;
     
+    private boolean isTeacher;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -101,6 +103,8 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         setContentView(R.layout.addcourse);
         
         SyllabusApplication.getInstance().addActivity(this);
+        
+        isTeacher = CommonConstants.getMyPreferences(this).getBoolean(CommonConstants.IS_TEACHER, false);
         
         Intent intent = getIntent();
         
@@ -194,12 +198,6 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
             etCourseAddress.setText(course.getcAddress());
         }
         
-        etCourseTeacher = (EditText)findViewById(R.id.courseteacher);
-        if (null != course.gettName())
-        {
-            etCourseTeacher.setText(course.gettName());
-        }
-        
         tvIsTwo = (TextView)findViewById(R.id.istwo);
         if (-1 == courseID)
         {
@@ -223,7 +221,25 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         courseIndexAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         
         etSecondCourseAddress = (EditText)findViewById(R.id.secondcourseaddress);
-        etSecondCourseTeacher = (EditText)findViewById(R.id.secondcourseteacher);
+        if (!isTeacher)
+        {
+            
+            etCourseTeacher = (EditText)findViewById(R.id.courseteacher);
+            if (null != course.gettName())
+            {
+                etCourseTeacher.setText(course.gettName());
+            }
+            etSecondCourseTeacher = (EditText)findViewById(R.id.secondcourseteacher);
+        }
+        else
+        {
+            LinearLayout ll = (LinearLayout)findViewById(R.id.addteacher);
+            LinearLayout ll2 = (LinearLayout)findViewById(R.id.addsecondteacher);
+            
+            ll.setVisibility(View.GONE);
+            ll2.setVisibility(View.GONE);
+            
+        }
         
     }
     
@@ -264,7 +280,7 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                         course.setcAddress(etCourseAddress.getText().toString());
                     }
                     
-                    if (null != etCourseTeacher.getText() && !"".equals((etCourseTeacher).getText()))
+                    if (!isTeacher && null != etCourseTeacher.getText() && !"".equals((etCourseTeacher).getText()))
                     {
                         course.settName(etCourseTeacher.getText().toString());
                     }
@@ -285,7 +301,8 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                         }
                         secondCourse.setcStartWeek(getNumOfTV(tvSecondStartWeek));
                         secondCourse.setcEndWeek(getNumOfTV(tvSecondEndWeek));
-                        if (null != etSecondCourseTeacher.getText() && !"".equals((etSecondCourseTeacher).getText()))
+                        if (!isTeacher && null != etSecondCourseTeacher.getText()
+                            && !"".equals((etSecondCourseTeacher).getText()))
                         {
                             secondCourse.settName(etSecondCourseTeacher.getText().toString());
                         }
@@ -394,7 +411,10 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                     llSecondCourse.setVisibility(View.VISIBLE);
                     
                     etSecondCourseAddress.setText(etCourseAddress.getText());
-                    etSecondCourseTeacher.setText(etCourseTeacher.getText());
+                    if (!isTeacher)
+                    {
+                        etSecondCourseTeacher.setText(etCourseTeacher.getText());
+                    }
                     
                     tvSecondStartWeek.setText(tvStartWeek.getText());
                     tvSecondEndWeek.setText(tvEndWeek.getText());

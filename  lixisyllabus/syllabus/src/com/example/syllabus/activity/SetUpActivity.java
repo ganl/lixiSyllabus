@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
@@ -128,12 +129,20 @@ public class SetUpActivity extends Activity implements OnClickListener
         
         SyllabusApplication.getInstance().addActivity(this);
         preference = CommonConstants.getMyPreferences(this);
+        
+
+        
         tvStartTimeList = new ArrayList<TextView>();
         tvEndTimeList = new ArrayList<TextView>();
         
         initViews();
         
         initData();
+        
+        if (!preference.getBoolean(CommonConstants.IS_SETUP_ALREADY, false))
+        {
+            Toast.makeText(this, "请先设置周数及上下课时间。", Toast.LENGTH_LONG).show();
+        }
     }
     
     private void initViews()
@@ -311,7 +320,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                 if (!getIntent().getBooleanExtra("fromMainActivity", false))
                 {
                     Intent intent = new Intent();
-                    intent.setClass(this, OneWeekCourseListActivity.class);
+                    intent.setClass(this, MainActivity.class);
                     startActivity(intent);
                 }
                 

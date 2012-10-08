@@ -143,23 +143,38 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
             case R.id.studentimage:
                 ivStudent.setBackgroundResource(R.drawable.student_selected);
                 isStudent = true;
+                editor.putBoolean(CommonConstants.IS_TEACHER, false);
+                editor.commit();
                 ivTeacher.setBackgroundResource(R.drawable.teacher);
                 
                 break;
             case R.id.teacherimage:
                 ivTeacher.setBackgroundResource(R.drawable.teacher_selected);
                 isStudent = false;
+                editor.putBoolean(CommonConstants.IS_TEACHER, true);
+                editor.commit();
                 ivStudent.setBackgroundResource(R.drawable.student);
                 break;
             case R.id.selfinput:
-                intent = new Intent(this, SetUpActivity.class);
-                editor.putBoolean(CommonConstants.SHOW_WELCOME, true);
-                editor.commit();
-                startActivity(intent);
+                if (!preferences.getBoolean(CommonConstants.SHOW_WELCOME, false))
+                {
+                    // 如果是第一次显示欢迎界面，那么让用户进入SetUpActivity进行设置，如果不是第一次了，那么就不再显示SetUpActivity
+                    intent = new Intent(this, SetUpActivity.class);
+                    editor.putBoolean(CommonConstants.SHOW_WELCOME, true);
+                    editor.commit();
+                    startActivity(intent);
+                }
+                else
+                {
+                    intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                }
+                
                 this.finish();
                 break;
             case R.id.download:
                 intent = new Intent(this, LoginActivity.class);
+                // intent.putExtra(CommonConstants.IS_TEACHER, true);
                 editor.putBoolean(CommonConstants.SHOW_WELCOME, true);
                 editor.commit();
                 startActivity(intent);

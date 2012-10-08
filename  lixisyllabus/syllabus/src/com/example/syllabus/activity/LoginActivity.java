@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +56,8 @@ public class LoginActivity extends Activity implements OnClickListener
     
     private SharedPreferences preferences;
     
+    private boolean isTeacher = false;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -83,18 +86,32 @@ public class LoginActivity extends Activity implements OnClickListener
         tvLogin = (TextView)findViewById(R.id.login);
         tvLogin.setOnClickListener(this);
         
-        etDepartmentName = (EditText)findViewById(R.id.departmentname);
-        etClassName = (EditText)findViewById(R.id.class_name);
-        etGradeNum = (EditText)findViewById(R.id.gradenum);
         etUniversityName = (EditText)findViewById(R.id.universityname);
-        etMajorName = (EditText)findViewById(R.id.majorname);
+        etDepartmentName = (EditText)findViewById(R.id.departmentname);
         
-        // for test
-        etDepartmentName.setText("计算机科学与工程学院");
-        etUniversityName.setText("安徽理工大学");
-        etGradeNum.setText("2011");
-        etMajorName.setText("计算机应用技术");
-        etClassName.setText("1");
+        isTeacher = CommonConstants.getMyPreferences(this).getBoolean(CommonConstants.IS_TEACHER, false);
+        
+        if (!isTeacher)
+        {
+            etClassName = (EditText)findViewById(R.id.class_name);
+            etGradeNum = (EditText)findViewById(R.id.gradenum);
+            etMajorName = (EditText)findViewById(R.id.majorname);
+            
+            // for test
+            etDepartmentName.setText("计算机科学与工程学院");
+            etUniversityName.setText("安徽理工大学");
+            etGradeNum.setText("2011");
+            etMajorName.setText("计算机应用技术");
+            etClassName.setText("1");
+        }
+        else
+        {
+            LinearLayout ll = (LinearLayout)findViewById(R.id.linearLayout1);
+            ll.setVisibility(View.INVISIBLE);
+            TextView tvDepartment = (TextView)findViewById(R.id.tvdeparment);
+            tvDepartment.setText("姓名");
+            etDepartmentName.setHint("请输入教师姓名");
+        }
         
     }
     
@@ -123,53 +140,76 @@ public class LoginActivity extends Activity implements OnClickListener
                 break;
             
             case R.id.login:
-                departmentName = etDepartmentName.getText().toString();
-                className = etClassName.getText().toString();
-                gradeNum = etGradeNum.getText().toString();
                 universityName = etUniversityName.getText().toString();
-                majorName = etMajorName.getText().toString();
-                if (null != departmentName && !"".equals(departmentName) && null != className && !"".equals(className)
-                    && null != gradeNum && !"".equals(gradeNum) && null != universityName && !"".equals(universityName)
-                    && null != majorName && !"".equals(majorName))
+                departmentName = etDepartmentName.getText().toString();
+                if (!isTeacher)
                 {
-                    Editor editor = preferences.edit();
-                    editor.putString(CommonConstants.UNIVERSITY_NAME, universityName);
-                    editor.putString(CommonConstants.DEPARTMENT_NAME, departmentName);
-                    editor.putString(CommonConstants.GRADE_NUM, gradeNum);
-                    editor.putString(CommonConstants.CLASS_NAME, className);
-                    editor.putString(CommonConstants.MAJOR_NAME, majorName);
-                    editor.putBoolean(CommonConstants.LOGINED, true);
-                    editor.commit();
-                    
-                    intent = new Intent(this, SetUpActivity.class);
-                    // intent.putExtra(CommonConstants.DEPARTMENT_NAME, departmentName);
-                    // intent.putExtra(CommonConstants.GRADE_NUM, gradeNum);
-                    // intent.putExtra(CommonConstants.CLASS_NAME, className);
-                    // intent.putExtra(CommonConstants.UNIVERSITY_NAME, universityName);
-                    // intent.putExtra(CommonConstants.MAJOR_NAME, majorName);
-                    startActivity(intent);
-                    this.finish();
+                    className = etClassName.getText().toString();
+                    gradeNum = etGradeNum.getText().toString();
+                    majorName = etMajorName.getText().toString();
+                    if (null != departmentName && !"".equals(departmentName) && null != className
+                        && !"".equals(className) && null != gradeNum && !"".equals(gradeNum) && null != universityName
+                        && !"".equals(universityName) && null != majorName && !"".equals(majorName))
+                    {
+                        Editor editor = preferences.edit();
+                        editor.putString(CommonConstants.UNIVERSITY_NAME, universityName);
+                        editor.putString(CommonConstants.DEPARTMENT_NAME, departmentName);
+                        editor.putString(CommonConstants.GRADE_NUM, gradeNum);
+                        editor.putString(CommonConstants.CLASS_NAME, className);
+                        editor.putString(CommonConstants.MAJOR_NAME, majorName);
+                        editor.putBoolean(CommonConstants.LOGINED, true);
+                        editor.commit();
+                        
+                        intent = new Intent(this, SetUpActivity.class);
+                        startActivity(intent);
+                        this.finish();
+                    }
+                    else if (null == universityName || "".equals(universityName))
+                    {
+                        Toast.makeText(this, "学校名不能为空", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (null == majorName || "".equals(majorName))
+                    {
+                        Toast.makeText(this, "专业名不能为空", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (null == departmentName || "".equals(departmentName))
+                    {
+                        Toast.makeText(this, "学院名不能为空", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (null == className || "".equals(className))
+                    {
+                        Toast.makeText(this, "班级不能为空，如只有一个班级，则填1", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (null == gradeNum || "".equals(gradeNum))
+                    {
+                        Toast.makeText(this, "年级不能为空", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else if (null == universityName || "".equals(universityName))
+                else
                 {
-                    Toast.makeText(this, "学校名不能为空", Toast.LENGTH_SHORT);
+                    if (null != departmentName && !"".equals(departmentName) && null != universityName
+                        && !"".equals(universityName))
+                    {
+                        Editor editor = preferences.edit();
+                        editor.putString(CommonConstants.UNIVERSITY_NAME, universityName);
+                        editor.putString(CommonConstants.TEACHER_NAME, departmentName);
+                        
+                        editor.commit();
+                        
+                        intent = new Intent(this, SetUpActivity.class);
+                        startActivity(intent);
+                        this.finish();
+                    }
+                    else if (null == universityName || "".equals(universityName))
+                    {
+                        Toast.makeText(this, "学校名不能为空", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (null == departmentName || "".equals(departmentName))
+                    {
+                        Toast.makeText(this, "教师名不能为空", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else if (null == majorName || "".equals(majorName))
-                {
-                    Toast.makeText(this, "专业名不能为空", Toast.LENGTH_SHORT);
-                }
-                else if (null == departmentName || "".equals(departmentName))
-                {
-                    Toast.makeText(this, "学院名不能为空", Toast.LENGTH_SHORT).show();
-                }
-                else if (null == className || "".equals(className))
-                {
-                    Toast.makeText(this, "班级不能为空，如只有一个班级，则填1", Toast.LENGTH_SHORT).show();
-                }
-                else if (null == gradeNum || "".equals(gradeNum))
-                {
-                    Toast.makeText(this, "年级不能为空", Toast.LENGTH_SHORT).show();
-                }
+                
             default:
                 break;
         }

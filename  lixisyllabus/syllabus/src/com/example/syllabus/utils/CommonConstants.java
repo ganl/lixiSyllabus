@@ -21,6 +21,8 @@ public class CommonConstants
     
     public static final String IS_SETUP_ALREADY = "isSetUpAlready";
     
+    public static final String IS_TEACHER = "isTeacher";
+    
     public static final String SKIPPED = "skipped";
     
     public static final String SHOW_WELCOME = "showWelcome";
@@ -144,6 +146,8 @@ public class CommonConstants
         R.drawable.icon_sunday};
     
     public static final String IS_ACCELEREMETER_SUPPORTED = "isAccelermeterSupported";
+    
+    public static final String TEACHER_NAME = "teacherName";
     
     public static int defaultRingerMode;
     

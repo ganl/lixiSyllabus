@@ -18,9 +18,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector.OnGestureListener;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,6 +30,7 @@ import android.view.View.OnTouchListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,7 +61,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private int weekOfSemister; // 第几周
     
-    private ImageView ivAddCourse; // 添加课程
+    // private ImageView ivAddCourse; // 添加课程
+    
+    private Button btnAddCourse;
     
     private ImageView ivTurnLeft;
     
@@ -175,6 +176,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         ivTurnRight = (ImageView)findViewById(R.id.turnright);
         ivTurnLeft.setOnClickListener(this);
         ivTurnRight.setOnClickListener(this);
+        
+        btnAddCourse = (Button)findViewById(R.id.addcourse);
+        btnAddCourse.setOnClickListener(this);
         
         Log.i("MainActivity", "in onCreate()");
         
@@ -342,14 +346,14 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private void setFooterAndAdapterOfListView(List<Course> tempCourses, SimpleCourseAdapter adapter, ListView listView)
     {
-        FrameLayout flAddImage = (FrameLayout)inflater.inflate(R.layout.addimage, null);
-        ivAddCourse = (ImageView)flAddImage.findViewById(R.id.addcourse);
-        ivAddCourse.setOnClickListener(this);
-        ivAddCourse.setOnTouchListener(this);
+        // FrameLayout flAddImage = (FrameLayout)inflater.inflate(R.layout.addimage, null);
+        // ivAddCourse = (ImageView)flAddImage.findViewById(R.id.addcourse);
+        // ivAddCourse.setOnClickListener(this);
+        // ivAddCourse.setOnTouchListener(this);
         
         adapter = new SimpleCourseAdapter(this, tempCourses);
-        listView.addFooterView(flAddImage);
-        listView.setFooterDividersEnabled(true);
+        // listView.addFooterView(flAddImage);
+        // listView.setFooterDividersEnabled(true);
         
         listView.setAdapter(adapter);
         

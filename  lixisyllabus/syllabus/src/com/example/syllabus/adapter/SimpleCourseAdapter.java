@@ -4,12 +4,14 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -28,6 +30,10 @@ public class SimpleCourseAdapter extends BaseAdapter
     
     private LayoutInflater inflater;
     
+    private SharedPreferences preferences;
+    
+    private boolean isTeacher = false;
+    
     public List<Course> getCourses()
     {
         return courses;
@@ -45,6 +51,10 @@ public class SimpleCourseAdapter extends BaseAdapter
         this.courses = courses;
         
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        this.preferences = CommonConstants.getMyPreferences(context);
+        
+        isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
     }
     
     public int getCount()
@@ -73,18 +83,16 @@ public class SimpleCourseAdapter extends BaseAdapter
         if (null == convertView)
         {
             viewHolder = new ViewHolder();
-            convertView = (RelativeLayout)inflater.inflate(R.layout.course, null);
+            convertView = (LinearLayout)inflater.inflate(R.layout.course, null);
             viewHolder.coursename = (TextView)convertView.findViewById(R.id.coursename);
-            viewHolder.time = (TextView)convertView.findViewById(R.id.time);
+            viewHolder.time = (TextView)convertView.findViewById(R.id.coursetime);
             viewHolder.roomumber = (TextView)convertView.findViewById(R.id.roomnumber);
-            viewHolder.teacher = (TextView)convertView.findViewById(R.id.teacher);
-            viewHolder.addimage = (ImageView)convertView.findViewById(R.id.addimage);
+            viewHolder.teacher = (TextView)convertView.findViewById(R.id.teachername);
+            // viewHolder.addimage = (ImageView)convertView.findViewById(R.id.addimage);
             viewHolder.courseindex = (ImageView)convertView.findViewById(R.id.courseindex);
             
             convertView.setTag(viewHolder);
-            
         }
-        
         else
         {
             // 这里的viewHolder主要用来防止重复创建那几个view
@@ -95,29 +103,36 @@ public class SimpleCourseAdapter extends BaseAdapter
         viewHolder.coursename.setText(course.getcName());
         
         int courseIndex = course.getCourseIndex();
-        
+        System.out.println("time View :" + viewHolder.time);
         viewHolder.time.setText(CommonConstants.COURSEINDEXTIME[courseIndex - 1]);
         
         viewHolder.courseindex.setImageResource(CommonConstants.COURSEINDEX_IMAGE[courseIndex - 1]);
         
         viewHolder.roomumber.setText(course.getcAddress());
-        viewHolder.teacher.setText(course.gettName());
-        
-        viewHolder.addimage.setVisibility(View.VISIBLE);
-        viewHolder.addimage.setOnClickListener(new OnClickListener()
+        if (!isTeacher)
         {
-            
-            public void onClick(View v)
-            {
-                Intent intent = new Intent();
-                intent.setClass(context, AddCourseActivity.class);
-                int courseIndex = course.getCourseIndex();
-                int dayOfWeek = ((MainActivity)context).getDayOfWeek();
-                intent.putExtra("courseIndex", courseIndex);
-                intent.putExtra("dayOfWeek", dayOfWeek);
-                context.startActivity(intent);
-            }
-        });
+            viewHolder.teacher.setText(course.gettName());
+        }
+        else
+        {
+            viewHolder.teacher.setVisibility(View.GONE);
+        }
+        
+        // viewHolder.addimage.setVisibility(View.VISIBLE);
+        // viewHolder.addimage.setOnClickListener(new OnClickListener()
+        // {
+        //
+        // public void onClick(View v)
+        // {
+        // Intent intent = new Intent();
+        // intent.setClass(context, AddCourseActivity.class);
+        // int courseIndex = course.getCourseIndex();
+        // int dayOfWeek = ((MainActivity)context).getDayOfWeek();
+        // intent.putExtra("courseIndex", courseIndex);
+        // intent.putExtra("dayOfWeek", dayOfWeek);
+        // context.startActivity(intent);
+        // }
+        // });
         
         return convertView;
     }
@@ -134,6 +149,6 @@ public class SimpleCourseAdapter extends BaseAdapter
         
         ImageView courseindex;
         
-        ImageView addimage;
+        // ImageView addimage;
     }
 }
