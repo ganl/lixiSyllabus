@@ -63,13 +63,16 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
     
     private ShelfView shelfView;
     
+    private boolean isTeacher;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        
         setContentView(R.layout.oneweekcourselist);
         SyllabusApplication.getInstance().addActivity(this);
+        
+        isTeacher = CommonConstants.getMyPreferences(this).getBoolean(CommonConstants.IS_TEACHER, false);
         
         groupList = new ArrayList<Map<String, String>>();
         
@@ -155,23 +158,37 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
         {
             SharedPreferences preferences = CommonConstants.getMyPreferences(this);
             String universityName = preferences.getString(CommonConstants.UNIVERSITY_NAME, null);// intent.getStringExtra(CommonConstants.UNIVERSITY_NAME);
-            String departmentName = preferences.getString(CommonConstants.DEPARTMENT_NAME, null);// intent.getStringExtra(CommonConstants.DEPARTMENT_NAME);
-            String gradeNum = preferences.getString(CommonConstants.GRADE_NUM, null);// intent.getStringExtra(CommonConstants.GRADE_NUM);
-            String majorName = preferences.getString(CommonConstants.MAJOR_NAME, null);// intent.getStringExtra(CommonConstants.MAJOR_NAME);
-            String className = preferences.getString(CommonConstants.CLASS_NAME, null);// intent.getStringExtra(CommonConstants.CLASS_NAME);
-            
-            if (null == universityName)
+            String departmentName, gradeNum, majorName, className, teacherName;
+            if (!isTeacher)
             {
-                showDialog("ƒ˙ªπ√ª”–ÃÌº”øŒ≥Ã£¨«ÎÃÌº”øŒ≥Ã");
+                departmentName = preferences.getString(CommonConstants.DEPARTMENT_NAME, null);// intent.getStringExtra(CommonConstants.DEPARTMENT_NAME);
+                
+                gradeNum = preferences.getString(CommonConstants.GRADE_NUM, null);// intent.getStringExtra(CommonConstants.GRADE_NUM);
+                majorName = preferences.getString(CommonConstants.MAJOR_NAME, null);// intent.getStringExtra(CommonConstants.MAJOR_NAME);
+                className = preferences.getString(CommonConstants.CLASS_NAME, null);// intent.getStringExtra(CommonConstants.CLASS_NAME);
+                
+                if (null != universityName)
+                {
+                    GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
+                    task.execute(universityName, departmentName, majorName, gradeNum, className);
+                    progressDialog.setTitle("«Î…‘∫Ú");
+                    
+                    progressDialog.show();
+                }
             }
             else
             {
-                GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
-                task.execute(universityName, departmentName, majorName, gradeNum, className);
-                progressDialog.setTitle("«Î…‘∫Ú");
-                
-                progressDialog.show();
+                teacherName = preferences.getString(CommonConstants.TEACHER_NAME, null);
+                if (null != teacherName)
+                {
+                    GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
+                    task.execute(universityName, teacherName);
+                    progressDialog.setTitle("«Î…‘∫Ú");
+                    
+                    progressDialog.show();
+                }
             }
+            
             tvLeft.setText("µ±ÃÏ");
         }
         
