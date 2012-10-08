@@ -4,7 +4,7 @@ public class Urls
 {
     final static String base_url = "http://192.168.1.100:8088/Syllabus_server/";
     
-    public static String getLoginUrl()
+    public static String getStudentLoginUrl()
     {
         return base_url + "login/login.action";
     }
@@ -18,5 +18,10 @@ public class Urls
     public static String getUpdateCourse()
     {
         return base_url + "update/update.action";
+    }
+    
+    public static String getTeacherLoginUrl()
+    {
+        return base_url + "login/teacherlogin.action";
     }
 }

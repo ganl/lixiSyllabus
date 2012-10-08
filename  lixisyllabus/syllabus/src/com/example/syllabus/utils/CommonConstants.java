@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.example.syllabus.R;
 import com.example.syllabus.bean.Course;
+import com.example.syllabus.bean.Teacher;
 import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
 
@@ -45,6 +46,10 @@ public class CommonConstants
     
     public static final String[] STUDENT_INFORMATION = {UNIVERSITY_NAME, DEPARTMENT_NAME, MAJOR_NAME, GRADE_NUM,
         CLASS_NAME};
+    
+    public static final String TEACHER_NAME = "teacherName";
+    
+    public static final String[] TEACHER_INFORMATION = {UNIVERSITY_NAME, TEACHER_NAME};
     
     public static final String LOGINED = "Logined";
     
@@ -146,8 +151,6 @@ public class CommonConstants
         R.drawable.icon_sunday};
     
     public static final String IS_ACCELEREMETER_SUPPORTED = "isAccelermeterSupported";
-    
-    public static final String TEACHER_NAME = "teacherName";
     
     public static int defaultRingerMode;
     
