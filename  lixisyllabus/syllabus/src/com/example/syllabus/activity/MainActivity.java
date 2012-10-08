@@ -364,6 +364,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         {
             case R.id.menu_settings:
                 intent = new Intent(this, SetUpActivity.class);
+                intent.putExtra("fromMainActivity", true);
                 startActivity(intent);
                 break;
             case R.id.menu_login:
@@ -394,6 +395,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         {
             case R.id.tvLeft:
                 intent = new Intent(MainActivity.this, SetUpActivity.class);
+                intent.putExtra("fromMainActivity", true);
                 this.startActivity(intent);
                 break;
             case R.id.addcourse:

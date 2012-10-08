@@ -63,7 +63,6 @@ public class PhoneStateReceiver extends BroadcastReceiver
                     isHoliday = true;
                 }
             }
-            
         }
         
         if (PHONE_STATE.equals(intent.getAction()) && null != incomingNumber && !isHoliday)

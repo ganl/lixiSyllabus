@@ -281,14 +281,10 @@ public class SetUpActivity extends Activity implements OnClickListener
                 Editor editor = preference.edit();
                 for (int i = 0; i < tvStartTimeList.size(); i++)
                 {
-                    // Log.i("SetUpActivity", CommonConstants.STR_START_TIME[i] + " = "
-                    // + tvStartTimeList.get(i).getText().toString());
                     editor.putString(CommonConstants.STR_START_TIME[i], tvStartTimeList.get(i).getText().toString());
                 }
                 for (int i = 0; i < tvEndTimeList.size(); i++)
                 {
-                    // Log.i("SetUpActivity", CommonConstants.STR_END_TIME[i] + " = "
-                    // + tvEndTimeList.get(i).getText().toString());
                     editor.putString(CommonConstants.STR_END_TIME[i], tvEndTimeList.get(i).getText().toString());
                 }
                 
@@ -312,10 +308,12 @@ public class SetUpActivity extends Activity implements OnClickListener
                 editor.putInt(CommonConstants.WEEK_IN_YEAR, weekInYear);
                 editor.putBoolean(CommonConstants.IS_SETUP_ALREADY, true);
                 editor.commit();
-                
-                Intent intent = new Intent();
-                intent.setClass(this, OneWeekCourseListActivity.class);
-                startActivity(intent);
+                if (!getIntent().getBooleanExtra("fromMainActivity", false))
+                {
+                    Intent intent = new Intent();
+                    intent.setClass(this, OneWeekCourseListActivity.class);
+                    startActivity(intent);
+                }
                 
                 this.finish();
                 break;
