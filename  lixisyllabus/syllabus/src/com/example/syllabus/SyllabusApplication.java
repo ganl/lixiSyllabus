@@ -53,6 +53,7 @@ public class SyllabusApplication extends Application
                 activity.finish();
             }
         }
+        System.runFinalizersOnExit(true);
         System.exit(0);
     }
     
