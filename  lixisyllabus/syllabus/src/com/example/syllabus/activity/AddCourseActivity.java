@@ -125,6 +125,10 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
             dayOfWeek = intent.getIntExtra("dayOfWeek", 0);
             courseIndex = intent.getIntExtra("courseIndex", 0);
             course = new Course();
+            if (isTeacher)
+            {
+                course.settName(CommonConstants.getMyPreferences(this).getString(CommonConstants.TEACHER_NAME, null));
+            }
         }
         
         initViews();
@@ -317,19 +321,24 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                     
                     if (-1 == courseID)
                     {
-                        long id = dao.addCourse(course);
-                        course.setId(id);
+                        long id = dao.addCourse(course, isTeacher);
                         Intent intent = new Intent();
-                        intent.setClass(this, AddCourseToServer.class);
                         intent.putExtra("course", course);
                         intent.putExtra("action", INSERT_COURSE_TO_SERVER);
-                        // intent.putStringArrayListExtra(name, value)Extra("course", course);
-                        startService(intent);
+                        if (0 != id)
+                        {
+                            course.setId(id);
+                            intent.setClass(this, AddCourseToServer.class);
+                            // intent.putStringArrayListExtra(name, value)Extra("course", course);
+                            startService(intent);
+                        }
                         if (null != secondCourse)
                         {
-                            dao.addCourse(secondCourse);
-                            intent.putExtra("course", secondCourse);
-                            startService(intent);
+                            if (0 != dao.addCourse(secondCourse, isTeacher))
+                            {
+                                intent.putExtra("course", secondCourse);
+                                startService(intent);
+                            }
                         }
                     }
                     else
@@ -407,6 +416,8 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                 if (View.GONE == llSecondCourse.getVisibility())
                 {
                     secondCourse = new Course();
+                    secondCourse.settName(CommonConstants.getMyPreferences(this)
+                        .getString(CommonConstants.TEACHER_NAME, null));
                     tvIsTwo.setBackgroundResource(R.drawable.btn_down_bcg);
                     llSecondCourse.setVisibility(View.VISIBLE);
                     
