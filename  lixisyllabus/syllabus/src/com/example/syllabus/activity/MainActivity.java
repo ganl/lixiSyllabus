@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     SensorEventListener, OnLongClickListener
 {
     
-    private TextView tvLeft; // зѓМќ
+private TextView tvLeft; // зѓМќ
     
     private TextView tvTitle; // БъЬт
     
@@ -507,7 +507,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         }
         else
         {
-            oneWeekCourses = dao.getWeekCourse(weekOfSemister);
+            oneWeekCourses = dao.getWeekCourse(weekOfSemister, isTeacher);
         }
         for (int i = 0; i < 7; i++)
         {

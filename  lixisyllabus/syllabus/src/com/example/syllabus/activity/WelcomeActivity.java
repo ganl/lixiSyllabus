@@ -145,6 +145,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 isStudent = true;
                 editor.putBoolean(CommonConstants.IS_TEACHER, false);
                 editor.commit();
+                ((SyllabusApplication)getApplication()).setTeacher(false);
                 ivTeacher.setBackgroundResource(R.drawable.teacher);
                 
                 break;
@@ -153,6 +154,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 isStudent = false;
                 editor.putBoolean(CommonConstants.IS_TEACHER, true);
                 editor.commit();
+                ((SyllabusApplication)getApplication()).setTeacher(true);
                 ivStudent.setBackgroundResource(R.drawable.student);
                 break;
             case R.id.selfinput:
