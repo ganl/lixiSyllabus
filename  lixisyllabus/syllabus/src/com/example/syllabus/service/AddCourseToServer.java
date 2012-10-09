@@ -33,6 +33,8 @@ public class AddCourseToServer extends Service
     
     private Course course;
     
+    private boolean isTeacher = false;
+    
     public static final String[] FIELDS = {"cName", "tName", "cAddress", "cStartWeek", "cEndWeek", "cWeekday",
         "courseIndex"};
     
@@ -42,6 +44,7 @@ public class AddCourseToServer extends Service
         // TODO Auto-generated method stub
         super.onCreate();
         preferences = CommonConstants.getMyPreferences(this);
+        isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
     }
     
     @Override
