@@ -269,7 +269,7 @@ public class PhoneStateService extends Service
             ContactsContract.CommonDataKinds.Phone.NUMBER + " = '" + incomingNumber + "'", // WHERE clause.
             null, // WHERE clause value substitution
             null); // Sort order.
-        if (cursor == null)
+        if (cursor == null || !cursor.moveToFirst())
         {
             return "";
         }
