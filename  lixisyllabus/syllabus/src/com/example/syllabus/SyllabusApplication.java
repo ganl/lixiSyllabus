@@ -26,6 +26,8 @@ public class SyllabusApplication extends Application
     
     private static SyllabusApplication instance;
     
+    private boolean isTeacher;
+    
     public SyllabusApplication()
     {
     }
@@ -87,5 +89,15 @@ public class SyllabusApplication extends Application
         
         editor.commit();
         notificationID = 2;
+    }
+    
+    public boolean isTeacher()
+    {
+        return isTeacher;
+    }
+    
+    public void setTeacher(boolean isTeacher)
+    {
+        this.isTeacher = isTeacher;
     }
 }
