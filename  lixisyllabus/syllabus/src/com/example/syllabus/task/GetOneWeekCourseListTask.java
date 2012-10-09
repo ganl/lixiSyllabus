@@ -17,11 +17,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.syllabus.activity.OneWeekCourseListActivity;
 import com.example.syllabus.bean.Course;
 import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
@@ -31,6 +29,10 @@ import com.example.syllabus.utils.Urls;
 
 public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Course>>
 {
+    
+    private static final String RESULT_OK_NO_COURSES = "2";
+    
+    private static final String RESULT_OK = "1";
     
     private Context context;
     
@@ -78,22 +80,21 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                 Editor editor = preferences.edit();
                 editor.putInt(CommonConstants.CLASSID, classid);
                 editor.commit();
-                if ("2".equals(result) || "0".equals(result))
+                if (RESULT_OK_NO_COURSES.equals(result) || "0".equals(result))
                 {
                     ((Activity)context).runOnUiThread(new Runnable()
                     {
-                        
                         public void run()
                         {
+                            handler.sendEmptyMessage(1);
                             Toast.makeText(context, "服务器无您班级课程，请添加。", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
                 
-                if ("1".equals(result))
+                if (RESULT_OK.equals(result))
                 {
                     JSONArray array = obj.optJSONArray("courses");
-                    // classid = obj.optInt(CommonConstants.CLASSID);
                     Log.i("GetOneWeekCoursesActivity", "classid " + classid);
                     for (int i = 0; i < array.length(); i++)
                     {
@@ -105,8 +106,10 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                         
                         courses.add(course);
                         CourseDao dao = new CourseDaoImpl(context);
-                        dao.addCourse(course);
+                        dao.addCourse(course, false);
                     }
+                    
+                    handler.sendEmptyMessage(2);
                 }
                 
             }
@@ -118,6 +121,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     
                     public void run()
                     {
+                        handler.sendEmptyMessage(1);
                         Toast.makeText(context, "网络出现问题，请稍候重试", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -145,9 +149,9 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                 int teacherID = obj.optInt("teacherID");
                 SharedPreferences preferences = CommonConstants.getMyPreferences(context);
                 Editor editor = preferences.edit();
-                editor.putInt("teacherID", teacherID);
+                editor.putInt(CommonConstants.TEACHER_ID, teacherID);
                 editor.commit();
-                if ("1".equals(result))
+                if (RESULT_OK.equals(result))
                 {
                     JSONArray array = obj.optJSONArray("courses");
                     for (int i = 0; i < array.length(); i++)
@@ -161,8 +165,10 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                         
                         courses.add(course);
                         CourseDao dao = new CourseDaoImpl(context);
-                        dao.addCourse(course);
+                        dao.addCourse(course, true);
                     }
+                    
+                    handler.sendEmptyMessage(2);
                 }
                 else
                 {
@@ -171,6 +177,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                         
                         public void run()
                         {
+                            handler.sendEmptyMessage(1);
                             Toast.makeText(context, "服务器无您的课程，请添加。", Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -185,6 +192,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     
                     public void run()
                     {
+                        handler.sendEmptyMessage(1);
                         Toast.makeText(context, "网络出现问题，请稍候重试", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -197,17 +205,6 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
     @Override
     protected void onPostExecute(List<Course> result)
     {
-        if (!result.isEmpty() && !isTeacher)
-        {
-            // Message message = Message.obtain();
-            handler.sendEmptyMessage(1);
-        }
-        else if (!result.isEmpty())
-        {
-            // Message message = Message.obtain();
-            // message.what = 2;
-            handler.sendEmptyMessage(2);
-        }
         
         super.onPostExecute(result);
     }
