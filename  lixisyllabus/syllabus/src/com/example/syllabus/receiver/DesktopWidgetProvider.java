@@ -38,7 +38,10 @@ public class DesktopWidgetProvider extends AppWidgetProvider
             int weekOfSemister = CommonConstants.getCurrentWeekOfSemister(context);
             int dayOfWeek = CommonConstants.getWeekNumFromStr(CommonConstants.getCurrentDayOfWeek());
             Log.i(context.toString(), weekOfSemister + "," + dayOfWeek);
-            List<Course> list = dao.getDayCourse(weekOfSemister, dayOfWeek);
+            List<Course> list =
+                dao.getDayCourse(weekOfSemister,
+                    dayOfWeek,
+                    CommonConstants.getMyPreferences(context).getBoolean(CommonConstants.IS_TEACHER, false));
             
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget);
             /**
