@@ -28,8 +28,11 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         {
             course.settNo(preferences.getInt(CommonConstants.TEACHER_ID, 0));
         }
-        if (isCourseExisted(course, isTeacher))
-        {
+        long existingid = isCourseExisted(course, isTeacher);
+        if (0 != existingid)
+        {// 如果存在同样的course，
+            course.setId(existingid);
+            updateCourse(course);
             return 0;
         }
         long id = db.insert(COURSE_NAME, null, deconstruct(course));
@@ -37,17 +40,24 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         return id;
     }
     
-    public boolean isCourseExisted(Course course, boolean isTeacher)
+    public long isCourseExisted(Course course, boolean isTeacher)
     {
         db = this.getReadableDatabase();
         StringBuilder sb = new StringBuilder();
-        String where = COURSEID + " = ?";
-        String[] whereArgs = null;
+        String where =
+            CNAME + " = ?" + " and " + TNAME + " = ? " + " and " + CADDRESS + " = ?" + " and " + CSTARTWEEK + " = ?"
+                + " and " + CENDWEEK + " = ?" + " and " + CWEEKDAY + " = ?" + " and " + COURSEINDEX + " = ?";
+        String[] whereArgs =
+            new String[] {course.getcName(), course.gettName(), course.getcAddress(), course.getcStartWeek() + "",
+                course.getcEndWeek() + "", course.getcWeekday() + "", course.getCourseIndex() + ""};
         sb.append(where);
         if (isTeacher)
         {
             sb.append(" and " + TNO + " = ?");
-            whereArgs = new String[] {course.getCourseid() + "", course.gettNo() + ""};
+            whereArgs =
+                new String[] {course.getcName(), course.gettName(), course.getcAddress(), course.getcStartWeek() + "",
+                    course.getcEndWeek() + "", course.getcWeekday() + "", course.getCourseIndex() + "",
+                    course.gettNo() + ""};
             
         }
         else
@@ -59,12 +69,13 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         {
             if (false == c.moveToFirst())
             {
-                return false;
+                return 0;
             }
-            return true;
+            Course course2 = build(c);
+            return course2.getId();
         }
         
-        return false;
+        return 0;
     }
     
     public void deleteAllCourse()

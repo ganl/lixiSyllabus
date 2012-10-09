@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     SensorEventListener, OnLongClickListener
 {
     
-private TextView tvLeft; // ×ó¼ü
+    private TextView tvLeft; // ×ó¼ü
     
     private TextView tvTitle; // ±êÌâ
     
@@ -215,7 +215,6 @@ private TextView tvLeft; // ×ó¼ü
             // if it is from AppWidget or first created
             if (str.matches("^[a-zA-Z]*"))
             {
-                System.out.println("dayOfWeek is english");
                 dayOfWeek = CommonConstants.getDayOfWeekFromEng(str);
                 str = CommonConstants.getStrFromWeekNum(dayOfWeek);
             }
@@ -266,7 +265,6 @@ private TextView tvLeft; // ×ó¼ü
         if (isFromOnCreate)
         {
             isFromOnCreate = false;
-            System.out.println("from onCreated");
         }
         else
         {// if come back from set or add activity, we should update the view
@@ -352,9 +350,9 @@ private TextView tvLeft; // ×ó¼ü
         switch (item.getItemId())
         {
             case R.id.menu_settings:
-                intent = new Intent(this, SetUpActivity.class);
-                intent.putExtra("fromMainActivity", true);
-                startActivity(intent);
+                // intent = new Intent(this, SetUpActivity.class);
+                // intent.putExtra("fromMainActivity", true);
+                // startActivity(intent);
                 break;
             case R.id.menu_login:
                 intent = new Intent(this, LoginActivity.class);

@@ -103,7 +103,6 @@ public class SimpleCourseAdapter extends BaseAdapter
         viewHolder.coursename.setText(course.getcName());
         
         int courseIndex = course.getCourseIndex();
-        System.out.println("time View :" + viewHolder.time);
         viewHolder.time.setText(CommonConstants.COURSEINDEXTIME[courseIndex - 1]);
         
         viewHolder.courseindex.setImageResource(CommonConstants.COURSEINDEX_IMAGE[courseIndex - 1]);

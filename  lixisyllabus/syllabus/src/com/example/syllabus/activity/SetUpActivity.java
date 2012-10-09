@@ -151,7 +151,6 @@ public class SetUpActivity extends Activity implements OnClickListener
         weekOfSemister = preference.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
         String weekNum = weekOfSemister + "";
         // Integer.toString(preference.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKNUM));
-        // System.out.println(preference.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKNUM));
         tvWeekNum.setText(weekNum);
         tvWeekNum.setOnClickListener(this);
         
@@ -312,7 +311,6 @@ public class SetUpActivity extends Activity implements OnClickListener
                 {
                     ((SyllabusApplication)getApplication()).isWeekHasBeenChanged = true;
                 }
-                System.out.println("weekOfSemister:" + weekOfSemister);
                 editor.putInt(CommonConstants.WEEKOFSEMISTER, weekOfSemister);
                 editor.putInt(CommonConstants.WEEK_IN_YEAR, weekInYear);
                 editor.putBoolean(CommonConstants.IS_SETUP_ALREADY, true);

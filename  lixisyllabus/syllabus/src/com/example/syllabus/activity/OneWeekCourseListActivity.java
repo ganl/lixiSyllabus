@@ -300,7 +300,6 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
         CourseDao dao = new CourseDaoImpl(this);
         
         List<Course> allCourses = dao.getAllCourse(isTeacher);
-        System.out.println("size of all:" + allCourses.size());
         List<List<Map<String, String>>> oneWeekCourses = new ArrayList<List<Map<String, String>>>();
         
         for (int i = 1; i < 8; i++)
