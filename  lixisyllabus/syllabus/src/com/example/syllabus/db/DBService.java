@@ -17,7 +17,11 @@ public abstract class DBService<T> extends SQLiteOpenHelper
     
     public final static String COURSE_NAME = "course";
     
+    public final static String TEACHER_COURSE_NAME = "teacher_course_";
+    
     public final static String ID = "_id";
+    
+    public final static String TEACHERID = "teacherId";
     
     public final static String CNO = "cNo";
     
@@ -54,10 +58,16 @@ public abstract class DBService<T> extends SQLiteOpenHelper
         
         String course_sql =
             "CREATE TABLE " + COURSE_NAME + sql + COURSEID + " INTEGER," + CNO + " text, " + CNAME + " text, " + TNO
-                + " text, " + TNAME + " text, " + CADDRESS + " text, " + CSTARTWEEK + " INTEGER, " + CENDWEEK
+                + " INTEGER, " + TNAME + " text, " + CADDRESS + " text, " + CSTARTWEEK + " INTEGER, " + CENDWEEK
                 + " INTEGER, " + CWEEKDAY + " INTEGER, " + COURSEINDEX + " INTEGER)";
         
+        // String teacher_course_sql =
+        // "CREATE TABLE " + TEACHER_COURSE_NAME + sql + TEACHERID + " INTEGER, " + CNAME + " text, " + CADDRESS
+        // + " text, " + CSTARTWEEK + " INTEGER, " + CENDWEEK + " INTEGER, " + CWEEKDAY + " INTEGER, "
+        // + COURSEINDEX + " INTEGER)";
+        
         db.execSQL(course_sql);
+        // db.execSQL(teacher_course_sql);
     }
     
     @Override
@@ -65,8 +75,9 @@ public abstract class DBService<T> extends SQLiteOpenHelper
     {
         // TODO Auto-generated method stub
         String course_sql = "DROP TABLE IF EXISTS " + COURSE_NAME;
-        
+        // String teacher_course_sql = "DROP TABLE IF EXISTS " + TEACHER_COURSE_NAME;
         db.execSQL(course_sql);
+        // db.execSQL(teacher_course_sql);
         
         onCreate(db);
     }

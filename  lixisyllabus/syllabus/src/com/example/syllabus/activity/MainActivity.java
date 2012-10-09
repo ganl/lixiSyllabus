@@ -103,6 +103,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private boolean isTurningToAnotherActivity = false;
     
+    private boolean isTeacher = false;
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -146,6 +148,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         
         myGestureListener = new MyGestureListener();
         gestureDetector = new GestureDetector(myGestureListener);
+        
+        isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
         
         initViews();
         
@@ -497,7 +501,14 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     private void loadDataFromDB()
     {
         CourseDao dao = new CourseDaoImpl(this);
-        oneWeekCourses = dao.getWeekCourse(weekOfSemister);
+        if (isTeacher)
+        {
+            oneWeekCourses = dao.getCourseByTeacherID(weekOfSemister, preferences.getInt("teacherID", 0));
+        }
+        else
+        {
+            oneWeekCourses = dao.getWeekCourse(weekOfSemister);
+        }
         for (int i = 0; i < 7; i++)
         {
             List<Course> oneDayCourses = oneWeekCourses.get(i);

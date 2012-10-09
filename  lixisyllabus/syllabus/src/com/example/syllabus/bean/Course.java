@@ -16,6 +16,8 @@ public class Course implements Serializable
     
     private String tName; // name of teacher
     
+    private int tNo; // teacherid
+    
     private String cAddress; // address
     
     private int cStartWeek;
@@ -155,6 +157,16 @@ public class Course implements Serializable
     public void setCourseid(int courseid)
     {
         this.courseid = courseid;
+    }
+    
+    public int gettNo()
+    {
+        return tNo;
+    }
+    
+    public void settNo(int tNo)
+    {
+        this.tNo = tNo;
     }
     
 }

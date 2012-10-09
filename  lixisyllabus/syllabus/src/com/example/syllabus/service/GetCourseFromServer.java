@@ -31,6 +31,8 @@ public class GetCourseFromServer extends Service
     
     private Handler handler;
     
+    private boolean missionCompleted;
+    
     @Override
     public void onCreate()
     {

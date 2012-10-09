@@ -82,6 +82,10 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         {
             cv.put(CADDRESS, t.getcAddress());
         }
+        if (0 != t.gettNo())
+        {
+            cv.put(TNO, t.gettNo());
+        }
         if (null != t.gettName())
         {
             cv.put(TNAME, t.gettName());
@@ -114,6 +118,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
             course.setCourseid(c.getInt(c.getColumnIndex(COURSEID)));
             course.setId(c.getLong(c.getColumnIndex(ID)));
             course.setcName(c.getString(c.getColumnIndex(CNAME)));
+            course.settNo(c.getInt(c.getColumnIndex(TNO)));
             course.settName(c.getString(c.getColumnIndex(TNAME)));
             course.setcAddress(c.getString(c.getColumnIndex(CADDRESS)));
             course.setcStartWeek(c.getInt(c.getColumnIndex(CSTARTWEEK)));
@@ -173,6 +178,34 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         String where = CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
         String[] whereArgs = {currentWeek + "", currentWeek + ""};
         Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        List<Course> courseList = buildList(c);
+        List<Course> oneDay = new ArrayList<Course>();
+        for (int i = 0; i < courseList.size(); i++)
+        {
+            oneDay.add(courseList.get(i));
+            if ((i + 1) == courseList.size() || courseList.get(i).getcWeekday() != courseList.get(i + 1).getcWeekday())
+            {
+                listOfWeek.set(courseList.get(i).getcWeekday() - 1, oneDay);// add(oneDay);
+                oneDay = new ArrayList<Course>();
+            }
+        }
+        c.close();
+        db.close();
+        return listOfWeek;
+    }
+    
+    public List<List<Course>> getCourseByTeacherID(int currentWeek, int teacherid)
+    {
+        db = this.getReadableDatabase();
+        List<List<Course>> listOfWeek = new ArrayList<List<Course>>();
+        for (int i = 0; i < 7; i++)
+        {
+            listOfWeek.add(new ArrayList<Course>());
+        }
+        String where = "TNO" + " = ?" + " and " + CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
+        String[] whereArgs = {Integer.toString(teacherid), currentWeek + "", currentWeek + ""};
+        Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        
         List<Course> courseList = buildList(c);
         List<Course> oneDay = new ArrayList<Course>();
         for (int i = 0; i < courseList.size(); i++)

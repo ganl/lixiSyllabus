@@ -18,7 +18,7 @@ import com.example.syllabus.db.CourseDaoImpl;
 
 public class CommonConstants
 {
-    public static final String AID = "27b4c4fd30fc5aac";
+    public static final String AID = "f84d8a4e18e013ab";
     
     public static final String IS_SETUP_ALREADY = "isSetUpAlready";
     

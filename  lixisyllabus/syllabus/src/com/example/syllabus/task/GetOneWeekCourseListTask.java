@@ -60,7 +60,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     new BasicNameValuePair(CommonConstants.STUDENT_INFORMATION[i], URLEncoder.encode(params[i]));// params[i]);
                 list.add(pair);
             }
-            // courses = new ArrayList<Course>();
+            courses = new ArrayList<Course>();
             try
             {
                 System.out.println(Urls.getStudentLoginUrl());
@@ -88,7 +88,6 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                             Toast.makeText(context, "服务器无您班级课程，请添加。", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    System.out.println("*********************************************************");
                 }
                 
                 if ("1".equals(result))
@@ -104,7 +103,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                         course.settName(URLDecoder.decode(course.gettName()));
                         course.setcAddress(URLDecoder.decode(course.getcAddress()));
                         
-                        // courses.add(course);
+                        courses.add(course);
                         CourseDao dao = new CourseDaoImpl(context);
                         dao.addCourse(course);
                     }
@@ -134,7 +133,7 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     new BasicNameValuePair(CommonConstants.TEACHER_INFORMATION[i], URLEncoder.encode(params[i]));// params[i]);
                 list.add(pair);
             }
-            // courses = new ArrayList<Course>();
+            courses = new ArrayList<Course>();
             try
             {
                 System.out.println(Urls.getTeacherLoginUrl());
@@ -143,7 +142,11 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                 
                 JSONObject obj = new JSONObject(s);
                 String result = obj.optString("result");
-                
+                int teacherID = obj.optInt("teacherID");
+                SharedPreferences preferences = CommonConstants.getMyPreferences(context);
+                Editor editor = preferences.edit();
+                editor.putInt("teacherID", teacherID);
+                editor.commit();
                 if ("1".equals(result))
                 {
                     JSONArray array = obj.optJSONArray("courses");
@@ -154,11 +157,23 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                         course.setcName(URLDecoder.decode(course.getcName()));
                         course.settName(URLDecoder.decode(course.gettName()));
                         course.setcAddress(URLDecoder.decode(course.getcAddress()));
+                        course.settNo(teacherID);
                         
                         courses.add(course);
                         CourseDao dao = new CourseDaoImpl(context);
                         dao.addCourse(course);
                     }
+                }
+                else
+                {
+                    ((Activity)context).runOnUiThread(new Runnable()
+                    {
+                        
+                        public void run()
+                        {
+                            Toast.makeText(context, "服务器无您的课程，请添加。", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
                 
             }
@@ -182,36 +197,17 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
     @Override
     protected void onPostExecute(List<Course> result)
     {
-        // List<ArrayList<Map<String, String>>> weekList = new ArrayList<ArrayList<Map<String, String>>>();
-        //
-        // if (result.isEmpty())
-        // {
-        // // ((OneWeekCourseListActivity)context).showDialog("服务器暂无您班级数据，请添加课程，为同学服务！");
-        // }
-        //
-        // for (int i = 1; i < 8; i++)
-        // {
-        // ArrayList<Map<String, String>> dayList = new ArrayList<Map<String, String>>();
-        // for (int j = 0; j < result.size(); j++)
-        // {
-        // if (i == result.get(j).getcWeekday())
-        // {
-        // dayList.add(result.get(j).beanToMap());
-        // // result.remove(j);
-        // }
-        // }
-        // weekList.add(dayList);
-        // }
-        // Editor editor = CommonConstants.getMyPreferences(context).edit();
-        // if (!isTeacher)
-        // {
-        // editor.putInt("classid", classid);
-        // editor.commit();
-        // Message message = Message.obtain();
-        // message.what = 1;
-        // message.obj = weekList;
-        // handler.sendMessage(message);
-        // }
+        if (!result.isEmpty() && !isTeacher)
+        {
+            // Message message = Message.obtain();
+            handler.sendEmptyMessage(1);
+        }
+        else if (!result.isEmpty())
+        {
+            // Message message = Message.obtain();
+            // message.what = 2;
+            handler.sendEmptyMessage(2);
+        }
         
         super.onPostExecute(result);
     }

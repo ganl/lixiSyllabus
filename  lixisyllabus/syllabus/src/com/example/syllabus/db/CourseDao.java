@@ -21,7 +21,9 @@ public interface CourseDao
     public List<Course> getDayCourse(int currentWeek, int weekNum);
     
     public List<List<Course>> getWeekCourse(int currentWeek);
-
+    
     public void updateCourseid(long id, int courseid);
+    
+    public List<List<Course>> getCourseByTeacherID(int currentWeek, int teacherid);
     
 }

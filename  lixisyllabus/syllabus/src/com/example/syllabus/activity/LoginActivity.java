@@ -1,10 +1,12 @@
 package com.example.syllabus.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
-import com.example.syllabus.service.GetCourseFromServer;
+import com.example.syllabus.task.GetOneWeekCourseListTask;
 import com.example.syllabus.utils.CommonConstants;
 
 /**
@@ -59,6 +61,10 @@ public class LoginActivity extends Activity implements OnClickListener
     
     private boolean isTeacher = false;
     
+    private ProgressDialog progressDialog;
+    
+    private Handler handler;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -69,6 +75,28 @@ public class LoginActivity extends Activity implements OnClickListener
         preferences = CommonConstants.getMyPreferences(this);
         
         initViews();
+        
+        handler = new Handler()
+        {
+            
+            public void handleMessage(android.os.Message msg)
+            {
+                Intent intent = null;
+                switch (msg.what)
+                {
+                    case 1:
+                    case 2:
+                        intent = new Intent(LoginActivity.this, SetUpActivity.class);
+                        startActivity(intent);
+                        LoginActivity.this.finish();
+                        progressDialog.cancel();
+                        break;
+                    
+                    default:
+                        break;
+                }
+            };
+        };
     }
     
     private void initViews()
@@ -112,7 +140,14 @@ public class LoginActivity extends Activity implements OnClickListener
             TextView tvDepartment = (TextView)findViewById(R.id.tvdeparment);
             tvDepartment.setText("姓名");
             etDepartmentName.setHint("请输入教师姓名");
+            
+            // for test
+            etDepartmentName.setText("潘地林");
+            etUniversityName.setText("安徽理工大学");
         }
+        
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("正在登录");
         
     }
     
@@ -161,12 +196,14 @@ public class LoginActivity extends Activity implements OnClickListener
                         editor.putBoolean(CommonConstants.LOGINED, true);
                         editor.commit();
                         
-                        intent = new Intent(this, GetCourseFromServer.class);
-                        startService(intent);
-                        
-                        intent = new Intent(this, SetUpActivity.class);
-                        startActivity(intent);
-                        this.finish();
+                        // intent = new Intent(this, GetCourseFromServer.class);
+                        // startService(intent);
+                        GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
+                        task.execute(universityName, departmentName, majorName, gradeNum, className);
+                        progressDialog.show();
+                        // intent = new Intent(this, SetUpActivity.class);
+                        // startActivity(intent);
+                        // this.finish();
                     }
                     else if (null == universityName || "".equals(universityName))
                     {
@@ -199,10 +236,16 @@ public class LoginActivity extends Activity implements OnClickListener
                         editor.putString(CommonConstants.TEACHER_NAME, departmentName);
                         
                         editor.commit();
+                        // intent = new Intent(this, GetCourseFromServer.class);
+                        // startService(intent);
                         
-                        intent = new Intent(this, SetUpActivity.class);
-                        startActivity(intent);
-                        this.finish();
+                        // teacherName = preferences.getString(CommonConstants.TEACHER_NAME, null);
+                        GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
+                        task.execute(universityName, departmentName);
+                        progressDialog.show();
+                        // intent = new Intent(this, SetUpActivity.class);
+                        // startActivity(intent);
+                        // this.finish();
                     }
                     else if (null == universityName || "".equals(universityName))
                     {
