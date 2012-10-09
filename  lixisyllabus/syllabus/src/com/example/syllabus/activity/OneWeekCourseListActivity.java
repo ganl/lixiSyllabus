@@ -20,6 +20,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import cn.appmedia.adshelf.AdshelfManager;
 import cn.appmedia.adshelf.ShelfView;
 
 import com.example.syllabus.R;
@@ -64,6 +65,10 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
     private ShelfView shelfView;
     
     private boolean isTeacher;
+    static
+    {
+        AdshelfManager.setAid(CommonConstants.AID);
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState)

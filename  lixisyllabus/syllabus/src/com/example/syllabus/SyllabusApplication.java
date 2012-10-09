@@ -59,10 +59,10 @@ public class SyllabusApplication extends Application
         System.exit(0);
     }
     
-    static
-    {
-        AdshelfManager.setAid(CommonConstants.AID);
-    }
+//    static
+//    {
+//        AdshelfManager.setAid(CommonConstants.AID);
+//    }
     
     @Override
     public void onCreate()
