@@ -85,6 +85,8 @@ public class LoginActivity extends Activity implements OnClickListener
                 switch (msg.what)
                 {
                     case 1:
+                        progressDialog.cancel();
+                        break;
                     case 2:
                         intent = new Intent(LoginActivity.this, SetUpActivity.class);
                         startActivity(intent);
