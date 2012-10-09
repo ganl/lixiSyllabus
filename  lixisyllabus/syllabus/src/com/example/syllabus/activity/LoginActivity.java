@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
+import com.example.syllabus.service.GetCourseFromServer;
 import com.example.syllabus.utils.CommonConstants;
 
 /**
@@ -159,6 +160,9 @@ public class LoginActivity extends Activity implements OnClickListener
                         editor.putString(CommonConstants.MAJOR_NAME, majorName);
                         editor.putBoolean(CommonConstants.LOGINED, true);
                         editor.commit();
+                        
+                        intent = new Intent(this, GetCourseFromServer.class);
+                        startService(intent);
                         
                         intent = new Intent(this, SetUpActivity.class);
                         startActivity(intent);

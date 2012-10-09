@@ -181,25 +181,14 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         btnAddCourse.setOnClickListener(this);
         
         Log.i("MainActivity", "in onCreate()");
-        
     }
     
     private void initData()
     {
-        // Map<String, Integer> data = (Map<String, Integer>)getLastNonConfigurationInstance();
         
         String str = CommonConstants.getCurrentDayOfWeek();
         
         Intent intent = getIntent();
-        
-        // if (null != data)
-        // {// if the user rotate the screen, the activity will be created again, so we need to restore what we were
-        // seeing
-        // // before
-        // dayOfWeek = data.get("dayOfWeek");
-        // weekOfSemister = data.get("weekOfSemister");
-        // str = CommonConstants.getStrFromWeekNum(dayOfWeek);
-        // }else
         
         Bundle extras = intent.getExtras();
         int appWidgetId = 0;
@@ -321,15 +310,6 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         super.onResume();
     }
     
-    // @Override
-    // public Object onRetainNonConfigurationInstance()
-    // {
-    // Map<String, Integer> data = new HashMap<String, Integer>();
-    // data.put("dayOfWeek", dayOfWeek);
-    // data.put("weekOfSemister", weekOfSemister);
-    // return data;
-    // }
-    
     @Override
     protected void onStop()
     {
@@ -344,16 +324,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         super.onPause();
     }
     
-    private void setFooterAndAdapterOfListView(List<Course> tempCourses, SimpleCourseAdapter adapter, ListView listView)
+    private void setAdapterOfListView(List<Course> tempCourses, SimpleCourseAdapter adapter, ListView listView)
     {
-        // FrameLayout flAddImage = (FrameLayout)inflater.inflate(R.layout.addimage, null);
-        // ivAddCourse = (ImageView)flAddImage.findViewById(R.id.addcourse);
-        // ivAddCourse.setOnClickListener(this);
-        // ivAddCourse.setOnTouchListener(this);
-        
         adapter = new SimpleCourseAdapter(this, tempCourses);
-        // listView.addFooterView(flAddImage);
-        // listView.setFooterDividersEnabled(true);
         
         listView.setAdapter(adapter);
         
@@ -371,7 +344,6 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // TODO Auto-generated method stub
         Intent intent = null;
         switch (item.getItemId())
         {
@@ -387,9 +359,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 break;
             case R.id.memu_exiting:
                 SyllabusApplication.getInstance().exitApplication();
-                // this.finish();
-                // System.runFinalizersOnExit(true);
-                // System.exit(0);
+                break;
             case R.id.menu_help:
                 /**
                  * need to be added in the future
@@ -512,11 +482,6 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         return dayOfWeek;
     }
     
-    // public void setDayOfWeek(int dayOfWeek)
-    // {
-    // this.dayOfWeek = dayOfWeek;
-    // }
-    
     public boolean onTouch(View v, MotionEvent event)
     {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
@@ -542,19 +507,12 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
             listView.setSelector(R.drawable.hide_listview_yellow_selector);
             SimpleCourseAdapter simpleCourseAdapter = new SimpleCourseAdapter(this, oneDayCourses);
             
-            setFooterAndAdapterOfListView(oneDayCourses, simpleCourseAdapter, listView);
+            setAdapterOfListView(oneDayCourses, simpleCourseAdapter, listView);
             
             viewFlipper.addView(frameLayout);
         }
         
     }
-    
-    // @Override
-    // public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-    // {
-    // // TODO Auto-generated method stub
-    // super.onCreateContextMenu(menu, v, menuInfo);
-    // }
     
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {

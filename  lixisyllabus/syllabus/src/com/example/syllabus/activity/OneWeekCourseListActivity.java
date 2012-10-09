@@ -232,7 +232,6 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
         {
             public void onClick(DialogInterface dialog, int which)
             {
-                // TODO Auto-generated method stub
                 Intent intent = new Intent(OneWeekCourseListActivity.this, MainActivity.class);
                 intent.putExtra("weekNum", 1);
                 intent.putExtra("weekOfSemister", 1);
