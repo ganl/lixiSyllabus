@@ -71,6 +71,11 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        <activity
+            android:name="cn.appmedia.ad.AdActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
 
         <service android:name=".service.PhoneStateService" />
         <service android:name=".service.AddCourseToServer" />
