@@ -11,6 +11,7 @@ import android.os.Vibrator;
 import android.util.Log;
 
 import com.example.syllabus.R;
+import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.bean.Course;
 import com.example.syllabus.bean.Teacher;
 import com.example.syllabus.db.CourseDao;
@@ -152,6 +153,8 @@ public class CommonConstants
     
     public static final String IS_ACCELEREMETER_SUPPORTED = "isAccelermeterSupported";
     
+    public static final String TEACHER_ID = "teacherID";
+    
     public static int defaultRingerMode;
     
     /**
@@ -256,7 +259,10 @@ public class CommonConstants
         int minute = Integer.parseInt(items[2]);
         
         CourseDao dao = new CourseDaoImpl(context);
-        List<Course> list = dao.getDayCourse(weekOfSemister, day);
+        List<Course> list =
+            dao.getDayCourse(weekOfSemister,
+                day,
+                CommonConstants.getMyPreferences(context).getBoolean(CommonConstants.IS_TEACHER, false));
         
         if (!list.isEmpty())
         {
