@@ -5,24 +5,66 @@ import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 
 import com.example.syllabus.bean.Course;
+import com.example.syllabus.utils.CommonConstants;
 
 public class CourseDaoImpl extends DBService<Course> implements CourseDao
 {
+    SharedPreferences preferences;
     
     public CourseDaoImpl(Context context)
     {
         super(context);
+        preferences = CommonConstants.getMyPreferences(context);
     }
     
-    public long addCourse(Course course)
+    public long addCourse(Course course, boolean isTeacher)
     {
         db = this.getWritableDatabase();
+        if (isTeacher)
+        {
+            course.settNo(preferences.getInt(CommonConstants.TEACHER_ID, 0));
+        }
+        if (isCourseExisted(course, isTeacher))
+        {
+            return 0;
+        }
         long id = db.insert(COURSE_NAME, null, deconstruct(course));
         db.close();
         return id;
+    }
+    
+    public boolean isCourseExisted(Course course, boolean isTeacher)
+    {
+        db = this.getReadableDatabase();
+        StringBuilder sb = new StringBuilder();
+        String where = COURSEID + " = ?";
+        String[] whereArgs = null;
+        sb.append(where);
+        if (isTeacher)
+        {
+            sb.append(" and " + TNO + " = ?");
+            whereArgs = new String[] {course.getCourseid() + "", course.gettNo() + ""};
+            
+        }
+        else
+        {
+            whereArgs = new String[] {course.getCourseid() + ""};
+        }
+        Cursor c = db.query(COURSE_NAME, null, sb.toString(), whereArgs, null, null, null);
+        if (null != c)
+        {
+            if (false == c.moveToFirst())
+            {
+                return false;
+            }
+            return true;
+        }
+        
+        return false;
     }
     
     public void deleteAllCourse()
@@ -52,10 +94,22 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         db.close();
     }
     
-    public List<Course> getAllCourse()
+    public List<Course> getAllCourse(boolean isTeacher)
     {
         db = this.getReadableDatabase();
-        Cursor c = db.query(COURSE_NAME, null, null, null, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        StringBuilder where = null;
+        String[] whereArgs = null;
+        Cursor c = null;
+        if (isTeacher)
+        {
+            where = new StringBuilder("tNo" + " = ?");
+            whereArgs = new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID, 0))};
+            c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        }
+        else
+        {
+            c = db.query(COURSE_NAME, null, null, null, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        }
         List<Course> courseList = buildList(c);
         c.close();
         db.close();
@@ -142,13 +196,25 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         db.close();
     }
     
-    public List<Course> getDayCourse(int currentWeek, int currentDay)
+    public List<Course> getDayCourse(int currentWeek, int currentDay, boolean isTeacher)
     {
         db = this.getReadableDatabase();
-        String where = CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?" + " and " + CWEEKDAY + " = ?";
-        String[] whereArgs = {currentWeek + "", currentWeek + "", currentDay + ""};
+        StringBuilder where = new StringBuilder();
+        String where2 = CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?" + " and " + CWEEKDAY + " = ?";
+        String[] whereArgs = null;
+        where.append(where2);
+        if (isTeacher)
+        {
+            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, 0);
+            where.append(" and " + TNO + " = ?");
+            whereArgs = new String[] {currentWeek + "", currentWeek + "", currentDay + "", teacherid + ""};
+        }
+        else
+        {
+            whereArgs = new String[] {currentWeek + "", currentWeek + "", currentDay + ""};
+        }
         
-        Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, COURSEINDEX);
+        Cursor c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, COURSEINDEX);
         List<Course> courseList = buildList(c);
         c.close();
         db.close();
@@ -167,7 +233,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         return course;
     }
     
-    public List<List<Course>> getWeekCourse(int currentWeek)
+    public List<List<Course>> getWeekCourse(int currentWeek, boolean isTeacher)
     {
         db = this.getReadableDatabase();
         List<List<Course>> listOfWeek = new ArrayList<List<Course>>();
@@ -175,9 +241,21 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         {
             listOfWeek.add(new ArrayList<Course>());
         }
-        String where = CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
-        String[] whereArgs = {currentWeek + "", currentWeek + ""};
-        Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+        StringBuilder where = new StringBuilder();
+        String[] whereArgs = null;
+        String where2 = CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
+        where.append(where2);
+        if (isTeacher)
+        {
+            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, 0);
+            where.append(" and " + TNO + " = ?");
+            whereArgs = new String[] {currentWeek + "", currentWeek + "", teacherid + ""};
+        }
+        else
+        {
+            whereArgs = new String[] {currentWeek + "", currentWeek + ""};
+        }
+        Cursor c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
         List<Course> courseList = buildList(c);
         List<Course> oneDay = new ArrayList<Course>();
         for (int i = 0; i < courseList.size(); i++)
@@ -221,4 +299,32 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         db.close();
         return listOfWeek;
     }
+    
+    // public List<List<Course>> getCourseByTeacherID(int currentWeek, int teacherid)
+    // {
+    // db = this.getReadableDatabase();
+    // List<List<Course>> listOfWeek = new ArrayList<List<Course>>();
+    // for (int i = 0; i < 7; i++)
+    // {
+    // listOfWeek.add(new ArrayList<Course>());
+    // }
+    // String where = "TNO" + " = ?" + " and " + CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
+    // String[] whereArgs = {Integer.toString(teacherid), currentWeek + "", currentWeek + ""};
+    // Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+    //
+    // List<Course> courseList = buildList(c);
+    // List<Course> oneDay = new ArrayList<Course>();
+    // for (int i = 0; i < courseList.size(); i++)
+    // {
+    // oneDay.add(courseList.get(i));
+    // if ((i + 1) == courseList.size() || courseList.get(i).getcWeekday() != courseList.get(i + 1).getcWeekday())
+    // {
+    // listOfWeek.set(courseList.get(i).getcWeekday() - 1, oneDay);// add(oneDay);
+    // oneDay = new ArrayList<Course>();
+    // }
+    // }
+    // c.close();
+    // db.close();
+    // return listOfWeek;
+    // }
 }
