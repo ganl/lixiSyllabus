@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/bcg"
+    android:orientation="vertical" >
+
+    <include layout="@layout/common_head" />
+
+    <RelativeLayout
+        android:id="@+id/rladd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/daycoursehead"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="同步课程到服务器"
+            android:textColor="@color/shalowyellow"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/checkall_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/weeknum"
+            android:layout_margin="5dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/checkbox" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/action_add"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/rlupdate"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/daycoursehead"
+        android:gravity="center_vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="同步修改到服务器"
+            android:textColor="@color/shalowyellow"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/checkall_update"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/weeknum"
+            android:layout_margin="5dp"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/checkbox" />
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/action_update"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" >
+    </ListView>
+
+</LinearLayout>

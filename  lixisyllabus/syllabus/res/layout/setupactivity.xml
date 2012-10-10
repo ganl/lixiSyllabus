@@ -400,7 +400,7 @@
                         android:textSize="18sp" />
                 </LinearLayout>
             </LinearLayout>
-
+
             <LinearLayout
                 android:id="@+id/llshield"
                 android:layout_width="wrap_content"
@@ -412,7 +412,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp" >
-
+
                 <TextView
                     android:id="@+id/shieldonoff"
                     android:layout_width="fill_parent"
@@ -422,7 +422,7 @@
                     android:text="打开上课期间来电屏蔽"
                     android:textColor="@color/white"
                     android:textSize="18sp" />
-
+
                 <ImageView
                     android:id="@+id/shield"
                     android:layout_width="wrap_content"
@@ -431,8 +431,28 @@
                     android:layout_marginLeft="10dp"
                     android:adjustViewBounds="true"
                     android:background="@drawable/checkbox" />
+            </LinearLayout>
 
-"
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:gravity="center_vertical|center_horizontal"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" >
+
+                <EditText
+                    android:id="@+id/smstext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/bcg_text_bk_bk"
+                    android:gravity="left"
+                    android:hint="我正在上课，请稍候联系。或者下课后等我给您回电话。"
+                    android:padding="3dp" />
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
