@@ -262,13 +262,12 @@ public class PhoneStateService extends Service
     {
         String[] projection =
             {ContactsContract.PhoneLookup.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
-        Cursor cursor = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, // Which
-                                                                                                                        // columns
-                                                                                                                        // to
-                                                                                                                        // return.
-            ContactsContract.CommonDataKinds.Phone.NUMBER + " = '" + incomingNumber + "'", // WHERE clause.
-            null, // WHERE clause value substitution
-            null); // Sort order.
+        Cursor cursor =
+            this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                projection,
+                ContactsContract.CommonDataKinds.Phone.NUMBER + " = '" + incomingNumber + "'",
+                null,
+                null);
         if (cursor == null || !cursor.moveToFirst())
         {
             return "";

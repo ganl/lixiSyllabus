@@ -62,30 +62,37 @@ public class DesktopWidgetProvider extends AppWidgetProvider
             remoteViews.setTextViewText(R.id.sixthcourseroom, "");
             for (Course course : list)
             {
+                StringBuilder courseName = new StringBuilder(course.getcName());
+                if (courseName.length() > 5)
+                {
+                    courseName = courseName.delete(5, courseName.length());
+                    courseName.append("...");
+                    
+                }
                 switch (course.getCourseIndex())
                 {
                     case 1:
-                        remoteViews.setTextViewText(R.id.firstcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.firstcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.firstcourseroom, course.getcAddress());
                         break;
                     case 2:
-                        remoteViews.setTextViewText(R.id.secondcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.secondcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.secondcourseroom, course.getcAddress());
                         break;
                     case 3:
-                        remoteViews.setTextViewText(R.id.thirdcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.thirdcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.thirdcourseroom, course.getcAddress());
                         break;
                     case 4:
-                        remoteViews.setTextViewText(R.id.fourthcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.fourthcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.fourthcourseroom, course.getcAddress());
                         break;
                     case 5:
-                        remoteViews.setTextViewText(R.id.fifthcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.fifthcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.fifthcourseroom, course.getcAddress());
                         break;
                     case 6:
-                        remoteViews.setTextViewText(R.id.sixthcoursename, course.getcName());
+                        remoteViews.setTextViewText(R.id.sixthcoursename, courseName.toString());
                         remoteViews.setTextViewText(R.id.sixthcourseroom, course.getcAddress());
                         break;
                     default:
@@ -109,21 +116,6 @@ public class DesktopWidgetProvider extends AppWidgetProvider
             
             remoteViews.setOnClickPendingIntent(R.id.dayofweek, pendingIntent);
             
-            // intent = new Intent();
-            // intent.setAction(ACTION_UPDATE_COURSE);
-            // if (dayOfWeek - 1 < 1)
-            // {
-            // dayOfWeek = 1;
-            // }
-            // dayOfWeek = dayOfWeek - 1 < 1 ? 1 : (dayOfWeek - 1);
-            // intent.putExtra("dayOfWeek", dayOfWeek);
-            //
-            // intent.putExtra("weekOfSemister", weekOfSemister);
-            // pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-            // remoteViews.setOnClickPendingIntent(R.id.turnleft, pendingIntent);
-            // AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-            // ComponentName provider = new ComponentName(context, DesktopWidgetProvider.class);
-            // appWidgetManager.updateAppWidget(provider, remoteViews);
             appWidgetManager.updateAppWidget(appWidgetId, remoteViews);
         }
         

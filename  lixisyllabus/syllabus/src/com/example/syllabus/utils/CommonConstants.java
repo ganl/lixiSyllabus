@@ -147,8 +147,8 @@ public class CommonConstants
         R.drawable.icon_wednesday, R.drawable.icon_thurday, R.drawable.icon_friday, R.drawable.icon_saturday,
         R.drawable.icon_sunday};
     
-    public final static int[] DAYOFWEEK_IMAGE = {R.drawable.icon_monday, R.drawable.icon_thurday,
-        R.drawable.icon_wednesday, R.drawable.icon_tuesday, R.drawable.icon_friday, R.drawable.icon_saturday,
+    public final static int[] DAYOFWEEK_IMAGE = {R.drawable.icon_monday, R.drawable.icon_tuesday,
+        R.drawable.icon_wednesday, R.drawable.icon_thurday, R.drawable.icon_friday, R.drawable.icon_saturday,
         R.drawable.icon_sunday};
     
     public static final String IS_ACCELEREMETER_SUPPORTED = "isAccelermeterSupported";
