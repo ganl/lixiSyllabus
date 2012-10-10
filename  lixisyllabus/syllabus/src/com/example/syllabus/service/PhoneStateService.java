@@ -291,7 +291,11 @@ public class PhoneStateService extends Service
                 case 1:
                     SmsManager manager = SmsManager.getDefault();
                     // PendingIntent intent1=PendingIntent.getBroadcast(MyShowActivity.this, 0, new Intent(), 0);
-                    manager.sendTextMessage(incomingNumber, null, "我正在上课，请稍候联系。或者下课后等我给您回电话。", null, null);
+                    manager.sendTextMessage(incomingNumber,
+                        null,
+                        share.getString(CommonConstants.SMS_TEXT, CommonConstants.DEFAULT_SMSTEXT),
+                        null,
+                        null);
                     Log.i("PhoneStateService", "message has been sent to " + incomingNumber);
                     notifyIncomingCallAndCallBack(PhoneStateService.this);
                     
