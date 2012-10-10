@@ -80,14 +80,14 @@ public class AddCourseToServer extends Service
         
         if (INSERT_COURSE_TO_SERVER == action)
         {
-            new SendCourseToServerTask(values).execute("");
+            new SendCourseToServerTask(values, this).execute("");
         }
         else
         {
             NameValuePair value = new BasicNameValuePair("courseid", course.getCourseid() + "");
             Log.i("AddCourseToServer", "courseid:" + course.getCourseid());
             values.add(value);
-            new UpdateCourseTask(values).execute("");
+            new UpdateCourseTask(values, this).execute("");
         }
         
         return super.onStartCommand(intent, flags, startId);
@@ -97,9 +97,12 @@ public class AddCourseToServer extends Service
     {
         private List<NameValuePair> pairs;
         
-        public SendCourseToServerTask(List<NameValuePair> values)
+        private Service service;
+        
+        public SendCourseToServerTask(List<NameValuePair> values, Service service)
         {
             this.pairs = values;
+            this.service = service;
         }
         
         @Override
@@ -141,7 +144,7 @@ public class AddCourseToServer extends Service
         protected void onPostExecute(String result)
         {
             // TODO Auto-generated method stub
-            AddCourseToServer.this.stopSelf();
+            service.stopSelf();
             super.onPostExecute(result);
         }
     }
@@ -150,9 +153,12 @@ public class AddCourseToServer extends Service
     {
         private List<NameValuePair> pairs;
         
-        public UpdateCourseTask(List<NameValuePair> values)
+        private Service service;
+        
+        public UpdateCourseTask(List<NameValuePair> values, Service service)
         {
             this.pairs = values;
+            this.service = service;
         }
         
         @Override
@@ -194,7 +200,7 @@ public class AddCourseToServer extends Service
         protected void onPostExecute(String result)
         {
             // TODO Auto-generated method stub
-            AddCourseToServer.this.stopSelf();
+            service.stopSelf();
             super.onPostExecute(result);
         }
         

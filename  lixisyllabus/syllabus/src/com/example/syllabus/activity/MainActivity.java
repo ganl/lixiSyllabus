@@ -99,7 +99,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private float last_x, last_y, last_z;
     
-    private static final int SHAKE_THRESHOLD = 800;
+    private static final int SHAKE_THRESHOLD = 850;
     
     private boolean isTurningToAnotherActivity = false;
     
