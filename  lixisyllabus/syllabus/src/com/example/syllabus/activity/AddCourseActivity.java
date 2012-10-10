@@ -348,16 +348,6 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                         
                         addCourseToServer(course, id, INSERT_COURSE_TO_SERVER);
                         
-                        // Intent intent = new Intent();
-                        // intent.putExtra("course", course);
-                        // intent.putExtra("action", INSERT_COURSE_TO_SERVER);
-                        // if (0 != id)
-                        // {
-                        // course.setId(id);
-                        // intent.setClass(this, AddCourseToServer.class);
-                        // // intent.putStringArrayListExtra(name, value)Extra("course", course);
-                        
-                        // }
                         if (null != secondCourse)
                         {
                             long secondid = dao.addCourse(secondCourse, isTeacher);
