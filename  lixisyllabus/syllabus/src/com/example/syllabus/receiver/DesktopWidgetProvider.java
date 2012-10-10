@@ -67,7 +67,6 @@ public class DesktopWidgetProvider extends AppWidgetProvider
                 {
                     courseName = courseName.delete(5, courseName.length());
                     courseName.append("...");
-                    
                 }
                 switch (course.getCourseIndex())
                 {
