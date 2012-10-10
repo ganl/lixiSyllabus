@@ -71,12 +71,13 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        <!--
         <activity
             android:name="cn.appmedia.adshelf.activity.ApkList"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
+        </activity>
+        -->
         <service android:name=".service.PhoneStateService" />
         <service android:name=".service.AddCourseToServer" />
         <service android:name="cn.appmedia.adshelf.download.DownLoadService" />
