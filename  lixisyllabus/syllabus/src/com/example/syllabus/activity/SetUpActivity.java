@@ -16,6 +16,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -117,6 +118,8 @@ public class SetUpActivity extends Activity implements OnClickListener
     
     private ImageView ivShieldChecked;
     
+    private EditText etSmsText;
+    
     private LinearLayout llShield;
     
     private Handler handler;
@@ -129,8 +132,6 @@ public class SetUpActivity extends Activity implements OnClickListener
         
         SyllabusApplication.getInstance().addActivity(this);
         preference = CommonConstants.getMyPreferences(this);
-        
-
         
         tvStartTimeList = new ArrayList<TextView>();
         tvEndTimeList = new ArrayList<TextView>();
@@ -273,6 +274,26 @@ public class SetUpActivity extends Activity implements OnClickListener
         llShield = (LinearLayout)findViewById(R.id.llshield);
         llShield.setOnClickListener(this);
         
+        etSmsText = (EditText)findViewById(R.id.smstext);
+        if (null == preference.getString(CommonConstants.SMS_TEXT, null)
+            || "".equals(preference.getString(CommonConstants.SMS_TEXT, null)))
+        {
+            etSmsText.setText((CommonConstants.DEFAULT_SMSTEXT));
+        }
+        else
+        {
+            etSmsText.setText(preference.getString(CommonConstants.SMS_TEXT, null));
+        }
+        if (null == ivShieldChecked.getTag())
+        {
+            etSmsText.setEnabled(false);
+            
+        }
+        else
+        {
+            etSmsText.setEnabled(true);
+        }
+        
     }
     
     private void initData()
@@ -299,6 +320,13 @@ public class SetUpActivity extends Activity implements OnClickListener
                 if (null != ivShieldChecked.getTag())
                 {
                     editor.putBoolean(CommonConstants.SHIELDED, true);
+                    if (null == etSmsText.getText() || "".equals(etSmsText.getText().toString()))
+                    {
+                        editor.putString(CommonConstants.SMS_TEXT, CommonConstants.DEFAULT_SMSTEXT);
+                        Log.i("SetUpActivity", "nothing is inputted");
+                    }
+                    Log.i("SetUpActivity", "something is there:" + etSmsText.getText().toString());
+                    editor.putString(CommonConstants.SMS_TEXT, etSmsText.getText().toString());
                 }
                 else
                 {
@@ -410,12 +438,14 @@ public class SetUpActivity extends Activity implements OnClickListener
                     tvShieldOnOff.setText("点击打开上课来电屏蔽");
                     ivShieldChecked.setImageResource(R.drawable.checkbox);
                     ivShieldChecked.setTag(null);
+                    etSmsText.setEnabled(false);
                 }
                 else
                 {
                     tvShieldOnOff.setText("点击关闭上课来电屏蔽");
                     ivShieldChecked.setImageResource(R.drawable.selected);// )
                     ivShieldChecked.setTag(SELECTED);
+                    etSmsText.setEnabled(true);
                 }
                 break;
             default:

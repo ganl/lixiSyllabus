@@ -33,7 +33,7 @@ public class AddCourseToServer extends Service
     
     private Course course;
     
-    private boolean isTeacher = false;
+    // private boolean isTeacher = false;
     
     public static final String[] FIELDS = {"cName", "tName", "cAddress", "cStartWeek", "cEndWeek", "cWeekday",
         "courseIndex"};
@@ -44,7 +44,7 @@ public class AddCourseToServer extends Service
         // TODO Auto-generated method stub
         super.onCreate();
         preferences = CommonConstants.getMyPreferences(this);
-        isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
+        // isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
     }
     
     @Override
@@ -171,7 +171,7 @@ public class AddCourseToServer extends Service
                 System.out.println(s);
                 JSONObject obj = new JSONObject(s);
                 int resultCode = obj.optInt("result");
-                if (1 == resultCode)
+                if (UPDATE_COURSE == resultCode)
                 {
                     System.out.println("updated");
                     // course.setCourseid(obj.optInt("courseid"));

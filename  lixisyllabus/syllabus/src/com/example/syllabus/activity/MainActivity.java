@@ -127,15 +127,15 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         }
         
         // if not logined already, turn around to the login activity
-        if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
-            && !preferences.getBoolean(CommonConstants.SKIPPED, false))
-        {
-            Intent intent = new Intent();
-            intent.setClass(this, LoginActivity.class);
-            startActivity(intent);
-            isTurningToAnotherActivity = true;
-            this.finish();
-        }
+//        if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
+//            && !preferences.getBoolean(CommonConstants.SKIPPED, false))
+//        {
+//            Intent intent = new Intent();
+//            intent.setClass(this, LoginActivity.class);
+//            startActivity(intent);
+//            isTurningToAnotherActivity = true;
+//            this.finish();
+//        }
         
         if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.IS_SETUP_ALREADY, false))
         {

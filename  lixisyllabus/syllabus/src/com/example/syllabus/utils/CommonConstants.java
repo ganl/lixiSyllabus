@@ -27,6 +27,10 @@ public class CommonConstants
     
     public static final String SKIPPED = "skipped";
     
+    public static final String SMS_TEXT = "SMSText";
+    
+    public static final String DEFAULT_SMSTEXT = "我正在上课，请稍候联系。或者下课后等我给您回电话。";
+    
     public static final String SHOW_WELCOME = "showWelcome";
     
     public static final String CLASSID = "classid";
