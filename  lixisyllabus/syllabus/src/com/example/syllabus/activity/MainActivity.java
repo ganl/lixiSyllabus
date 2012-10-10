@@ -46,10 +46,12 @@ import com.example.syllabus.bean.Course;
 import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.HttpConnect;
 
 public class MainActivity extends Activity implements OnClickListener, OnTouchListener, OnItemLongClickListener,
     SensorEventListener, OnLongClickListener
 {
+    public static final String ACTION_ADD_COURSE = "add";
     
     private TextView tvLeft; // 左键
     
@@ -127,15 +129,15 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         }
         
         // if not logined already, turn around to the login activity
-//        if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
-//            && !preferences.getBoolean(CommonConstants.SKIPPED, false))
-//        {
-//            Intent intent = new Intent();
-//            intent.setClass(this, LoginActivity.class);
-//            startActivity(intent);
-//            isTurningToAnotherActivity = true;
-//            this.finish();
-//        }
+        // if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
+        // && !preferences.getBoolean(CommonConstants.SKIPPED, false))
+        // {
+        // Intent intent = new Intent();
+        // intent.setClass(this, LoginActivity.class);
+        // startActivity(intent);
+        // isTurningToAnotherActivity = true;
+        // this.finish();
+        // }
         
         if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.IS_SETUP_ALREADY, false))
         {
@@ -349,15 +351,35 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         Intent intent = null;
         switch (item.getItemId())
         {
+        
             case R.id.menu_settings:
-                // intent = new Intent(this, SetUpActivity.class);
-                // intent.putExtra("fromMainActivity", true);
-                // startActivity(intent);
+                /**
+                 * for test
+                 */
+//                intent = new Intent(this, UpLoadedActivity.class);
+//                // intent.putExtra("fromMainActivity", true);
+//                startActivity(intent);
+                //***************************************************************
+                if (!preferences.getBoolean(CommonConstants.LOGINED, false) && HttpConnect.isNetworkHolding(this))
+                {
+                    intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                }
+                else if (HttpConnect.isNetworkHolding(this))
+                {
+                    intent = new Intent(this, UpLoadedActivity.class);
+                    // intent.putExtra("fromMainActivity", true);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(this, "您的网络没有打开，同步前请先打开网络", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.menu_login:
                 intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
-                this.finish();
+                // this.finish();
                 break;
             case R.id.memu_exiting:
                 SyllabusApplication.getInstance().exitApplication();
@@ -501,7 +523,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         CourseDao dao = new CourseDaoImpl(this);
         if (isTeacher)
         {
-            oneWeekCourses = dao.getCourseByTeacherID(weekOfSemister, preferences.getInt("teacherID", 0));
+            oneWeekCourses =
+                dao.getCourseByTeacherID(weekOfSemister,
+                    preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID));
         }
         else
         {
@@ -656,7 +680,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                                 Intent intent = new Intent();
                                 intent.setClass(MainActivity.this, AddCourseActivity.class);
                                 List<Course> list = oneWeekCourses.get(dayOfWeek - 1);
-                                intent.putExtra("courseid", list.get(pos).getId());
+                                intent.putExtra("id", list.get(pos).getId());
+                                intent.putExtra(ACTION_ADD_COURSE, false);
                                 startActivity(intent);
                                 dialog.dismiss();
                                 

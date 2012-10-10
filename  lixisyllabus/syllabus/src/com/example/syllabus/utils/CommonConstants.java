@@ -23,6 +23,12 @@ public class CommonConstants
     
     public static final String IS_SETUP_ALREADY = "isSetUpAlready";
     
+    public static final int UNDO_ACTION_ADD = 1;
+    
+    public static final int UNDO_ACTION_UPDATE = 2;
+    
+    public static final String COURSE_ID = "courseid";// get it from server
+    
     public static final String IS_TEACHER = "isTeacher";
     
     public static final String SKIPPED = "skipped";
@@ -158,6 +164,8 @@ public class CommonConstants
     public static final String IS_ACCELEREMETER_SUPPORTED = "isAccelermeterSupported";
     
     public static final String TEACHER_ID = "teacherID";
+    
+    public static final int DEFAULT_TEACHER_ID = -1;
     
     public static int defaultRingerMode;
     

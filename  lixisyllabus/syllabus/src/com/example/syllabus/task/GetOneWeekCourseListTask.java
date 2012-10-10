@@ -30,7 +30,9 @@ import com.example.syllabus.utils.Urls;
 public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Course>>
 {
     
-    private static final String RESULT_OK_NO_COURSES = "2";
+    private static final String RESULT_USER_NO_COURSES = "0";
+    
+    private static final String RESULT_NO_USER = "2";
     
     private static final String RESULT_OK = "1";
     
@@ -42,16 +44,19 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
     
     private boolean isTeacher;
     
+    private SharedPreferences preferences;
+    
     public GetOneWeekCourseListTask(Context context, Handler handler)
     {
         this.context = context;
         this.handler = handler;
+        preferences = CommonConstants.getMyPreferences(context);
     }
     
     @Override
     protected List<Course> doInBackground(String... params)
     {
-        List<Course> courses = null;
+        // List<Course> courses = null;
         if (5 == params.length)
         {
             isTeacher = false;
@@ -62,69 +67,65 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     new BasicNameValuePair(CommonConstants.STUDENT_INFORMATION[i], URLEncoder.encode(params[i]));// params[i]);
                 list.add(pair);
             }
-            courses = new ArrayList<Course>();
+            // courses = new ArrayList<Course>();
             try
             {
                 System.out.println(Urls.getStudentLoginUrl());
                 String s = HttpConnect.postHttpString(Urls.getStudentLoginUrl(), list);
                 System.out.println(s);
-                
-                // String s =
-                // "{'result':'OK','courseInformation':[{'cAddress':'381','tName':'潘地林','cName':'数据结构','cStartWeek':2,'id':2,'courseIndex':1,'cWeekday':1,'cEndWeek':8},{'cAddress':'','tName':'','cName':'呵呵发发','cStartWeek':2,'id':4,'courseIndex':1,'cWeekday':1,'cEndWeek':8},{'cAddress':'好好干','tName':'不vv他','cName':'就好好干','cStartWeek':2,'id':9,'courseIndex':1,'cWeekday':1,'cEndWeek':8},{'cAddress':'108','tName':'潘地林','cName':'操作系统','cStartWeek':2,'id':11,'courseIndex':5,'cWeekday':1,'cEndWeek':8},{'cAddress':'301','tName':'露露','cName':'离散数学','cStartWeek':2,'id':13,'courseIndex':1,'cWeekday':2,'cEndWeek':8},{'cAddress':'355','tName':'刘级','cName':'实变函数','cStartWeek':2,'id':15,'courseIndex':3,'cWeekday':2,'cEndWeek':8},{'cAddress':'355','tName':'刘级','cName':'实变函数','cStartWeek':2,'id':14,'courseIndex':1,'cWeekday':3,'cEndWeek':8},{'cAddress':'301','tName':'露露','cName':'离散数学','cStartWeek':2,'id':12,'courseIndex':1,'cWeekday':4,'cEndWeek':8},{'cAddress':'381','tName':'潘地林','cName':'数据结构','cStartWeek':2,'id':1,'courseIndex':1,'cWeekday':5,'cEndWeek':8},{'cAddress':'好家伙','tName':'换个','cName':'呵呵发发','cStartWeek':2,'id':3,'courseIndex':1,'cWeekday':5,'cEndWeek':8},{'cAddress':'个好好干','tName':'骨灰盒','cName':'广告费不','cStartWeek':2,'id':5,'courseIndex':1,'cWeekday':5,'cEndWeek':8},{'cAddress':'刚刚给','tName':'广告费','cName':'好好干','cStartWeek':1,'id':6,'courseIndex':1,'cWeekday':5,'cEndWeek':8},{'cAddress':'好好干','tName':'不vv他','cName':'就好好干','cStartWeek':2,'id':8,'courseIndex':1,'cWeekday':5,'cEndWeek':8},{'cAddress':'过过瘾','tName':'更好','cName':'雍和宫','cStartWeek':2,'id':7,'courseIndex':2,'cWeekday':5,'cEndWeek':8},{'cAddress':'108','tName':'潘地林','cName':'操作系统','cStartWeek':2,'id':10,'courseIndex':2,'cWeekday':5,'cEndWeek':8},{'cAddress':'503','tName':'刘科学','cName':'图像处理','cStartWeek':2,'id':16,'courseIndex':1,'cWeekday':6,'cEndWeek':8},{'cAddress':'503','tName':'刘科学','cName':'图像处理','cStartWeek':2,'id':17,'courseIndex':1,'cWeekday':7,'cEndWeek':8}]}";
-                
-                JSONObject obj = new JSONObject(s);
-                String result = obj.optString("result");
-                
-                classid = obj.optInt(CommonConstants.CLASSID);
-                SharedPreferences preferences = CommonConstants.getMyPreferences(context);
-                Editor editor = preferences.edit();
-                editor.putInt(CommonConstants.CLASSID, classid);
-                editor.commit();
-                if (RESULT_OK_NO_COURSES.equals(result) || "0".equals(result))
+                if (!"".equals(s) && null != s)
                 {
-                    ((Activity)context).runOnUiThread(new Runnable()
+                    JSONObject obj = new JSONObject(s);
+                    String result = obj.optString("result");
+                    
+                    classid = obj.optInt(CommonConstants.CLASSID);
+                    
+                    Editor editor = preferences.edit();
+                    editor.putInt(CommonConstants.CLASSID, classid);
+                    editor.putBoolean(CommonConstants.LOGINED, true);
+                    editor.commit();
+                    
+                    if (RESULT_USER_NO_COURSES.equals(result))
                     {
-                        public void run()
-                        {
-                            handler.sendEmptyMessage(1);
-                            Toast.makeText(context, "服务器无您班级课程，请添加。", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-                
-                if (RESULT_OK.equals(result))
-                {
-                    JSONArray array = obj.optJSONArray("courses");
-                    Log.i("GetOneWeekCoursesActivity", "classid " + classid);
-                    for (int i = 0; i < array.length(); i++)
+                        showToastOnUiThread("服务器无您班级课程，请为班级造福，添加课程之服务器吧。");
+                        handler.sendEmptyMessageDelayed(2, 2000);
+                    }
+                    else if (RESULT_NO_USER.equals(result))
                     {
-                        JSONObject inforOfCourse = array.getJSONObject(i);
-                        Course course = new Course(inforOfCourse);
-                        course.setcName(URLDecoder.decode(course.getcName()));
-                        course.settName(URLDecoder.decode(course.gettName()));
-                        course.setcAddress(URLDecoder.decode(course.getcAddress()));
-                        
-                        courses.add(course);
-                        CourseDao dao = new CourseDaoImpl(context);
-                        dao.addCourse(course, false);
+                        showToastOnUiThread("你是你们班第一个登录的同学，请为班级造福，添加课程之服务器吧。");
+                        handler.sendEmptyMessageDelayed(2, 2000);
                     }
                     
-                    handler.sendEmptyMessage(2);
+                    if (RESULT_OK.equals(result))
+                    {
+                        JSONArray array = obj.optJSONArray("courses");
+                        Log.i("GetOneWeekCoursesActivity", "classid " + classid);
+                        for (int i = 0; i < array.length(); i++)
+                        {
+                            JSONObject inforOfCourse = array.getJSONObject(i);
+                            Course course = new Course(inforOfCourse);
+                            course.setcName(URLDecoder.decode(course.getcName()));
+                            course.settName(URLDecoder.decode(course.gettName()));
+                            course.setcAddress(URLDecoder.decode(course.getcAddress()));
+                            
+                            // courses.add(course);
+                            CourseDao dao = new CourseDaoImpl(context);
+                            dao.addCourse(course, isTeacher);
+                        }
+                        
+                        handler.sendEmptyMessage(2);
+                    }
                 }
-                
+                else
+                {
+                    // editor.putBoolean(CommonConstants.LOGINED, false);
+                    showToastOnUiThread("服务器正在维护，请稍候再试");
+                }
             }
             catch (Exception e)
             {
                 e.printStackTrace();
-                ((Activity)context).runOnUiThread(new Runnable()
-                {
-                    
-                    public void run()
-                    {
-                        handler.sendEmptyMessage(1);
-                        Toast.makeText(context, "网络出现问题，请稍候重试", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                showToastOnUiThread("网络出现问题，请稍候重试");
             }
         }
         else
@@ -137,76 +138,72 @@ public class GetOneWeekCourseListTask extends AsyncTask<String, String, List<Cou
                     new BasicNameValuePair(CommonConstants.TEACHER_INFORMATION[i], URLEncoder.encode(params[i]));// params[i]);
                 list.add(pair);
             }
-            courses = new ArrayList<Course>();
+            // courses = new ArrayList<Course>();
             try
             {
                 System.out.println(Urls.getTeacherLoginUrl());
                 String s = HttpConnect.postHttpString(Urls.getTeacherLoginUrl(), list);
                 System.out.println(s);
-                
-                JSONObject obj = new JSONObject(s);
-                String result = obj.optString("result");
-                int teacherID = obj.optInt("teacherID");
-                SharedPreferences preferences = CommonConstants.getMyPreferences(context);
-                Editor editor = preferences.edit();
-                editor.putInt(CommonConstants.TEACHER_ID, teacherID);
-                editor.commit();
-                if (RESULT_OK.equals(result))
+                if (!"".equals(s) && null != s)
                 {
-                    JSONArray array = obj.optJSONArray("courses");
-                    for (int i = 0; i < array.length(); i++)
-                    {
-                        JSONObject json = array.getJSONObject(i);
-                        Course course = new Course(json);
-                        course.setcName(URLDecoder.decode(course.getcName()));
-                        course.settName(URLDecoder.decode(course.gettName()));
-                        course.setcAddress(URLDecoder.decode(course.getcAddress()));
-                        course.settNo(teacherID);
-                        
-                        courses.add(course);
-                        CourseDao dao = new CourseDaoImpl(context);
-                        dao.addCourse(course, true);
-                    }
+                    JSONObject obj = new JSONObject(s);
+                    String result = obj.optString("result");
+                    int teacherID = obj.optInt("teacherID");
                     
-                    handler.sendEmptyMessage(2);
-                }
-                else
-                {
-                    ((Activity)context).runOnUiThread(new Runnable()
+                    Editor editor = preferences.edit();
+                    editor.putInt(CommonConstants.TEACHER_ID, teacherID);
+                    editor.putBoolean(CommonConstants.LOGINED, true);
+                    editor.commit();
+                    
+                    if (RESULT_OK.equals(result))
                     {
-                        
-                        public void run()
+                        JSONArray array = obj.optJSONArray("courses");
+                        for (int i = 0; i < array.length(); i++)
                         {
-                            handler.sendEmptyMessage(1);
-                            Toast.makeText(context, "服务器无您的课程，请添加。", Toast.LENGTH_SHORT).show();
+                            JSONObject json = array.getJSONObject(i);
+                            Course course = new Course(json);
+                            course.setcName(URLDecoder.decode(course.getcName()));
+                            course.settName(URLDecoder.decode(course.gettName()));
+                            course.setcAddress(URLDecoder.decode(course.getcAddress()));
+                            course.settNo(teacherID);
+                            
+                            // courses.add(course);
+                            CourseDao dao = new CourseDaoImpl(context);
+                            dao.addCourse(course, isTeacher);
                         }
-                    });
+                        
+                        handler.sendEmptyMessage(2);
+                    }
+                    else if (RESULT_NO_USER.equals(result))
+                    {
+                        showToastOnUiThread("未查询到您的课程，请添加。");
+                    }
                 }
                 
             }
             catch (Exception e)
             {
                 e.printStackTrace();
-                ((Activity)context).runOnUiThread(new Runnable()
-                {
-                    
-                    public void run()
-                    {
-                        handler.sendEmptyMessage(1);
-                        Toast.makeText(context, "网络出现问题，请稍候重试", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                showToastOnUiThread("网络出现问题，请稍候重试");
             }
         }
         
-        return courses;
+        return null;
     }
     
-    @Override
-    protected void onPostExecute(List<Course> result)
+    /**
+     * 
+     */
+    private void showToastOnUiThread(final String message)
     {
-        
-        super.onPostExecute(result);
+        ((Activity)context).runOnUiThread(new Runnable()
+        {
+            public void run()
+            {
+                handler.sendEmptyMessage(1);
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     
 }

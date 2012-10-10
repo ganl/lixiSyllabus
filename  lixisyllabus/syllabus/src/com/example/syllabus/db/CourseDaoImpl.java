@@ -21,12 +21,16 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         preferences = CommonConstants.getMyPreferences(context);
     }
     
+    /**
+     * 添加课程到数据库中，如果数据库中已有该数据，则只更新该数据courseid到数据库中 如果是教师插入数据，则自动将数据的TNO与TNAME带入，如果没有登录过，则写入-1与""
+     */
     public long addCourse(Course course, boolean isTeacher)
     {
         db = this.getWritableDatabase();
         if (isTeacher)
         {
-            course.settNo(preferences.getInt(CommonConstants.TEACHER_ID, 0));
+            course.settNo(preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID));
+            course.settName(preferences.getString(CommonConstants.TEACHER_NAME, ""));
         }
         long existingid = isCourseExisted(course, isTeacher);
         if (0 != existingid)
@@ -40,41 +44,45 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         return id;
     }
     
+    /**
+     * 判断课程是否存在与数据库中，返回0表示不存在，存在则返回该课程id
+     * 
+     * @param course
+     * @param isTeacher
+     * @return
+     */
     public long isCourseExisted(Course course, boolean isTeacher)
     {
-        db = this.getReadableDatabase();
-        StringBuilder sb = new StringBuilder();
-        String where =
+        // db = this.getReadableDatabase();
+        StringBuilder where = new StringBuilder();
+        String where2 =
             CNAME + " = ?" + " and " + TNAME + " = ? " + " and " + CADDRESS + " = ?" + " and " + CSTARTWEEK + " = ?"
                 + " and " + CENDWEEK + " = ?" + " and " + CWEEKDAY + " = ?" + " and " + COURSEINDEX + " = ?";
         String[] whereArgs =
             new String[] {course.getcName(), course.gettName(), course.getcAddress(), course.getcStartWeek() + "",
                 course.getcEndWeek() + "", course.getcWeekday() + "", course.getCourseIndex() + ""};
-        sb.append(where);
+        where.append(where2);
         if (isTeacher)
         {
-            sb.append(" and " + TNO + " = ?");
+            // 如果教师未登录，那么其添加的课程的TNO = 0,之后再登录，将已存在的课程的TNO更新为非空值。
+            where.append(" and (" + TNO + " = ?" + " or " + TNO + " = -1)");
             whereArgs =
                 new String[] {course.getcName(), course.gettName(), course.getcAddress(), course.getcStartWeek() + "",
                     course.getcEndWeek() + "", course.getcWeekday() + "", course.getCourseIndex() + "",
                     course.gettNo() + ""};
             
         }
-        else
+        // else
+        // {
+        // whereArgs = new String[] {course.getCourseid() + ""};
+        // }
+        Cursor c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, null);
+        if (c.moveToFirst())
         {
-            whereArgs = new String[] {course.getCourseid() + ""};
-        }
-        Cursor c = db.query(COURSE_NAME, null, sb.toString(), whereArgs, null, null, null);
-        if (null != c)
-        {
-            if (false == c.moveToFirst())
-            {
-                return 0;
-            }
             Course course2 = build(c);
+            c.close();
             return course2.getId();
         }
-        
         return 0;
     }
     
@@ -114,7 +122,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         if (isTeacher)
         {
             where = new StringBuilder("tNo" + " = ?");
-            whereArgs = new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID, 0))};
+            whereArgs = new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID))};
             c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
         }
         else
@@ -216,7 +224,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         where.append(where2);
         if (isTeacher)
         {
-            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, 0);
+            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID);
             where.append(" and " + TNO + " = ?");
             whereArgs = new String[] {currentWeek + "", currentWeek + "", currentDay + "", teacherid + ""};
         }
@@ -258,7 +266,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         where.append(where2);
         if (isTeacher)
         {
-            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, 0);
+            int teacherid = preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID);
             where.append(" and " + TNO + " = ?");
             whereArgs = new String[] {currentWeek + "", currentWeek + "", teacherid + ""};
         }

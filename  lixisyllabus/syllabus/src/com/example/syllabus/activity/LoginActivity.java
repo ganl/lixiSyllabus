@@ -195,7 +195,7 @@ public class LoginActivity extends Activity implements OnClickListener
                         editor.putString(CommonConstants.GRADE_NUM, gradeNum);
                         editor.putString(CommonConstants.CLASS_NAME, className);
                         editor.putString(CommonConstants.MAJOR_NAME, majorName);
-                        editor.putBoolean(CommonConstants.LOGINED, true);
+                        // editor.putBoolean(CommonConstants.LOGINED, true);
                         editor.commit();
                         
                         // intent = new Intent(this, GetCourseFromServer.class);
@@ -238,16 +238,10 @@ public class LoginActivity extends Activity implements OnClickListener
                         editor.putString(CommonConstants.TEACHER_NAME, departmentName);
                         
                         editor.commit();
-                        // intent = new Intent(this, GetCourseFromServer.class);
-                        // startService(intent);
                         
-                        // teacherName = preferences.getString(CommonConstants.TEACHER_NAME, null);
                         GetOneWeekCourseListTask task = new GetOneWeekCourseListTask(this, handler);
                         task.execute(universityName, departmentName);
                         progressDialog.show();
-                        // intent = new Intent(this, SetUpActivity.class);
-                        // startActivity(intent);
-                        // this.finish();
                     }
                     else if (null == universityName || "".equals(universityName))
                     {

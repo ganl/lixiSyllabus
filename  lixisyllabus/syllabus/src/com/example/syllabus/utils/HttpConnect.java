@@ -1,5 +1,6 @@
 package com.example.syllabus.utils;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,6 +20,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.util.EntityUtils;
+
+import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.util.Log;
 
 /**
@@ -293,4 +298,13 @@ public class HttpConnect
         return s;
     }
     
+    public static boolean isNetworkHolding(Context context)
+    {
+        ConnectivityManager con = (ConnectivityManager)context.getSystemService(Activity.CONNECTIVITY_SERVICE);
+        
+        boolean wifi = con.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
+        
+        boolean internet = con.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnected();
+        return (wifi || internet);
+    }
 }

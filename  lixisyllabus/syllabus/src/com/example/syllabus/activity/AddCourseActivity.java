@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,8 +21,11 @@ import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.bean.Course;
 import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
+import com.example.syllabus.db.UnUploadedCourseDao;
+import com.example.syllabus.db.UnUploadedCourseDaoImpl;
 import com.example.syllabus.service.AddCourseToServer;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.HttpConnect;
 
 /**
  * A class for adding, modifying course. You can add two course at once and you can change course whatever you want.
@@ -92,9 +96,17 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
     
     private Course secondCourse;
     
-    private Long courseID;
+    private Long idOfLocalCourse;
+    
+    private SharedPreferences preferences;
     
     private boolean isTeacher;
+    
+    private boolean isLogined;
+    
+    private boolean isNetworkOn;
+    
+    private boolean isAdd;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -104,17 +116,23 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         
         SyllabusApplication.getInstance().addActivity(this);
         
-        isTeacher = CommonConstants.getMyPreferences(this).getBoolean(CommonConstants.IS_TEACHER, false);
+        preferences = CommonConstants.getMyPreferences(this);
+        
+        isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
+        
+        isLogined = preferences.getBoolean(CommonConstants.LOGINED, false);
+        
+        isNetworkOn = HttpConnect.isNetworkHolding(this);
         
         Intent intent = getIntent();
         
-        courseID = intent.getLongExtra("courseid", -1); // detect whehter to add or modify the course
-        
-        if (-1 != courseID)
+        // detect whether to add or modify the course
+        isAdd = intent.getBooleanExtra(MainActivity.ACTION_ADD_COURSE, true);
+        if (!isAdd)
         {
-            // if the courseID is not default value, the intent is to modify the specific course
+            idOfLocalCourse = intent.getLongExtra("courseid", -1);
             CourseDao dao = new CourseDaoImpl(this);
-            course = dao.getCourseById(courseID);
+            course = dao.getCourseById(idOfLocalCourse);
             
             dayOfWeek = course.getcWeekday();
             courseIndex = course.getCourseIndex();
@@ -164,7 +182,7 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         tvSecondCourseIndex.setOnClickListener(this);
         
         StringBuilder sb;
-        if (-1 == courseID)
+        if (isAdd)
         {
             sb = new StringBuilder(tvStartWeek.getText().toString());
             sb.append("2");
@@ -203,7 +221,7 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         }
         
         tvIsTwo = (TextView)findViewById(R.id.istwo);
-        if (-1 == courseID)
+        if (isAdd)
         {
             tvIsTwo.setVisibility(View.VISIBLE);
         }
@@ -318,37 +336,42 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                         secondCourse.setCourseIndex(secondCourseIndex);
                     }
                     CourseDao dao = new CourseDaoImpl(this);
-                    
-                    if (-1 == courseID)
+                    UnUploadedCourseDao unDao = new UnUploadedCourseDaoImpl(this);
+                    if (isAdd)
                     {
+                        
+                        // 将课程添加入未同步列表，如果同步成功，则从列表中删除
+                        
                         long id = dao.addCourse(course, isTeacher);
-                        Intent intent = new Intent();
-                        intent.putExtra("course", course);
-                        intent.putExtra("action", INSERT_COURSE_TO_SERVER);
-                        if (0 != id)
-                        {
-                            course.setId(id);
-                            intent.setClass(this, AddCourseToServer.class);
-                            // intent.putStringArrayListExtra(name, value)Extra("course", course);
-                            startService(intent);
-                        }
+                        
+                        unDao.addCourseToUn(id, CommonConstants.UNDO_ACTION_ADD);
+                        
+                        addCourseToServer(course, id, INSERT_COURSE_TO_SERVER);
+                        
+                        // Intent intent = new Intent();
+                        // intent.putExtra("course", course);
+                        // intent.putExtra("action", INSERT_COURSE_TO_SERVER);
+                        // if (0 != id)
+                        // {
+                        // course.setId(id);
+                        // intent.setClass(this, AddCourseToServer.class);
+                        // // intent.putStringArrayListExtra(name, value)Extra("course", course);
+                        
+                        // }
                         if (null != secondCourse)
                         {
-                            if (0 != dao.addCourse(secondCourse, isTeacher))
-                            {
-                                intent.putExtra("course", secondCourse);
-                                startService(intent);
-                            }
+                            long secondid = dao.addCourse(secondCourse, isTeacher);
+                            unDao.addCourseToUn(secondid, CommonConstants.UNDO_ACTION_ADD);
+                            addCourseToServer(secondCourse, secondid, INSERT_COURSE_TO_SERVER);
                         }
                     }
                     else
                     {
                         dao.updateCourse(course);
-                        Intent intent = new Intent();
-                        intent.setClass(this, AddCourseToServer.class);
-                        intent.putExtra("action", UPDATE_COURSE);
-                        intent.putExtra("course", course);
-                        startService(intent);// )
+                        unDao.addCourseToUn(idOfLocalCourse, CommonConstants.UNDO_ACTION_UPDATE);
+                        // 将修改课程添加入为同步列表，如果同步陈宫，从列表中删除
+                        
+                        addCourseToServer(course, idOfLocalCourse, UPDATE_COURSE);
                     }
                     ((SyllabusApplication)getApplication()).isDataHasBeenMotifyed = true;
                     this.finish();
@@ -438,6 +461,26 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                 }
             default:
                 break;
+        }
+    }
+    
+    /**
+     * @param id
+     */
+    private void addCourseToServer(Course course, long id, int ACTION)
+    {
+        if (isLogined && isNetworkOn && 0 != id)
+        {
+            Intent intent = new Intent();
+            course.setId(id);
+            intent.putExtra("course", course);
+            intent.putExtra("action", ACTION);
+            intent.setClass(this, AddCourseToServer.class);
+            startService(intent);
+        }
+        else if (id == 0)
+        {
+            Toast.makeText(this, "此课程已存在，请勿重复添加同一课程", Toast.LENGTH_SHORT).show();
         }
     }
     

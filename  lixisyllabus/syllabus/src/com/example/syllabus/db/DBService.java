@@ -17,7 +17,11 @@ public abstract class DBService<T> extends SQLiteOpenHelper
     
     public final static String COURSE_NAME = "course";
     
-    public final static String TEACHER_COURSE_NAME = "teacher_course_";
+    public final static String UNUPLOADED_NAME = "unuploaded_db";
+    
+    public final static String UNUPLOADED_COURSE_ID = "courseId";
+    
+    public final static String ACTION_UNDO = "action";
     
     public final static String ID = "_id";
     
@@ -66,8 +70,11 @@ public abstract class DBService<T> extends SQLiteOpenHelper
         // + " text, " + CSTARTWEEK + " INTEGER, " + CENDWEEK + " INTEGER, " + CWEEKDAY + " INTEGER, "
         // + COURSEINDEX + " INTEGER)";
         
+        String unuploaded_sql =
+            "CREATE TABLE " + UNUPLOADED_NAME + sql + UNUPLOADED_COURSE_ID + " INTEGER, " + ACTION_UNDO + " INTEGER)";
+        
         db.execSQL(course_sql);
-        // db.execSQL(teacher_course_sql);
+        db.execSQL(unuploaded_sql);
     }
     
     @Override
@@ -75,9 +82,9 @@ public abstract class DBService<T> extends SQLiteOpenHelper
     {
         // TODO Auto-generated method stub
         String course_sql = "DROP TABLE IF EXISTS " + COURSE_NAME;
-        // String teacher_course_sql = "DROP TABLE IF EXISTS " + TEACHER_COURSE_NAME;
+        String unuploaded_sql = "DROP TABLE IF EXISTS " + UNUPLOADED_NAME;
         db.execSQL(course_sql);
-        // db.execSQL(teacher_course_sql);
+        db.execSQL(unuploaded_sql);
         
         onCreate(db);
     }
