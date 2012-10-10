@@ -130,7 +130,7 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         isAdd = intent.getBooleanExtra(MainActivity.ACTION_ADD_COURSE, true);
         if (!isAdd)
         {
-            idOfLocalCourse = intent.getLongExtra("courseid", -1);
+            idOfLocalCourse = intent.getLongExtra("id", -1);
             CourseDao dao = new CourseDaoImpl(this);
             course = dao.getCourseById(idOfLocalCourse);
             
