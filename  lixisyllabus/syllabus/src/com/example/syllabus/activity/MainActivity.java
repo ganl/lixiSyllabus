@@ -356,10 +356,10 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 /**
                  * for test
                  */
-//                intent = new Intent(this, UpLoadedActivity.class);
-//                // intent.putExtra("fromMainActivity", true);
-//                startActivity(intent);
-                //***************************************************************
+                // intent = new Intent(this, UpLoadedActivity.class);
+                // // intent.putExtra("fromMainActivity", true);
+                // startActivity(intent);
+                // ***************************************************************
                 if (!preferences.getBoolean(CommonConstants.LOGINED, false) && HttpConnect.isNetworkHolding(this))
                 {
                     intent = new Intent(this, LoginActivity.class);
