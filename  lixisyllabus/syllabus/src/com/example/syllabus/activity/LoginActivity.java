@@ -160,18 +160,17 @@ public class LoginActivity extends Activity implements OnClickListener
         {
             case R.id.tvLeft:
                 intent = new Intent();
-                // intent.setClass(this, MainActivity.class);
-                // startActivity(intent);
-                Log.i("LoginActivity", "tiaoguo ");
-                // this.finish();
+                intent.setClass(this, WelcomeActivity.class);
+                startActivity(intent);
+                this.finish();
                 break;
             case R.id.tvRightT:
                 intent = new Intent();
-                intent.setClass(this, SetUpActivity.class);
+                intent.setClass(this, MainActivity.class);
                 // intent.putExtra("skipped", true);
-                Editor editor2 = preferences.edit();
-                editor2.putBoolean(CommonConstants.SKIPPED, true);
-                editor2.commit();
+                // Editor editor2 = preferences.edit();
+                // editor2.putBoolean(CommonConstants.SKIPPED, true);
+                // editor2.commit();
                 Log.i("LoginActivity", "tiaoguo ");
                 startActivity(intent);
                 this.finish();
