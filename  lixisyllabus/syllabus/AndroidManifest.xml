@@ -72,7 +72,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
         <activity
-            android:name="cn.appmedia.ad.AdActivity"
+            android:name="cn.appmedia.adshelf.activity.ApkList"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
