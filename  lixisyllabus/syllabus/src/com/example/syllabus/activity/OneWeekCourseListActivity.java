@@ -31,6 +31,7 @@ import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
 import com.example.syllabus.task.GetOneWeekCourseListTask;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.LogUtil;
 
 /**
  * 一周课表全面展示，用ExpandableListView二级展示
@@ -40,6 +41,7 @@ import com.example.syllabus.utils.CommonConstants;
  */
 public class OneWeekCourseListActivity extends ExpandableListActivity implements OnClickListener
 {
+    private static final String LOGTAG = LogUtil.makeLogTag(OneWeekCourseListActivity.class);
     private TextView tvLeft;
     
     private TextView tvTitle;

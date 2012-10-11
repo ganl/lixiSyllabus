@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -118,7 +117,6 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_activity);
         preferences = CommonConstants.getMyPreferences(this);
@@ -130,15 +128,6 @@ public class UpLoadedActivity extends Activity implements OnClickListener
         {
             public void handleMessage(android.os.Message msg)
             {
-                switch (msg.what)
-                {
-                    case 1:
-                        
-                        break;
-                    
-                    default:
-                        break;
-                }
             }
         };
         executorService = Executors.newSingleThreadExecutor(); // single thread exector
@@ -151,7 +140,6 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     
     private void initViews()
     {
-        // TODO Auto-generated method stub
         tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvTitle.setText("Í¬²½");
         
@@ -221,7 +209,6 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     
     public void onClick(View arg0)
     {
-        // TODO Auto-generated method stub
         switch (arg0.getId())
         {
             case R.id.rladd:

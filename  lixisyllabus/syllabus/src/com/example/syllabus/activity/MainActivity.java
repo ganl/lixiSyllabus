@@ -47,10 +47,12 @@ import com.example.syllabus.db.CourseDao;
 import com.example.syllabus.db.CourseDaoImpl;
 import com.example.syllabus.utils.CommonConstants;
 import com.example.syllabus.utils.HttpConnect;
+import com.example.syllabus.utils.LogUtil;
 
 public class MainActivity extends Activity implements OnClickListener, OnTouchListener, OnItemLongClickListener,
     SensorEventListener, OnLongClickListener
 {
+    private static final String LOGTAG = LogUtil.makeLogTag(MainActivity.class);
     public static final String ACTION_ADD_COURSE = "add";
     
     private TextView tvLeft; // ×ó¼ü
@@ -181,7 +183,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         btnAddCourse = (Button)findViewById(R.id.addcourse);
         btnAddCourse.setOnClickListener(this);
         
-        Log.i("MainActivity", "in onCreate()");
+        Log.i(LOGTAG, "in onCreate()");
     }
     
     private void initData()
@@ -196,14 +198,14 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         if (null != extras)
         {
             appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-            Log.i("MainActivity", appWidgetId + "appWidgetId");
+            Log.i(LOGTAG, appWidgetId + "appWidgetId");
         }
         // if it is not from AppWidget and is not first created
         if (0 == appWidgetId && -1 != intent.getIntExtra("dayOfWeek", -1))
         {
-            Log.i("MainActivity", "before intent, dayOfWeek is " + dayOfWeek);
+            Log.i(LOGTAG, "before intent, dayOfWeek is " + dayOfWeek);
             dayOfWeek = intent.getIntExtra("dayOfWeek", -1);
-            Log.i("MainActivity", "from widget intent, dayOfWeek is " + dayOfWeek);
+            Log.i(LOGTAG, "from widget intent, dayOfWeek is " + dayOfWeek);
             weekOfSemister = preferences.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
             str = CommonConstants.getStrFromWeekNum(dayOfWeek);
         }
@@ -474,7 +476,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 if (dayOfWeek < tomorrow(dayOfWeek)) // previous day
                 {
                     dayOfWeek = tomorrow(dayOfWeek);
-                    Log.i("MainActivity", "dayOfWeek :" + dayOfWeek);
+                    Log.i(LOGTAG, "dayOfWeek :" + dayOfWeek);
                     MainActivity.this.viewFlipper.showNext();
                     handler.sendEmptyMessage(2);
                 }
@@ -482,7 +484,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 {
                     // previous week
                     dayOfWeek = tomorrow(dayOfWeek);
-                    Log.i("MainActivity", "dayOfWeek :" + dayOfWeek);
+                    Log.i(LOGTAG, "dayOfWeek :" + dayOfWeek);
                     weekOfSemister = weekOfSemister + 1;
                     if (weekOfSemister > 20)
                     {
@@ -545,7 +547,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
         pos = position;
-        Log.i("MainActivity", "onItemLongClick triggered");
+        Log.i(LOGTAG, "onItemLongClick triggered");
         return false;
     }
     
@@ -593,7 +595,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 if (e1.getX() - e2.getX() > distance)
                 {
                     // Fling left
-                    Log.v("MainActivity", "onFling Invoked + ");
+                    Log.v(LOGTAG, "onFling Invoked + ");
                     MainActivity.this.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(MainActivity.this,
                         R.anim.push_left_in));
                     MainActivity.this.viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(MainActivity.this,
@@ -601,7 +603,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                     if (dayOfWeek < tomorrow(dayOfWeek)) // previous day
                     {
                         dayOfWeek = tomorrow(dayOfWeek);
-                        Log.i("MainActivity", "dayOfWeek :" + dayOfWeek);
+                        Log.i(LOGTAG, "dayOfWeek :" + dayOfWeek);
                         MainActivity.this.viewFlipper.showNext();
                         handler.sendEmptyMessage(2);
                     }
@@ -609,7 +611,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                     {
                         // previous week
                         dayOfWeek = tomorrow(dayOfWeek);
-                        Log.i("MainActivity", "dayOfWeek :" + dayOfWeek);
+                        Log.i(LOGTAG, "dayOfWeek :" + dayOfWeek);
                         weekOfSemister = weekOfSemister + 1;
                         if (weekOfSemister > 20)
                         {
@@ -622,7 +624,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 else if (e2.getX() - e1.getX() > distance)
                 {
                     // Fling right
-                    Log.v("MainActivity", "onFling Invoked - ");
+                    Log.v(LOGTAG, "onFling Invoked - ");
                     MainActivity.this.viewFlipper.setInAnimation(AnimationUtils.loadAnimation(MainActivity.this,
                         R.anim.push_right_in));
                     MainActivity.this.viewFlipper.setOutAnimation(AnimationUtils.loadAnimation(MainActivity.this,
@@ -653,7 +655,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         
         public void onLongPress(MotionEvent e)
         {
-            Log.v("MainActivity", "onLongPress triggered");
+            Log.v(LOGTAG, "onLongPress triggered");
             Runnable r = new Runnable()
             {
                 public void run()
@@ -734,7 +736,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                         dialog = builder.create();
                         
                         dialog.show();
-                        Log.v("MainActivity", "onItemLongTouch ---");
+                        Log.v(LOGTAG, "onItemLongTouch ---");
                     }
                 }
             };
@@ -785,7 +787,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 {
                     // yes, this is a shake action! Do something about it!
                     dayOfWeek = CommonConstants.getWeekNumFromStr(CommonConstants.getCurrentDayOfWeek());
-                    Log.i("MainActivity", "dayOfWeek == " + dayOfWeek);
+                    Log.i(LOGTAG, "dayOfWeek == " + dayOfWeek);
                     if (weekOfSemister == (preferences.getInt(CommonConstants.WEEKOFSEMISTER,
                         CommonConstants.DEFAULT_WEEKOFSEMISTER)))
                     {
@@ -801,7 +803,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                         tvTitle.setText(CommonConstants.getStrFromWeekNum(dayOfWeek));
                         Toast.makeText(this, "µÚ" + weekOfSemister + "ÖÜ¿Î±í", Toast.LENGTH_SHORT).show();
                     }
-                    Log.i("MainActivity", "weekOfSemister = " + weekOfSemister);
+                    Log.i(LOGTAG, "weekOfSemister = " + weekOfSemister);
                 }
                 last_x = x;
                 last_y = y;

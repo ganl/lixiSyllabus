@@ -19,6 +19,7 @@ import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.task.GetOneWeekCourseListTask;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.LogUtil;
 
 /**
  * 登陆界面，可以跳过，跳过之后就不能下在课表
@@ -28,6 +29,7 @@ import com.example.syllabus.utils.CommonConstants;
  */
 public class LoginActivity extends Activity implements OnClickListener
 {
+    private static final String LOGTAG = LogUtil.makeLogTag(LoginActivity.class);
     
     private EditText etDepartmentName; // 学院名
     
@@ -171,7 +173,7 @@ public class LoginActivity extends Activity implements OnClickListener
                 // Editor editor2 = preferences.edit();
                 // editor2.putBoolean(CommonConstants.SKIPPED, true);
                 // editor2.commit();
-                Log.i("LoginActivity", "tiaoguo ");
+                Log.i(LOGTAG, "tiaoguo ");
                 startActivity(intent);
                 this.finish();
                 break;

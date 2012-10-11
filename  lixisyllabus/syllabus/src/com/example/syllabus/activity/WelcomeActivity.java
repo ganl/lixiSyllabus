@@ -55,12 +55,11 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
     
     private ImageView ivDownload;
     
-    private boolean isStudent;
+    // private boolean isStudent;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome);
         
@@ -71,11 +70,6 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
             new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
         for (int i = 0; i < pics.length; i++)
         {
-            // ImageView iv = new ImageView(this);
-            // iv.setLayoutParams(params);
-            // iv.setImageResource(pics[i]);
-            // iv.setScaleType(ScaleType.FIT_XY);
-            // views.add(iv);
             RelativeLayout rl = null;
             
             if (i == pics.length - 1)
@@ -116,13 +110,11 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
     
     public void onPageScrollStateChanged(int arg0)
     {
-        // TODO Auto-generated method stub
         Log.i("WelcomeActivity", "arg0 in onPageScrollStateChanged:" + arg0);
     }
     
     public void onPageScrolled(int arg0, float arg1, int arg2)
     {
-        
     }
     
     public void onPageSelected(int arg0)
@@ -137,12 +129,11 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
         
         SharedPreferences preferences = CommonConstants.getMyPreferences(this);
         Editor editor = preferences.edit();
-        // TODO Auto-generated method stub
         switch (arg0.getId())
         {
             case R.id.studentimage:
                 ivStudent.setBackgroundResource(R.drawable.student_selected);
-                isStudent = true;
+                // isStudent = true;
                 editor.putBoolean(CommonConstants.IS_TEACHER, false);
                 editor.commit();
                 ((SyllabusApplication)getApplication()).setTeacher(false);
@@ -151,7 +142,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 break;
             case R.id.teacherimage:
                 ivTeacher.setBackgroundResource(R.drawable.teacher_selected);
-                isStudent = false;
+                // isStudent = false;
                 editor.putBoolean(CommonConstants.IS_TEACHER, true);
                 editor.commit();
                 ((SyllabusApplication)getApplication()).setTeacher(true);

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.LogUtil;
 
 /**
  * 设置学期第几周，和上课下课时间，还有屏蔽电话开关
@@ -35,7 +36,7 @@ import com.example.syllabus.utils.CommonConstants;
  */
 public class SetUpActivity extends Activity implements OnClickListener
 {
-    
+    private static final String LOGTAG = LogUtil.makeLogTag(OneWeekCourseListActivity.class);
     private static final String SELECTED = "selected";
     
     private static final int SET_END_TIME = 1;
@@ -323,9 +324,9 @@ public class SetUpActivity extends Activity implements OnClickListener
                     if (null == etSmsText.getText() || "".equals(etSmsText.getText().toString()))
                     {
                         editor.putString(CommonConstants.SMS_TEXT, CommonConstants.DEFAULT_SMSTEXT);
-                        Log.i("SetUpActivity", "nothing is inputted");
+                        Log.i(LOGTAG, "nothing is inputted");
                     }
-                    Log.i("SetUpActivity", "something is there:" + etSmsText.getText().toString());
+                    Log.i(LOGTAG, "something is there:" + etSmsText.getText().toString());
                     editor.putString(CommonConstants.SMS_TEXT, etSmsText.getText().toString());
                 }
                 else
@@ -372,9 +373,9 @@ public class SetUpActivity extends Activity implements OnClickListener
                 
                 break;
             case R.id.firstclass:
-                Log.i("SetUpActivity", "first class activated: firstclass");
+                Log.i(LOGTAG, "first class activated: firstclass");
             case R.id.firstclassstart:
-                Log.i("SetUpActivity", "first class activated: firstclassstart");
+                Log.i(LOGTAG, "first class activated: firstclassstart");
                 courseIndex = 1;
                 showTimePickerDialog(courseIndex, SET_START_TIME);
                 break;
@@ -524,7 +525,7 @@ public class SetUpActivity extends Activity implements OnClickListener
             switch (msg.what)
             {
                 case SET_END_TIME:
-                    Log.i("SetUpActivity", "message received : set end time");
+                    Log.i(LOGTAG, "message received : set end time");
                     courseIndex = msg.arg1;
                     callBack = new MyTimePickerListener(courseIndex, false);
                     time =
@@ -532,13 +533,13 @@ public class SetUpActivity extends Activity implements OnClickListener
                             CommonConstants.ENDTIME[courseIndex - 1]).split(":");
                     hourOfDay = Integer.parseInt(time[0]);
                     minute = Integer.parseInt(time[1]);
-                    Log.i("SetUpActivity", "hour of Day is " + hourOfDay + ", and minute is " + minute);
+                    Log.i(LOGTAG, "hour of Day is " + hourOfDay + ", and minute is " + minute);
                     dialog = new TimePickerDialog(SetUpActivity.this, callBack, hourOfDay, minute, true);
                     dialog.setTitle("请设置课程结束时间");
                     dialog.show();
                     break;
                 case SET_START_TIME:
-                    Log.i("SetUpActivity", "message received : set end time");
+                    Log.i(LOGTAG, "message received : set end time");
                     courseIndex = msg.arg1;
                     callBack = new MyTimePickerListener(courseIndex, true);
                     time =
@@ -546,7 +547,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                             CommonConstants.STARTTIME[courseIndex - 1]).split(":");
                     hourOfDay = Integer.parseInt(time[0]);
                     minute = Integer.parseInt(time[1]);
-                    Log.i("SetUpActivity", "hour of Day is " + hourOfDay + ", and minute is " + minute);
+                    Log.i(LOGTAG, "hour of Day is " + hourOfDay + ", and minute is " + minute);
                     dialog = new TimePickerDialog(SetUpActivity.this, callBack, hourOfDay, minute, true);
                     dialog.setTitle("请设置课程开始时间");
                     dialog.show();

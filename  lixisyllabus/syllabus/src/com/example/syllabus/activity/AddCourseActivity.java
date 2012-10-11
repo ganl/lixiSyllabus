@@ -26,6 +26,7 @@ import com.example.syllabus.db.UnUploadedCourseDaoImpl;
 import com.example.syllabus.service.AddCourseToServer;
 import com.example.syllabus.utils.CommonConstants;
 import com.example.syllabus.utils.HttpConnect;
+import com.example.syllabus.utils.LogUtil;
 
 /**
  * A class for adding, modifying course. You can add two course at once and you can change course whatever you want.
@@ -35,6 +36,9 @@ import com.example.syllabus.utils.HttpConnect;
  */
 public class AddCourseActivity extends Activity implements OnClickListener, OnLongClickListener
 {
+    
+    private static final String LOGTAG = LogUtil.makeLogTag(AddCourseActivity.class);
+    
     private static final int UPDATE_COURSE = 1;
     
     private static final int INSERT_COURSE_TO_SERVER = 0;
@@ -497,17 +501,16 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
         public void onClick(DialogInterface dialog, int which)
         {
             int index = tv.getText().toString().indexOf("£º");
-            Log.i("AddCourseActivity", "index of :" + index);
-            Log.i("AddCourseActivity", "text of tv is " + tv.getText().toString());
+            Log.i(LOGTAG, "index of :" + index);
+            Log.i(LOGTAG, "text of tv is " + tv.getText().toString());
             String subString = tv.getText().toString().substring(0, index + 1);
-            Log.i("AddCourseActivity", "subString of textview is " + subString);
+            Log.i(LOGTAG, "subString of textview is " + subString);
             tv.setText(subString + items[which]);
         }
     }
     
     public boolean onLongClick(View arg0)
     {
-        // TODO Auto-generated method stub
         switch (arg0.getId())
         {
             case R.id.tvTitle:
@@ -518,7 +521,6 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                     
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        // TODO Auto-generated method stub
                         dayOfWeek = which + 1;
                         tvTitle.setText(CommonConstants.getStrFromWeekNum(dayOfWeek) + "µÚ" + courseIndex + "½Ú¿Î");
                     }
