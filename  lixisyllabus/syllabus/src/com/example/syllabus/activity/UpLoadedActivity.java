@@ -3,6 +3,9 @@ package com.example.syllabus.activity;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -21,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.syllabus.R;
 import com.example.syllabus.adapter.UpLoadCourseAdapter;
@@ -31,6 +35,7 @@ import com.example.syllabus.db.UnUploadedCourseDao;
 import com.example.syllabus.db.UnUploadedCourseDaoImpl;
 import com.example.syllabus.utils.CommonConstants;
 import com.example.syllabus.utils.HttpConnect;
+import com.example.syllabus.utils.LogUtil;
 import com.example.syllabus.utils.Urls;
 
 /**
@@ -41,6 +46,8 @@ import com.example.syllabus.utils.Urls;
  */
 public class UpLoadedActivity extends Activity implements OnClickListener
 {
+    private static final String LOGTAG = LogUtil.makeLogTag(UpLoadedActivity.class);
+    
     private TextView tvTitle;
     
     private TextView tvLeft;
@@ -59,7 +66,7 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     
     private List<Boolean> course_add_selected;
     
-    private List<Course> courses_update;
+    private List<Course> courses_Update;
     
     private List<Boolean> course_update_selected;
     
@@ -85,6 +92,28 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     private Handler handler;
     
     private ProgressDialog pd;
+    
+    private ExecutorService executorService; // executorService can accept tasks
+    
+    private TaskTracker taskTracker; // track the task num in the executor
+    
+    private TaskSubmitter taskSubmitter;
+    
+    private List<Runnable> taskList;
+    
+    private Future<?> futureTask;
+    
+    private boolean running = false;
+    
+    public TaskTracker getTaskTracker()
+    {
+        return taskTracker;
+    }
+    
+    public void setTaskTracker(TaskTracker taskTracker)
+    {
+        this.taskTracker = taskTracker;
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -112,7 +141,11 @@ public class UpLoadedActivity extends Activity implements OnClickListener
                 }
             }
         };
-        
+        executorService = Executors.newSingleThreadExecutor(); // single thread exector
+        // setExecutorService(Executors.newSingleThreadExecutor()); // single thread exector
+        taskTracker = new TaskTracker(this);
+        taskSubmitter = new TaskSubmitter(this);
+        taskList = new ArrayList<Runnable>();
         pd = new ProgressDialog(this);
     }
     
@@ -152,7 +185,7 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     {
         UnUploadedCourseDao unDao = new UnUploadedCourseDaoImpl(this);
         courses_Add = unDao.getAllActionAddCourses();
-        courses_update = unDao.getAllActionUpdateCourses();
+        courses_Update = unDao.getAllActionUpdateCourses();
         
         course_add_selected = new ArrayList<Boolean>();
         if (!courses_Add.isEmpty())
@@ -164,19 +197,25 @@ public class UpLoadedActivity extends Activity implements OnClickListener
         }
         
         course_update_selected = new ArrayList<Boolean>();
-        if (!courses_update.isEmpty())
+        if (!courses_Update.isEmpty())
         {
-            for (int i = 0; i < courses_update.size(); i++)
+            for (int i = 0; i < courses_Update.size(); i++)
             {
                 course_update_selected.add(false);
             }
         }
         
         adapterForAdd = new UpLoadCourseAdapter(courses_Add, course_add_selected, this);
-        adapterForUpdate = new UpLoadCourseAdapter(courses_update, course_update_selected, this);
+        adapterForUpdate = new UpLoadCourseAdapter(courses_Update, course_update_selected, this);
         
         lvListAdd.setAdapter(adapterForAdd);
         lvListUpdate.setAdapter(adapterForUpdate);
+        
+        adapterForAdd.notifyDataSetChanged();
+        adapterForUpdate.notifyDataSetChanged();
+        
+        ivCheckAll_Add.setImageResource(R.drawable.checkbox);
+        ivCheckAll_Update.setImageResource(R.drawable.checkbox);
         
     }
     
@@ -240,6 +279,7 @@ public class UpLoadedActivity extends Activity implements OnClickListener
                 pd.show();
                 
                 // 上传数据方法不对，不能开启这么多线程
+                // 方法已修改，使用单线程池。
                 for (int i = 0; i < course_add_selected.size(); i++)
                 {
                     if (course_add_selected.get(i))
@@ -248,7 +288,9 @@ public class UpLoadedActivity extends Activity implements OnClickListener
                         List<NameValuePair> values = configureValues(course);
                         
                         // handler.sendEmptyMessage(1);
-                        new SendCourseToServerTask(values, course).execute("");
+                        addTask(new SendCourseToServerTask(values, course));
+                        // new SendCourseToServerTask(values, course).execute("");
+                        runTask();
                     }
                 }
                 
@@ -256,16 +298,46 @@ public class UpLoadedActivity extends Activity implements OnClickListener
                 {
                     if (course_update_selected.get(i))
                     {
-                        Course course = courses_Add.get(i);
+                        Course course = courses_Update.get(i);
                         List<NameValuePair> values = configureValues(course);
                         
                         // handler.sendEmptyMessage(2);
-                        new UpdateCourseTask(values, course).execute("");
+                        addTask(new UpdateCourseTask(values, course));
+                        // new UpdateCourseTask(values, course).execute("");
+                        runTask();
                     }
                 }
                 
+                // 尝试停止线程，如果里面有任务未完成，不执行关闭，一直到执行完才关闭，下此操作不阻塞，所以需要查询
+                executorService.shutdown();
+                handler.post(new Runnable()
+                {
+                    public void run()
+                    {
+                        if (executorService.isTerminated())
+                        {
+                            pd.dismiss();
+                            initData();
+                            Toast.makeText(UpLoadedActivity.this, "同步完成！您的课表已是最新", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            handler.postDelayed(this, 1000);
+                        }
+                    }
+                });
+                if (executorService.isTerminated())
+                {
+                    pd.dismiss();
+                }
+                else
+                {
+                    Log.i(LOGTAG, "task is not finishing");
+                }
                 // 消失的时机不对
-                pd.dismiss();
+                // pd.setTitle("课程同步中,请稍候...");
+                // pd.show();
+                Log.i(LOGTAG, "taskList size :" + taskList.size());
                 break;
             case R.id.tvLeft:
                 this.finish();
@@ -301,7 +373,17 @@ public class UpLoadedActivity extends Activity implements OnClickListener
         return values;
     }
     
-    public class SendCourseToServerTask extends AsyncTask<String, String, String>
+    public ExecutorService getExecutorService()
+    {
+        return executorService;
+    }
+    
+    public void setExecutorService(ExecutorService executorService)
+    {
+        this.executorService = executorService;
+    }
+    
+    public class SendCourseToServerTask implements Runnable
     {
         private List<NameValuePair> pairs;
         
@@ -315,8 +397,7 @@ public class UpLoadedActivity extends Activity implements OnClickListener
             // this.service = service;
         }
         
-        @Override
-        protected String doInBackground(String... params)
+        public void run()
         {
             try
             {
@@ -349,13 +430,11 @@ public class UpLoadedActivity extends Activity implements OnClickListener
             {
                 e.printStackTrace();
             }
-            
-            return null;
         }
         
     }
     
-    public class UpdateCourseTask extends AsyncTask<String, String, String>
+    public class UpdateCourseTask implements Runnable
     {
         private List<NameValuePair> pairs;
         
@@ -367,11 +446,11 @@ public class UpLoadedActivity extends Activity implements OnClickListener
             this.course = course;
         }
         
-        @Override
-        protected String doInBackground(String... arg0)
+        public void run()
         {
             try
             {
+                System.out.println(Urls.getUpdateCourse());
                 String s = HttpConnect.postHttpString(Urls.getUpdateCourse(), pairs);
                 System.out.println(s);
                 if (null != s && !"".equals(s))
@@ -386,7 +465,16 @@ public class UpLoadedActivity extends Activity implements OnClickListener
                         // 将课程从为同步列表中删除
                         UnUploadedCourseDao unDao = new UnUploadedCourseDaoImpl(UpLoadedActivity.this);
                         unDao.deleteCourse(course.getId(), CommonConstants.UNDO_ACTION_UPDATE);
-                        
+                    }
+                    else if (INSERT_COURSE_TO_SERVER == resultCode)
+                    {
+                        System.out.println("added");
+                        int courseid = obj.optInt("courseid");
+                        // 将课程从未同步列表中删除，并更新课表信息
+                        CourseDaoImpl dao = new CourseDaoImpl(UpLoadedActivity.this);
+                        dao.updateCourseid(course.getId(), courseid);
+                        UnUploadedCourseDaoImpl unDao = new UnUploadedCourseDaoImpl(UpLoadedActivity.this);
+                        unDao.deleteCourse(course.getId(), CommonConstants.UNDO_ACTION_UPDATE);
                     }
                     else
                     {
@@ -398,9 +486,123 @@ public class UpLoadedActivity extends Activity implements OnClickListener
             {
                 e.printStackTrace();
             }
-            
-            return null;
         }
         
+    }
+    
+    /**
+     * Class for summiting a new runnable task.
+     */
+    public class TaskSubmitter
+    {
+        
+        final UpLoadedActivity activity;
+        
+        public TaskSubmitter(UpLoadedActivity activity)
+        {
+            this.activity = activity;
+        }
+        
+        @SuppressWarnings("unchecked")
+        public Future submit(Runnable task)
+        {
+            Future result = null;
+            if (!activity.getExecutorService().isTerminated() && !activity.getExecutorService().isShutdown()
+                && task != null)
+            {
+                result = activity.getExecutorService().submit(task);
+            }
+            return result; // if result.get() returns null, it means that the computation has completed.
+        }
+        
+    }
+    
+    /**
+     * Class for monitoring the running task count.
+     */
+    public class TaskTracker
+    {
+        
+        final UpLoadedActivity activity;
+        
+        public int count; // task number
+        
+        public TaskTracker(UpLoadedActivity activity)
+        {
+            this.activity = activity;
+            this.count = 0;
+        }
+        
+        // increase the number of task
+        public void increase()
+        {
+            synchronized (activity.getTaskTracker())
+            {
+                activity.getTaskTracker().count++;
+                Log.d(LOGTAG, "Incremented task count to " + count);
+            }
+        }
+        
+        // decrease the number of task
+        public void decrease()
+        {
+            synchronized (activity.getTaskTracker())
+            {
+                activity.getTaskTracker().count--;
+                Log.d(LOGTAG, "Decremented task count to " + count);
+            }
+        }
+        
+    }
+    
+    public void runTask()
+    {
+        Log.d(LOGTAG, "runTask()...");
+        synchronized (taskList)
+        {
+            running = false;
+            futureTask = null;
+            if (!taskList.isEmpty())
+            {
+                Runnable runnable = (Runnable)taskList.get(0);
+                Log.v(LOGTAG, "run task-" + runnable.toString());
+                taskList.remove(0);
+                running = true;
+                futureTask = taskSubmitter.submit(runnable);
+                if (futureTask == null)
+                {
+                    Log.v(LOGTAG, "from here decrease");
+                    taskTracker.decrease();
+                }
+            }
+        }
+        taskTracker.decrease();
+        Log.d(LOGTAG, "runTask()...done");
+    }
+    
+    private void addTask(Runnable runnable)
+    {
+        Log.d(LOGTAG, "addTask(runnable)..." + runnable.toString());
+        taskTracker.increase();
+        synchronized (taskList)
+        {
+            // 如果是第一个加入，那么直接提交运行，不加入taskList,运行没结束再来任务时，加入taskList
+            if (taskList.isEmpty() && !running) // running is false when first register
+            {
+                running = true;
+                futureTask = taskSubmitter.submit(runnable); // submit the runnable object to the ExecutorService.
+                if (futureTask == null) // if futureTask is null, it means that the computation has completed.
+                {
+                    taskTracker.decrease();
+                }
+            }
+            else
+            {
+                Log.v(LOGTAG, "task is not empty or is running" + runnable.toString());
+                taskList.add(runnable);
+                Log.v("num of list", "" + taskList.size());
+            }
+        }
+        Log.d(LOGTAG, "addTask(runnable)... done");
     }
 }

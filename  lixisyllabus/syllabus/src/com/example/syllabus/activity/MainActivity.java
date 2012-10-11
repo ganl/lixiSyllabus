@@ -119,6 +119,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
         inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         sensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         
+        /**
+         * 如果没有显示过欢迎界面，先显示他
+         */
         if (!preferences.getBoolean(CommonConstants.SHOW_WELCOME, false))
         {
             Intent intent = new Intent();
@@ -128,17 +131,9 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
             this.finish();
         }
         
-        // if not logined already, turn around to the login activity
-        // if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.LOGINED, false)
-        // && !preferences.getBoolean(CommonConstants.SKIPPED, false))
-        // {
-        // Intent intent = new Intent();
-        // intent.setClass(this, LoginActivity.class);
-        // startActivity(intent);
-        // isTurningToAnotherActivity = true;
-        // this.finish();
-        // }
-        
+        /**
+         * 如果没有显示过设置界面，先显示他
+         */
         if (!isTurningToAnotherActivity && !preferences.getBoolean(CommonConstants.IS_SETUP_ALREADY, false))
         {
             Intent intent = new Intent();
