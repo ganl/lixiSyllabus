@@ -23,6 +23,7 @@ import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.adapter.ViewPagerAdapter;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.LogUtil;
 
 /**
  * 滑动介绍界面
@@ -32,6 +33,7 @@ import com.example.syllabus.utils.CommonConstants;
  */
 public class WelcomeActivity extends Activity implements OnClickListener, OnPageChangeListener
 {
+    private static final String LOGTAG = LogUtil.makeLogTag(WelcomeActivity.class);
     
     private ViewPager viewPager;
     
@@ -40,7 +42,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
     private List<View> views;
     
     private static final int[] pics = {R.drawable.top_one, R.drawable.top_two, R.drawable.top_three,
-        R.drawable.top_four, R.drawable.top_five, R.drawable.top_six};
+        R.drawable.top_four, R.drawable.top_five, R.drawable.top_bg};
     
     private static final int[] bottoms = {R.drawable.bottom_one, R.drawable.bottom_two, R.drawable.bottom_three,
         R.drawable.bottom_four, R.drawable.bottom_five, R.drawable.bottom_six};
@@ -55,7 +57,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
     
     private ImageView ivDownload;
     
-    // private boolean isStudent;
+    private LayoutInflater inflater;
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,7 +66,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
         setContentView(R.layout.welcome);
         
         SyllabusApplication.getInstance().addActivity(this);
-        
+        inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
         views = new ArrayList<View>();
         LinearLayout.LayoutParams params =
             new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
@@ -72,9 +74,9 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
         {
             RelativeLayout rl = null;
             
+            // 最后一张图片，四个图片按钮
             if (i == pics.length - 1)
             {
-                LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
                 rl = (RelativeLayout)inflater.inflate(R.layout.lastwelcome, null);
                 
                 ivStudent = (ImageView)rl.findViewById(R.id.studentimage);
@@ -86,7 +88,6 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 ivTeacher.setOnClickListener(this);
                 ivInputPerson.setOnClickListener(this);
                 ivDownload.setOnClickListener(this);
-                
             }
             else
             {
@@ -106,11 +107,11 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
         viewPager.setOnPageChangeListener(this);
         
         ivBottom = (ImageView)findViewById(R.id.bottom);
+        ivBottom.setImageResource(R.drawable.bottom_one);
     }
     
     public void onPageScrollStateChanged(int arg0)
     {
-        Log.i("WelcomeActivity", "arg0 in onPageScrollStateChanged:" + arg0);
     }
     
     public void onPageScrolled(int arg0, float arg1, int arg2)
@@ -119,7 +120,7 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
     
     public void onPageSelected(int arg0)
     {
-        Log.i("WelcomeActivity", "arg0 in onPageSelected:" + arg0);
+        Log.i(LOGTAG, "position of selected:" + arg0);
         ivBottom.setImageResource(bottoms[arg0]);
     }
     
@@ -133,7 +134,6 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
         {
             case R.id.studentimage:
                 ivStudent.setBackgroundResource(R.drawable.student_selected);
-                // isStudent = true;
                 editor.putBoolean(CommonConstants.IS_TEACHER, false);
                 editor.commit();
                 ((SyllabusApplication)getApplication()).setTeacher(false);
@@ -142,7 +142,6 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 break;
             case R.id.teacherimage:
                 ivTeacher.setBackgroundResource(R.drawable.teacher_selected);
-                // isStudent = false;
                 editor.putBoolean(CommonConstants.IS_TEACHER, true);
                 editor.commit();
                 ((SyllabusApplication)getApplication()).setTeacher(true);

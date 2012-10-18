@@ -59,15 +59,14 @@ public class SyllabusApplication extends Application
         System.exit(0);
     }
     
-//    static
-//    {
-//        AdshelfManager.setAid(CommonConstants.AID);
-//    }
+    // static
+    // {
+    // AdshelfManager.setAid(CommonConstants.AID);
+    // }
     
     @Override
     public void onCreate()
     {
-        // TODO Auto-generated method stub
         super.onCreate();
         
         preferences = getSharedPreferences(CommonConstants.SHARED_NAME, 0);
@@ -77,9 +76,10 @@ public class SyllabusApplication extends Application
         Editor editor = preferences.edit();
         if (0 != oldWeekOfYear)
         {
-            editor.putInt(CommonConstants.WEEKOFSEMISTER,
-                preferences.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER)
-                    + (currentWeekOfYear - oldWeekOfYear));
+            int weekOfSemister =
+                preferences.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
+            weekOfSemister = weekOfSemister + (currentWeekOfYear - oldWeekOfYear);
+            editor.putInt(CommonConstants.WEEKOFSEMISTER, weekOfSemister);
         }
         else
         {
