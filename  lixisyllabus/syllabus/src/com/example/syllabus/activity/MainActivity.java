@@ -16,6 +16,7 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -39,6 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import cn.appmedia.adshelf.ShelfView;
+
 import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.adapter.SimpleCourseAdapter;
@@ -53,6 +56,7 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     SensorEventListener, OnLongClickListener
 {
     private static final String LOGTAG = LogUtil.makeLogTag(MainActivity.class);
+    
     public static final String ACTION_ADD_COURSE = "add";
     
     private TextView tvLeft; // 左键
@@ -109,6 +113,12 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private boolean isTeacher = false;
     
+    private ShelfView shelfView;
+    
+    int code;
+    
+    private AlertDialog alertDialog;
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -144,7 +154,21 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
             isTurningToAnotherActivity = true;
             this.finish();
         }
-        
+        code = android.os.Build.VERSION.SDK_INT;
+        Log.i(LOGTAG, "code of ANdroid:" + code);
+        if (code > 9)
+        {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectDiskReads()
+                .detectDiskWrites()
+                .detectNetwork()
+                // or .detectAll() for all detectable problems
+                .penaltyLog()
+                .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectLeakedSqlLiteObjects()
+                .penaltyLog()
+                .penaltyDeath()
+                .build());
+        }
         myGestureListener = new MyGestureListener();
         gestureDetector = new GestureDetector(myGestureListener);
         
@@ -160,6 +184,8 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private void initViews()
     {
+        shelfView = new ShelfView(this);
+        
         tvLeft = (TextView)findViewById(R.id.tvLeft);
         tvLeft.setText("设置");
         tvLeft.setOnClickListener(this);
@@ -374,8 +400,47 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 }
                 break;
             case R.id.menu_login:
-                intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
+                Log.i(LOGTAG, "score of shelfView:" + shelfView.getScore());
+                if (HttpConnect.isNetworkHolding(this))
+                {
+                    if (shelfView.getScore() <= 0)
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        alertDialog = null;
+                        builder.setTitle("你需要10分才能使用下载课表功能,你现在的积分为" + shelfView.getScore() + ",下载应用获积分");
+                        builder.setPositiveButton("获取积分", new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                shelfView.getShelf();
+                            }
+                        });
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener()
+                        {
+                            
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                // for test
+                                shelfView.addScore(10);
+                                alertDialog.cancel();
+                            }
+                        });
+                        
+                        alertDialog = builder.create();
+                        alertDialog.show();
+                    }
+                    else
+                    {
+                        intent = new Intent(this, LoginActivity.class);
+                        startActivity(intent);
+                        shelfView.subScore(10);
+                    }
+                    
+                }
+                else
+                {
+                    Toast.makeText(this, "您的网络没有打开，同步前请先打开网络", Toast.LENGTH_SHORT).show();
+                }
                 // this.finish();
                 break;
             case R.id.memu_exiting:

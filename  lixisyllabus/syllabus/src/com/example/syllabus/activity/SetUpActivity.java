@@ -271,7 +271,6 @@ public class SetUpActivity extends Activity implements OnClickListener
                 {
                     editor.putString(CommonConstants.STR_END_TIME[i], tViewsEndTime[i].getText().toString());
                 }
-                
                 // 如果屏蔽打开，那么需要保存短信内容，如果短信内容为空，那么保存默认内容
                 if (null != ivShieldChecked.getTag())
                 {
