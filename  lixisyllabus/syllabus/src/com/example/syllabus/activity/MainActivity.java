@@ -184,7 +184,6 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
     
     private void initViews()
     {
-        shelfView = new ShelfView(this);
         
         tvLeft = (TextView)findViewById(R.id.tvLeft);
         tvLeft.setText("…Ë÷√");
@@ -400,9 +399,10 @@ public class MainActivity extends Activity implements OnClickListener, OnTouchLi
                 }
                 break;
             case R.id.menu_login:
-                Log.i(LOGTAG, "score of shelfView:" + shelfView.getScore());
                 if (HttpConnect.isNetworkHolding(this))
                 {
+                    shelfView = new ShelfView(this);
+                    Log.i(LOGTAG, "score of shelfView:" + shelfView.getScore());
                     if (shelfView.getScore() <= 0)
                     {
                         AlertDialog.Builder builder = new AlertDialog.Builder(this);

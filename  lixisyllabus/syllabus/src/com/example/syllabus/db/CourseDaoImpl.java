@@ -83,6 +83,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
             c.close();
             return course2.getId();
         }
+        c.close();
         return 0;
     }
     
@@ -122,7 +123,9 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         if (isTeacher)
         {
             where = new StringBuilder("tNo" + " = ?");
-            whereArgs = new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID))};
+            whereArgs =
+                new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID,
+                    CommonConstants.DEFAULT_TEACHER_ID))};
             c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
         }
         else
