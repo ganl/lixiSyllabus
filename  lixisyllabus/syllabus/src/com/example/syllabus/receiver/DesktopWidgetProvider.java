@@ -5,6 +5,7 @@ import java.util.List;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
@@ -22,7 +23,7 @@ import com.example.syllabus.utils.CommonConstants;
 
 public class DesktopWidgetProvider extends AppWidgetProvider
 {
-    public static final String ACTION_UPDATE_COURSE = "com.example.syllabus.updatecourse";
+    public static final String ACTION_UPDATE_COURSE = "com.example.syllabus.activity.CLICK";
     
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
@@ -137,6 +138,13 @@ public class DesktopWidgetProvider extends AppWidgetProvider
     public void onReceive(Context context, Intent intent)
     {
         super.onReceive(context, intent);
+        Log.i("Widget Updated", "Widget dababase has been updated!");
+        if (intent.getAction().equals(ACTION_UPDATE_COURSE))
+        {
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget);
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            appWidgetManager.updateAppWidget(new ComponentName(context, DesktopWidgetProvider.class), views);
+        }
     }
     
     @Override
