@@ -111,6 +111,7 @@
             android:enabled="true" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.syllabus.activity.CLICK" />
             </intent-filter>
 
             <meta-data
