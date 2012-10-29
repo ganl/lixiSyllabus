@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.syllabus.R;
+import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.adapter.UpLoadCourseAdapter;
 import com.example.syllabus.bean.Course;
 import com.example.syllabus.db.CourseDao;
@@ -119,6 +120,7 @@ public class UpLoadedActivity extends Activity implements OnClickListener
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.upload_activity);
+        SyllabusApplication.getInstance().addActivity(this);
         preferences = CommonConstants.getMyPreferences(this);
         isTeacher = preferences.getBoolean(CommonConstants.IS_TEACHER, false);
         initViews();

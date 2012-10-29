@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
 
@@ -23,6 +24,7 @@ import com.example.syllabus.R;
 import com.example.syllabus.SyllabusApplication;
 import com.example.syllabus.adapter.ViewPagerAdapter;
 import com.example.syllabus.utils.CommonConstants;
+import com.example.syllabus.utils.HttpConnect;
 import com.example.syllabus.utils.LogUtil;
 
 /**
@@ -165,12 +167,20 @@ public class WelcomeActivity extends Activity implements OnClickListener, OnPage
                 this.finish();
                 break;
             case R.id.download:
-                intent = new Intent(this, LoginActivity.class);
-                // intent.putExtra(CommonConstants.IS_TEACHER, true);
-                editor.putBoolean(CommonConstants.SHOW_WELCOME, true);
-                editor.commit();
-                startActivity(intent);
-                this.finish();
+                if (HttpConnect.isNetworkHolding(this))
+                {
+                    intent = new Intent(this, LoginActivity.class);
+                    // intent.putExtra(CommonConstants.IS_TEACHER, true);
+                    editor.putBoolean(CommonConstants.SHOW_WELCOME, true);
+                    editor.commit();
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(this, "若使用课程下载功能，请先打开网络", Toast.LENGTH_SHORT).show();
+                }
+                
+                // this.finish();
                 break;
             
             default:
