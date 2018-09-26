@@ -131,7 +131,7 @@ public class LoginActivity extends Activity implements OnClickListener {
 			etUniversityName.setText("安徽理工大学");
 			etGradeNum.setText("2010");
 			etMajorName.setText("电子信息技术及仪器");
-			etClassName.setText("2");
+			etClassName.setText("1");
 		} else {
 			LinearLayout ll = (LinearLayout) findViewById(R.id.linearLayout1);
 			ll.setVisibility(View.INVISIBLE);

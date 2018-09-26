@@ -366,7 +366,7 @@ public class SetUpActivity extends Activity implements OnClickListener {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							tvWeekNum
-									.setText(CommonConstants.WEEKOFSEMISTER_INNUMBER[which+1]);
+									.setText(CommonConstants.WEEKOFSEMISTER_INNUMBER[which]);
 							weekOfSemister = which;
 							dialog.dismiss();
 						}

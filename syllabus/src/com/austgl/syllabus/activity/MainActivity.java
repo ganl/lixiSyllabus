@@ -1,19 +1,20 @@
 package com.austgl.syllabus.activity;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -51,14 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-
-import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
-import cn.sharesdk.framework.Platform.ShareParams;
-import cn.sharesdk.onekeyshare.OnekeyShare;
-import cn.sharesdk.onekeyshare.ShareContentCustomizeCallback;
-import cn.sharesdk.twitter.Twitter;
-
+import com.austgl.zxing.CaptureActivity;
 import com.austgl.syllabus.R;
 import com.austgl.syllabus.SyllabusApplication;
 import com.austgl.syllabus.adapter.SimpleCourseAdapter;
@@ -106,17 +100,17 @@ public class MainActivity extends Activity implements OnClickListener,
 	private static final String LOGTAG = LogUtil.makeLogTag(MainActivity.class);
 	public static final String ACTION_ADD_COURSE = "add";
 
-	private TextView tvLeft; // å·¦é”®
+	private TextView tvLeft; // ×ó¼ü
 
-	private TextView tvTitle; // æ ‡é¢˜
+	private TextView tvTitle; // ±êÌâ
 
-	private TextView tvRightT; // å³é”®
+	private TextView tvRightT; // ÓÒ¼ü
 
-	private int dayOfWeek; // æ˜ŸæœŸå‡ 
+	private int dayOfWeek; // ĞÇÆÚ¼¸
 
-	private int weekOfSemister; // ç¬¬å‡ å‘¨
+	private int weekOfSemister; // µÚ¼¸ÖÜ
 
-	// private ImageView ivAddCourse; // æ·»åŠ è¯¾ç¨‹
+	// private ImageView ivAddCourse; // Ìí¼Ó¿Î³Ì
 
 	private Button btnAddCourse;
 
@@ -167,19 +161,14 @@ public class MainActivity extends Activity implements OnClickListener,
     private static int width, height;
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
     private static Boolean isClick = false;
-
-    private DevicePolicyManager policyManager;
-    private ComponentName componentName;
-    private static final String FILE_NAME = "/pic.jpg";
-	public static String TEST_IMAGE;
-    /*
+/*
     private Weibo mWeibo;
-    public static Oauth2AccessToken mAccessToken;    //è®¿é—®token  
+    public static Oauth2AccessToken mAccessToken;    //·ÃÎÊtoken  
     private SsoHandler mSsoHandler;
     private IWeiboAPI mWeiboAPI;*/
-    /** åˆ†äº«æ–‡æœ¬ */
-    //private String mWeiboText ="Syllabusè¯¾è¡¨";
-    /** åˆ†äº«å›¾ç‰‡ */
+    /** ·ÖÏíÎÄ±¾ */
+    //private String mWeiboText ="Syllabus¿Î±í";
+    /** ·ÖÏíÍ¼Æ¬ */
    // private ImageView   mWeiboImage;
    /* private	static String clientID;
     private SocialShare share;
@@ -188,11 +177,11 @@ public class MainActivity extends Activity implements OnClickListener,
     
     private ShareContent mPageContent = new ShareContent(
 			"Syllabus",
-			"æ¬¢è¿ä½¿ç”¨Syllabusï¼Œä¸Šè¯¾æ—¶å¯å±è”½æ¥ç”µçš„è¯¾è¡¨è½¯ä»¶",
+			"»¶Ó­Ê¹ÓÃSyllabus£¬ÉÏ¿ÎÊ±¿ÉÆÁ±ÎÀ´µçµÄ¿Î±íÈí¼ş",
 			"http://www.iganlei.cn/apps");
 	private ShareContent mImageContent = new ShareContent(
 			"Syllabus",
-			"æ¬¢è¿ä½¿ç”¨Syllabusï¼Œä¸Šè¯¾æ—¶å¯å±è”½æ¥ç”µçš„è¯¾è¡¨è½¯ä»¶",
+			"»¶Ó­Ê¹ÓÃSyllabus£¬ÉÏ¿ÎÊ±¿ÉÆÁ±ÎÀ´µçµÄ¿Î±íÈí¼ş",
 			"http://www.iganlei.cn/apps",
 			Uri.parse("http://apps.bdimg.com/developer/static/04171450/developer/images/icon/terminal_adapter.png"));
     
@@ -219,35 +208,30 @@ public class MainActivity extends Activity implements OnClickListener,
 		preferences = CommonConstants.getMyPreferences(this);
 		inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-		  //è·å–è®¾å¤‡ç®¡ç†æœåŠ¡
-        policyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-        
-        //AdminReceiver ç»§æ‰¿è‡ª DeviceAdminReceiver
-        componentName = new ComponentName(this, myDeviceAdminReceiver.class);
-		//Share sdk
-		ShareSDK.initSDK(this);
+		
+		
 		
 		/**
-		 *ç™¾åº¦ç¤¾ä¼šåŒ–åˆ†äº« 
+		 *°Ù¶ÈÉç»á»¯·ÖÏí 
 		 
 		 clientID=SocialConfig.getInstance(this).getClientId(MediaType.BAIDU);
 		 share = SocialShare.getInstance(this,clientID);
 		*/
 		   
          /**
-          *  æ„é€ åˆ†äº«å®ä½“å¯¹è±¡
+          *  ¹¹Ôì·ÖÏíÊµÌå¶ÔÏó
          
          content = new ShareContent();
-         content.setContent("Syllabuså¥½ç”¨çš„è¯¾è¡¨è½¯ä»¶ï¼Œå¯å±è”½ä¸Šè¯¾æ¥ç”µã€‚");//åˆ†äº«çš„æ–‡å­—å†…å®¹
-         content.setLinkUrl("http://www.iganlei.cn/apps/");//åˆ†äº«çš„ url
-         content.setImageUri(Uri.parse("http://www.iganlei.cn/apps/syllabus/icon.png"));//åˆ†äº«çš„å›¾ç‰‡ uri å¯ä»¥ä¸ºæœ¬åœ°åœ°å€ä¹Ÿå¯ä»¥ä¸ºç½‘ç»œåœ°å€
+         content.setContent("SyllabusºÃÓÃµÄ¿Î±íÈí¼ş£¬¿ÉÆÁ±ÎÉÏ¿ÎÀ´µç¡£");//·ÖÏíµÄÎÄ×ÖÄÚÈİ
+         content.setLinkUrl("http://www.iganlei.cn/apps/");//·ÖÏíµÄ url
+         content.setImageUri(Uri.parse("http://www.iganlei.cn/apps/syllabus/icon.png"));//·ÖÏíµÄÍ¼Æ¬ uri ¿ÉÒÔÎª±¾µØµØÖ·Ò²¿ÉÒÔÎªÍøÂçµØÖ·
           */
 		
 		//mWeibo = Weibo.getInstance(ConstantS.APP_KEY, ConstantS.REDIRECT_URL, ConstantS.SCOPE);
-		//mAccessToken = AccessTokenKeeper.readAccessToken(this);//ç¬¬ä¸€æ¬¡ä¸å¯ç”¨
+		//mAccessToken = AccessTokenKeeper.readAccessToken(this);//µÚÒ»´Î²»¿ÉÓÃ
 		//ininWeiboSDK();
 		/**
-		 * å¦‚æœæ²¡æœ‰æ˜¾ç¤ºè¿‡æ¬¢è¿ç•Œé¢ï¼Œå…ˆæ˜¾ç¤ºä»–
+		 * Èç¹ûÃ»ÓĞÏÔÊ¾¹ı»¶Ó­½çÃæ£¬ÏÈÏÔÊ¾Ëû
 		 */
 		if (!preferences.getBoolean(CommonConstants.SHOW_WELCOME, false)) {
 			Intent intent = new Intent();
@@ -258,7 +242,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 
 		/**
-		 * å¦‚æœæ²¡æœ‰æ˜¾ç¤ºè¿‡è®¾ç½®ç•Œé¢ï¼Œå…ˆæ˜¾ç¤ºä»–
+		 * Èç¹ûÃ»ÓĞÏÔÊ¾¹ıÉèÖÃ½çÃæ£¬ÏÈÏÔÊ¾Ëû
 		 */
 		if (!isTurningToAnotherActivity
 				&& !preferences.getBoolean(CommonConstants.IS_SETUP_ALREADY,
@@ -284,41 +268,15 @@ public class MainActivity extends Activity implements OnClickListener,
         initialButton();
 	}
 
-	
-	 private void mylock(){
-	    	
-	    	boolean active = policyManager.isAdminActive(componentName);
-	    	if(!active){//è‹¥æ— æƒé™
-	    		activeManage();//å»è·å¾—æƒé™
-	    		policyManager.lockNow();//å¹¶é”å±
-	    	}
-	        if (active) {
-	                policyManager.lockNow();//ç›´æ¥é”å±
-	        }
-	    }
-	    private void activeManage() {
-	        // å¯åŠ¨è®¾å¤‡ç®¡ç†(éšå¼Intent) - åœ¨AndroidManifest.xmlä¸­è®¾å®šç›¸åº”è¿‡æ»¤å™¨
-	        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-	        
-	        //æƒé™åˆ—è¡¨
-	        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-
-	        //æè¿°(additional explanation)
-	                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "ä¸€é”®é”å±");
-
-	                startActivityForResult(intent, 0);
-	}
-	
-	
 	/*private void ininWeiboSDK() {
-	        // åˆå§‹åŒ–SDK
+	        // ³õÊ¼»¯SDK
 	        mWeiboAPI = WeiboSDK.createWeiboAPI(this, ConstantS.APP_KEY);
 	}
 	
 	private void regWeibo() {
-        // æ³¨å†Œåˆ°æ–°æµªå¾®åš
+        // ×¢²áµ½ĞÂÀËÎ¢²©
         mWeiboAPI.registerApp();
-        // Toast.makeText(this, "å·²æ³¨å†Œåˆ°å¾®åš", Toast.LENGTH_LONG).show();
+        // Toast.makeText(this, "ÒÑ×¢²áµ½Î¢²©", Toast.LENGTH_LONG).show();
     }
 	*/
 	/*
@@ -326,38 +284,38 @@ public class MainActivity extends Activity implements OnClickListener,
             boolean hasMusic, boolean hasVedio, boolean hasVoice) {
         
         if (mWeiboAPI.isWeiboAppSupportAPI()) {
-            //Toast.makeText(this, "å½“å‰å¾®åšç‰ˆæœ¬æ”¯æŒSDKåˆ†äº«", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "µ±Ç°Î¢²©°æ±¾Ö§³ÖSDK·ÖÏí", Toast.LENGTH_SHORT).show();
             
             int supportApi = mWeiboAPI.getWeiboAppSupportAPI();
             if (supportApi >= 10351) {
-               // Toast.makeText(this, "å½“å‰å¾®åšç‰ˆæœ¬æ”¯æŒå¤šæ¡æ¶ˆæ¯ï¼ŒVoiceæ¶ˆæ¯åˆ†äº«", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "µ±Ç°Î¢²©°æ±¾Ö§³Ö¶àÌõÏûÏ¢£¬VoiceÏûÏ¢·ÖÏí", Toast.LENGTH_SHORT).show();
                 reqMultiMsg(hasText, hasImage, hasWebpage, hasMusic, hasVedio, hasVoice);
             } else {
-               // Toast.makeText(this, "å½“å‰å¾®åšç‰ˆæœ¬åªæ”¯æŒå•æ¡æ¶ˆæ¯åˆ†äº«", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "µ±Ç°Î¢²©°æ±¾Ö»Ö§³Öµ¥ÌõÏûÏ¢·ÖÏí", Toast.LENGTH_SHORT).show();
                 reqSingleMsg(hasText, hasImage, hasWebpage, hasMusic, hasVedio/*, hasVoice*//*);
             }
         } else {
-            Toast.makeText(this, "å½“å‰å¾®åšç‰ˆæœ¬ä¸æ”¯æŒSDKåˆ†äº«", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "µ±Ç°Î¢²©°æ±¾²»Ö§³ÖSDK·ÖÏí", Toast.LENGTH_SHORT).show();
         }
     }
 	*/
 	
 	 /**
-     * ç¬¬ä¸‰æ–¹åº”ç”¨å‘é€è¯·æ±‚æ¶ˆæ¯åˆ°å¾®åšï¼Œå”¤èµ·å¾®åšåˆ†äº«ç•Œé¢ã€‚
-     * æ³¨æ„ï¼šå½“isWeiboAppSupportAPI() >= 10351 æ—¶ï¼Œæ”¯æŒåŒæ—¶åˆ†äº«å¤šæ¡æ¶ˆæ¯ï¼Œ
-     * åŒæ—¶å¯ä»¥åˆ†äº«æ–‡æœ¬ã€å›¾ç‰‡ä»¥åŠå…¶å®ƒåª’ä½“èµ„æºï¼ˆç½‘é¡µã€éŸ³ä¹ã€è§†é¢‘ã€å£°éŸ³ä¸­çš„ä¸€ç§ï¼‰ï¼Œ å¹¶ä¸”æ”¯æŒVoiceæ¶ˆæ¯ã€‚
+     * µÚÈı·½Ó¦ÓÃ·¢ËÍÇëÇóÏûÏ¢µ½Î¢²©£¬»½ÆğÎ¢²©·ÖÏí½çÃæ¡£
+     * ×¢Òâ£ºµ±isWeiboAppSupportAPI() >= 10351 Ê±£¬Ö§³ÖÍ¬Ê±·ÖÏí¶àÌõÏûÏ¢£¬
+     * Í¬Ê±¿ÉÒÔ·ÖÏíÎÄ±¾¡¢Í¼Æ¬ÒÔ¼°ÆäËüÃ½Ìå×ÊÔ´£¨ÍøÒ³¡¢ÒôÀÖ¡¢ÊÓÆµ¡¢ÉùÒôÖĞµÄÒ»ÖÖ£©£¬ ²¢ÇÒÖ§³ÖVoiceÏûÏ¢¡£
      * 
-     * @param hasText    åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰æ–‡æœ¬
-     * @param hasImage   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰å›¾ç‰‡
-     * @param hasWebpage åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰ç½‘é¡µ
-     * @param hasMusic   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰éŸ³ä¹
-     * @param hasVideo   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰è§†é¢‘
-     * @param hasVoice   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰å£°éŸ³
+     * @param hasText    ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÎÄ±¾
+     * @param hasImage   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÍ¼Æ¬
+     * @param hasWebpage ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÍøÒ³
+     * @param hasMusic   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÒôÀÖ
+     * @param hasVideo   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÊÓÆµ
+     * @param hasVoice   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÉùÒô
     
     private void reqMultiMsg(boolean hasText, boolean hasImage, boolean hasWebpage,
             boolean hasMusic, boolean hasVideo, boolean hasVoice) {
         
-        // 1. åˆå§‹åŒ–å¾®åšçš„åˆ†äº«æ¶ˆæ¯
+        // 1. ³õÊ¼»¯Î¢²©µÄ·ÖÏíÏûÏ¢
         WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
         if (hasText) {
             weiboMessage.textObject = getTextObj();
@@ -368,32 +326,32 @@ public class MainActivity extends Activity implements OnClickListener,
         }
         
       
-        // 2. åˆå§‹åŒ–ä»ç¬¬ä¸‰æ–¹åˆ°å¾®åšçš„æ¶ˆæ¯è¯·æ±‚
+        // 2. ³õÊ¼»¯´ÓµÚÈı·½µ½Î¢²©µÄÏûÏ¢ÇëÇó
         SendMultiMessageToWeiboRequest req = new SendMultiMessageToWeiboRequest();
-        // ç”¨transactionå”¯ä¸€æ ‡è¯†ä¸€ä¸ªè¯·æ±‚
+        // ÓÃtransactionÎ¨Ò»±êÊ¶Ò»¸öÇëÇó
         req.transaction = String.valueOf(System.currentTimeMillis());
         req.multiMessage = weiboMessage;
         
-        // 3. å‘é€è¯·æ±‚æ¶ˆæ¯åˆ°å¾®åšï¼Œå”¤èµ·å¾®åšåˆ†äº«ç•Œé¢
+        // 3. ·¢ËÍÇëÇóÏûÏ¢µ½Î¢²©£¬»½ÆğÎ¢²©·ÖÏí½çÃæ
         mWeiboAPI.sendRequest(this, req);
     } */
 
     /**
-     * ç¬¬ä¸‰æ–¹åº”ç”¨å‘é€è¯·æ±‚æ¶ˆæ¯åˆ°å¾®åšï¼Œå”¤èµ·å¾®åšåˆ†äº«ç•Œé¢ã€‚
-     * å½“isWeiboAppSupportAPI() < 10351 åªæ”¯æŒåˆ†äº«å•æ¡æ¶ˆæ¯ï¼Œå³
-     * æ–‡æœ¬ã€å›¾ç‰‡ã€ç½‘é¡µã€éŸ³ä¹ã€è§†é¢‘ä¸­çš„ä¸€ç§ï¼Œä¸æ”¯æŒVoiceæ¶ˆæ¯ã€‚
+     * µÚÈı·½Ó¦ÓÃ·¢ËÍÇëÇóÏûÏ¢µ½Î¢²©£¬»½ÆğÎ¢²©·ÖÏí½çÃæ¡£
+     * µ±isWeiboAppSupportAPI() < 10351 Ö»Ö§³Ö·ÖÏíµ¥ÌõÏûÏ¢£¬¼´
+     * ÎÄ±¾¡¢Í¼Æ¬¡¢ÍøÒ³¡¢ÒôÀÖ¡¢ÊÓÆµÖĞµÄÒ»ÖÖ£¬²»Ö§³ÖVoiceÏûÏ¢¡£
      * 
-     * @param hasText    åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰æ–‡æœ¬
-     * @param hasImage   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰å›¾ç‰‡
-     * @param hasWebpage åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰ç½‘é¡µ
-     * @param hasMusic   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰éŸ³ä¹
-     * @param hasVideo   åˆ†äº«çš„å†…å®¹æ˜¯å¦æœ‰è§†é¢‘
+     * @param hasText    ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÎÄ±¾
+     * @param hasImage   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÍ¼Æ¬
+     * @param hasWebpage ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÍøÒ³
+     * @param hasMusic   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÒôÀÖ
+     * @param hasVideo   ·ÖÏíµÄÄÚÈİÊÇ·ñÓĞÊÓÆµ
      
     private void reqSingleMsg(boolean hasText, boolean hasImage, boolean hasWebpage,
             boolean hasMusic, boolean hasVideo/*, boolean hasVoice*//*) {
         
-        // 1. åˆå§‹åŒ–å¾®åšçš„åˆ†äº«æ¶ˆæ¯
-        // ç”¨æˆ·å¯ä»¥åˆ†äº«æ–‡æœ¬ã€å›¾ç‰‡ã€ç½‘é¡µã€éŸ³ä¹ã€è§†é¢‘ä¸­çš„ä¸€ç§
+        // 1. ³õÊ¼»¯Î¢²©µÄ·ÖÏíÏûÏ¢
+        // ÓÃ»§¿ÉÒÔ·ÖÏíÎÄ±¾¡¢Í¼Æ¬¡¢ÍøÒ³¡¢ÒôÀÖ¡¢ÊÓÆµÖĞµÄÒ»ÖÖ
         WeiboMessage weiboMessage = new WeiboMessage();
         if (hasText) {
             weiboMessage.mediaObject = getTextObj();
@@ -404,13 +362,13 @@ public class MainActivity extends Activity implements OnClickListener,
        
        
         
-        // 2. åˆå§‹åŒ–ä»ç¬¬ä¸‰æ–¹åˆ°å¾®åšçš„æ¶ˆæ¯è¯·æ±‚
+        // 2. ³õÊ¼»¯´ÓµÚÈı·½µ½Î¢²©µÄÏûÏ¢ÇëÇó
         SendMessageToWeiboRequest req = new SendMessageToWeiboRequest();
-        // ç”¨transactionå”¯ä¸€æ ‡è¯†ä¸€ä¸ªè¯·æ±‚
+        // ÓÃtransactionÎ¨Ò»±êÊ¶Ò»¸öÇëÇó
         req.transaction = String.valueOf(System.currentTimeMillis());
         req.message = weiboMessage;
         
-        // 3. å‘é€è¯·æ±‚æ¶ˆæ¯åˆ°å¾®åšï¼Œå”¤èµ·å¾®åšåˆ†äº«ç•Œé¢
+        // 3. ·¢ËÍÇëÇóÏûÏ¢µ½Î¢²©£¬»½ÆğÎ¢²©·ÖÏí½çÃæ
         mWeiboAPI.sendRequest(this, req);
     }
             */
@@ -420,9 +378,9 @@ public class MainActivity extends Activity implements OnClickListener,
     }
 	
 	 
-     * æ–‡æœ¬æ¶ˆæ¯æ„é€ æ–¹æ³•ã€‚
+     * ÎÄ±¾ÏûÏ¢¹¹Ôì·½·¨¡£
      * 
-     * @return æ–‡æœ¬æ¶ˆæ¯å¯¹è±¡ã€‚
+     * @return ÎÄ±¾ÏûÏ¢¶ÔÏó¡£
     
     private TextObject getTextObj() {
         TextObject textObject = new TextObject();
@@ -431,9 +389,9 @@ public class MainActivity extends Activity implements OnClickListener,
     } */
 
     /**
-     * å›¾ç‰‡æ¶ˆæ¯æ„é€ æ–¹æ³•ã€‚
+     * Í¼Æ¬ÏûÏ¢¹¹Ôì·½·¨¡£
      * 
-     * @return å›¾ç‰‡æ¶ˆæ¯å¯¹è±¡ã€‚
+     * @return Í¼Æ¬ÏûÏ¢¶ÔÏó¡£
     
     private ImageObject getImageObj() {
         ImageObject imageObject = new ImageObject();
@@ -455,7 +413,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
         params.height = 50;
         params.width = 50;
-        //è®¾ç½®è¾¹è·  (int left, int top, int right, int bottom)
+        //ÉèÖÃ±ß¾à  (int left, int top, int right, int bottom)
         params.setMargins(10, height - 98, 0, 10);
 
         buttonLock = (Button) findViewById(R.id.button_composer_lock);
@@ -546,10 +504,6 @@ public class MainActivity extends Activity implements OnClickListener,
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
-                Uri uri = Uri.parse("http://www.iganlei.cn");  
-                Intent it  = new Intent(Intent.ACTION_VIEW,uri);  
-                startActivity(it); 
-                
             }
         });
         buttonShare.setOnClickListener(new OnClickListener()
@@ -581,111 +535,10 @@ public class MainActivity extends Activity implements OnClickListener,
                 SocialShare.getInstance(MainActivity.this,clientID).share(content,mShareMediaType, new mShareContentListener(),true);
 
                 startActivity(intent);
-            
-                Platform weibo = ShareSDK.getPlatform(context, SinaWeibo.NAME).setPlatformActionListener(new PlatformActionListener() {
-                        
-                        public void onError(Platform platform, int action, Throwable t) {
-                                // æ“ä½œå¤±è´¥çš„å¤„ç†ä»£ç 
-                        }
-                        
-                        public void onComplete(Platform platform, int action,
-                                        HashMap<String, Object> res) {
-                                // æ“ä½œæˆåŠŸçš„å¤„ç†ä»£ç 
-                        }
-                        
-                        public void onCancel(Platform platform, int action) {
-                                // æ“ä½œå–æ¶ˆçš„å¤„ç†ä»£ç 
-                        }
-                        
-                });*/
-                
-                /**
-                * å¿«æ·åˆ†äº«
-                * 
-                showShare(false, null);
+            */
                 
                
-                
-                
-                Platform.ShareParams sp = new SinaWeibo.ShareParams();
-                sp.text = "Syllabus ";
-               // sp.imagePath = "http://www.iganlei.cn/apps/syllabus/icon.png";
-
-                Platform weibo = ShareSDK.getPlatform(getBaseContext(), SinaWeibo.NAME);
-                weibo.setPlatformActionListener(new PlatformActionListener(){
-
-					@Override
-					public void onCancel(Platform arg0, int arg1) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onComplete(Platform arg0, int arg1,
-							HashMap<String, Object> arg2) {
-						// TODO Auto-generated method stub
-						
-					}
-
-					@Override
-					public void onError(Platform arg0, int arg1, Throwable arg2) {
-						// TODO Auto-generated method stub
-						
-					}
-                	
-                }); // è®¾ç½®åˆ†äº«äº‹ä»¶å›è°ƒ
-                // æ‰§è¡Œå›¾æ–‡åˆ†äº«
-                weibo.share(sp);*/
-                /*
-                OnekeyShare oks = new OnekeyShare();
-
-             // åˆ†äº«æ—¶Notificationçš„å›¾æ ‡å’Œæ–‡å­—
-             oks.setNotification(R.drawable.ic_launcher, 
-             getBaseContext().getString(R.string.app_name));
-             // addressæ˜¯æ¥æ”¶äººåœ°å€ï¼Œä»…åœ¨ä¿¡æ¯å’Œé‚®ä»¶ä½¿ç”¨
-             oks.setAddress("12345678901");
-             // titleæ ‡é¢˜ï¼Œå°è±¡ç¬”è®°ã€é‚®ç®±ã€ä¿¡æ¯ã€å¾®ä¿¡ã€äººäººç½‘å’ŒQQç©ºé—´ä½¿ç”¨
-             oks.setTitle(getBaseContext().getString(R.string.share));
-             // titleUrlæ˜¯æ ‡é¢˜çš„ç½‘ç»œé“¾æ¥ï¼Œä»…åœ¨äººäººç½‘å’ŒQQç©ºé—´ä½¿ç”¨
-             oks.setTitleUrl("http://sharesdk.cn");
-             // textæ˜¯åˆ†äº«æ–‡æœ¬ï¼Œæ‰€æœ‰å¹³å°éƒ½éœ€è¦è¿™ä¸ªå­—æ®µ
-             oks.setText(getBaseContext().getString(R.string.share_content));
-             // imagePathæ˜¯å›¾ç‰‡çš„æœ¬åœ°è·¯å¾„ï¼ŒLinked-Inä»¥å¤–çš„å¹³å°éƒ½æ”¯æŒæ­¤å‚æ•°
-             oks.setImagePath(MainActivity.TEST_IMAGE);
-             // imageUrlæ˜¯å›¾ç‰‡çš„ç½‘ç»œè·¯å¾„ï¼Œæ–°æµªå¾®åšã€äººäººç½‘ã€QQç©ºé—´ã€
-             // å¾®ä¿¡çš„ä¸¤ä¸ªå¹³å°ã€Linked-Inæ”¯æŒæ­¤å­—æ®µ
-             oks.setImageUrl("http://sharesdk.cn/ rest.png");
-             // urlä»…åœ¨å¾®ä¿¡ï¼ˆåŒ…æ‹¬å¥½å‹å’Œæœ‹å‹åœˆï¼‰ä¸­ä½¿ç”¨
-             oks.setUrl("http://sharesdk.cn");
-             // appPathæ˜¯å¾…åˆ†äº«åº”ç”¨ç¨‹åºçš„æœ¬åœ°è·¯åŠ²ï¼Œä»…åœ¨å¾®ä¿¡ä¸­ä½¿ç”¨
-             oks.setAppPath(MainActivity.TEST_IMAGE);
-             // commentæ˜¯æˆ‘å¯¹è¿™æ¡åˆ†äº«çš„è¯„è®ºï¼Œä»…åœ¨äººäººç½‘å’ŒQQç©ºé—´ä½¿ç”¨
-             oks.setComment(getBaseContext().getString(R.string.share));
-             // siteæ˜¯åˆ†äº«æ­¤å†…å®¹çš„ç½‘ç«™åç§°ï¼Œä»…åœ¨QQç©ºé—´ä½¿ç”¨
-             oks.setSite(context.getString(R.string.app_name));
-             // siteUrlæ˜¯åˆ†äº«æ­¤å†…å®¹çš„ç½‘ç«™åœ°å€ï¼Œä»…åœ¨QQç©ºé—´ä½¿ç”¨
-             oks.setSiteUrl("http://sharesdk.cn");
-             // venueNameæ˜¯åˆ†äº«ç¤¾åŒºåç§°ï¼Œä»…åœ¨Foursquareä½¿ç”¨
-             oks.setVenueName("Southeast in China");
-             // venueDescriptionæ˜¯åˆ†äº«ç¤¾åŒºæè¿°ï¼Œä»…åœ¨Foursquareä½¿ç”¨
-             oks.setVenueDescription("This is a beautiful place!");
-             // latitudeæ˜¯ç»´åº¦æ•°æ®ï¼Œä»…åœ¨æ–°æµªå¾®åšã€è…¾è®¯å¾®åšå’ŒFoursquareä½¿ç”¨
-             oks.setLatitude(23.122619f);
-             // longitudeæ˜¯ç»åº¦æ•°æ®ï¼Œä»…åœ¨æ–°æµªå¾®åšã€è…¾è®¯å¾®åšå’ŒFoursquareä½¿ç”¨
-             oks.setLongitude(113.372338f);
-             // æ˜¯å¦ç›´æ¥åˆ†äº«ï¼ˆtrueåˆ™ç›´æ¥åˆ†äº«ï¼‰
-             oks.setSilent(silent);
-             // æŒ‡å®šåˆ†äº«å¹³å°ï¼Œå’Œslientä¸€èµ·ä½¿ç”¨å¯ä»¥ç›´æ¥åˆ†äº«åˆ°æŒ‡å®šçš„å¹³å°
-             if (platform != null) {
-                     oks.setPlatform(platform);
-             }
-             // å»é™¤æ³¨é‡Šå¯é€šè¿‡OneKeyShareCallbackæ¥æ•è·å¿«æ·åˆ†äº«çš„å¤„ç†ç»“æœ
-             // oks.setCallback(new OneKeyShareCallback());
-             //é€šè¿‡OneKeyShareCallbackæ¥ä¿®æ”¹ä¸åŒå¹³å°åˆ†äº«çš„å†…å®¹
-             oks.setShareContentCustomizeCallback(
-             new ShareContentCustomizeDemo());
-
-             oks.show(context);       */
+                        
                
               //  mSsoHandler = new SsoHandler(MainActivity.this, mWeibo);
               //  mSsoHandler.authorize(new AuthDialogListener(), null);
@@ -693,7 +546,6 @@ public class MainActivity extends Activity implements OnClickListener,
                // reqMsg(true,true,false,false,false,false);
             }
         });
-       
         buttonMusic.setOnClickListener(new OnClickListener()
         {
 
@@ -709,10 +561,6 @@ public class MainActivity extends Activity implements OnClickListener,
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
- 
-                Intent intent = new Intent("android.intent.action.MUSIC_PLAYER");
-
-                startActivity(intent);
             }
         });
         buttonThought.setOnClickListener(new OnClickListener()
@@ -751,80 +599,11 @@ public class MainActivity extends Activity implements OnClickListener,
                 buttonThought.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
-            
-                mylock();
-                //  killMyself ï¼Œé”å±ä¹‹åå°±ç«‹å³killæ‰æˆ‘ä»¬çš„Activityï¼Œé¿å…èµ„æºçš„æµªè´¹;   
-                    
-                	Intent intent = new Intent(Intent.ACTION_MAIN);
-        			intent.addCategory(Intent.CATEGORY_HOME);
-        			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        			startActivity(intent);
-        			android.os.Process.killProcess(android.os.Process.myPid());
             }
         });
 
     }
-    
-    
-	// ä½¿ç”¨å¿«æ·åˆ†äº«å®Œæˆåˆ†äº«
-	private void showShare(boolean silent, String platform) {
-		final OnekeyShare oks = new OnekeyShare();
-		oks.setNotification(R.drawable.icon, getBaseContext().getString(R.string.app_name));
-		oks.setAddress("12345678901");
-		oks.setTitle(getBaseContext().getString(R.string.share));
-		oks.setTitleUrl("http://www.iganlei.cn");
-		oks.setText(getBaseContext().getString(R.string.share_content));
-		oks.setImagePath(MainActivity.TEST_IMAGE);
-		oks.setImageUrl("http://www.iganlei.cn/apps/syllabus/icon.png");
-		oks.setUrl("http://www.iganlei.cn");
-		oks.setFilePath(MainActivity.TEST_IMAGE);
-		oks.setComment(getBaseContext().getString(R.string.share));
-		oks.setSite(getBaseContext().getString(R.string.app_name));
-		oks.setSiteUrl("http://www.iganlei.cn");
-		oks.setVenueName("Southeast in China");
-		oks.setVenueDescription("This is a beautiful syllabus!");
-		oks.setLatitude(32.630883f);
-		oks.setLongitude(117.011108f);
-		oks.setSilent(silent);
-		if (platform != null) {
-			oks.setPlatform(platform);
-		}
 
-		// å»é™¤æ³¨é‡Šï¼Œå¯ä»¤ç¼–è¾‘é¡µé¢æ˜¾ç¤ºä¸ºDialogæ¨¡å¼
-//		oks.setDialogMode();
-
-		// å»é™¤æ³¨é‡Šï¼Œåˆ™å¿«æ·åˆ†äº«çš„æ“ä½œç»“æœå°†é€šè¿‡OneKeyShareCallbackå›è°ƒ
-//		oks.setCallback(new OneKeyShareCallback());
-		oks.setShareContentCustomizeCallback(new ShareContentCustomizeDemo());
-
-		// å»é™¤æ³¨é‡Šï¼Œæ¼”ç¤ºåœ¨ä¹å®«æ ¼è®¾ç½®è‡ªå®šä¹‰çš„å›¾æ ‡
-		//Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
-		//String label = getResources().getString(R.string.app_name);
-		//OnClickListener listener = new OnClickListener() {
-		//	public void onClick(View v) {
-		//		String text = "Customer Logo -- Share SDK " + ShareSDK.getSDKVersionName();
-		//		Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
-		//		oks.finish();
-		//	}
-		//};
-		//oks.setCustomerLogo(logo, label, listener);
-
-		oks.show(getBaseContext());
-	}
-	class ShareContentCustomizeDemo implements ShareContentCustomizeCallback {
-
-		public void onShare(Platform platform, ShareParams paramsToShare) {
-			// æ”¹å†™twitteråˆ†äº«å†…å®¹ä¸­çš„textå­—æ®µï¼Œå¦åˆ™ä¼šè¶…é•¿ï¼Œ
-			// å› ä¸ºtwitterä¼šå°†å›¾ç‰‡åœ°å€å½“ä½œæ–‡æœ¬çš„ä¸€éƒ¨åˆ†å»è®¡ç®—é•¿åº¦
-			if (Twitter.NAME.equals(platform.getName())) {
-				Twitter.ShareParams sp = (Twitter.ShareParams) paramsToShare;
-				sp.text = platform.getContext().getString(R.string.share_content_short);
-			}
-		}
-
-	}
-    
-    
     protected Animation setAnimScale(float toX, float toY)
     {
         // TODO Auto-generated method stub
@@ -866,17 +645,17 @@ public class MainActivity extends Activity implements OnClickListener,
         });
         return animationRotate;
     }
-    //ç§»åŠ¨çš„åŠ¨ç”»æ•ˆæœ
+    //ÒÆ¶¯µÄ¶¯»­Ğ§¹û
 	/*
 	 * TranslateAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta)
 	 *
-	 * float fromXDelta:è¿™ä¸ªå‚æ•°è¡¨ç¤ºåŠ¨ç”»å¼€å§‹çš„ç‚¹ç¦»å½“å‰View Xåæ ‡ä¸Šçš„å·®å€¼ï¼›
+	 * float fromXDelta:Õâ¸ö²ÎÊı±íÊ¾¶¯»­¿ªÊ¼µÄµãÀëµ±Ç°View X×ø±êÉÏµÄ²îÖµ£»
      *
-ã€€ã€€       * float toXDelta, è¿™ä¸ªå‚æ•°è¡¨ç¤ºåŠ¨ç”»ç»“æŸçš„ç‚¹ç¦»å½“å‰View Xåæ ‡ä¸Šçš„å·®å€¼ï¼›
+¡¡¡¡       * float toXDelta, Õâ¸ö²ÎÊı±íÊ¾¶¯»­½áÊøµÄµãÀëµ±Ç°View X×ø±êÉÏµÄ²îÖµ£»
      *
-ã€€ã€€       * float fromYDelta, è¿™ä¸ªå‚æ•°è¡¨ç¤ºåŠ¨ç”»å¼€å§‹çš„ç‚¹ç¦»å½“å‰View Yåæ ‡ä¸Šçš„å·®å€¼ï¼›
+¡¡¡¡       * float fromYDelta, Õâ¸ö²ÎÊı±íÊ¾¶¯»­¿ªÊ¼µÄµãÀëµ±Ç°View Y×ø±êÉÏµÄ²îÖµ£»
      *
-ã€€ã€€       * float toYDelta)è¿™ä¸ªå‚æ•°è¡¨ç¤ºåŠ¨ç”»å¼€å§‹çš„ç‚¹ç¦»å½“å‰View Yåæ ‡ä¸Šçš„å·®å€¼ï¼›
+¡¡¡¡       * float toYDelta)Õâ¸ö²ÎÊı±íÊ¾¶¯»­¿ªÊ¼µÄµãÀëµ±Ç°View Y×ø±êÉÏµÄ²îÖµ£»
 	 */
     protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
                                       final Button button, long durationMillis)
@@ -918,11 +697,11 @@ public class MainActivity extends Activity implements OnClickListener,
     }
 
     /**
-     * å¾®åšè®¤è¯æˆæƒå›è°ƒç±»ã€‚
-     * 1. SSOç™»é™†æ—¶ï¼Œéœ€è¦åœ¨{@link #onActivityResult}ä¸­è°ƒç”¨mSsoHandler.authorizeCallBackåï¼Œ
-     *    è¯¥å›è°ƒæ‰ä¼šè¢«æ‰§è¡Œã€‚
-     * 2. éSSOç™»é™†æ—¶ï¼Œå½“æˆæƒåï¼Œå°±ä¼šè¢«æ‰§è¡Œã€‚
-     * å½“æˆæƒæˆåŠŸåï¼Œè¯·ä¿å­˜è¯¥access_tokenã€expires_inç­‰ä¿¡æ¯åˆ°SharedPreferencesä¸­ã€‚
+     * Î¢²©ÈÏÖ¤ÊÚÈ¨»Øµ÷Àà¡£
+     * 1. SSOµÇÂ½Ê±£¬ĞèÒªÔÚ{@link #onActivityResult}ÖĞµ÷ÓÃmSsoHandler.authorizeCallBackºó£¬
+     *    ¸Ã»Øµ÷²Å»á±»Ö´ĞĞ¡£
+     * 2. ·ÇSSOµÇÂ½Ê±£¬µ±ÊÚÈ¨ºó£¬¾Í»á±»Ö´ĞĞ¡£
+     * µ±ÊÚÈ¨³É¹¦ºó£¬Çë±£´æ¸Ãaccess_token¡¢expires_inµÈĞÅÏ¢µ½SharedPreferencesÖĞ¡£
      
         class AuthDialogListener implements WeiboAuthListener {
             
@@ -935,11 +714,11 @@ public class MainActivity extends Activity implements OnClickListener,
                 if (mAccessToken.isSessionValid()) {
                     String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
                             .format(new java.util.Date(mAccessToken.getExpiresTime()));
-                    //mText.setText("è®¤è¯æˆåŠŸ: \r\n access_token: " + token + "\r\n" + "expires_in: "
-                    //        + expires_in + "\r\næœ‰æ•ˆæœŸï¼š" + date);
+                    //mText.setText("ÈÏÖ¤³É¹¦: \r\n access_token: " + token + "\r\n" + "expires_in: "
+                    //        + expires_in + "\r\nÓĞĞ§ÆÚ£º" + date);
 
                     AccessTokenKeeper.keepAccessToken(MainActivity.this, mAccessToken);
-                    Toast.makeText(MainActivity.this, "è®¤è¯æˆåŠŸ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "ÈÏÖ¤³É¹¦", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -965,8 +744,8 @@ public class MainActivity extends Activity implements OnClickListener,
         protected void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             
-            // SSO æˆæƒå›è°ƒ
-            // é‡è¦ï¼šå‘èµ· SSO ç™»é™†çš„Activityå¿…é¡»é‡å†™onActivityResult
+            // SSO ÊÚÈ¨»Øµ÷
+            // ÖØÒª£º·¢Æğ SSO µÇÂ½µÄActivity±ØĞëÖØĞ´onActivityResult
             if (mSsoHandler != null) {
                 mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
             }else if(mSsoHandler == null){
@@ -976,11 +755,11 @@ public class MainActivity extends Activity implements OnClickListener,
 */
     private void initViews() {
 		tvLeft = (TextView) findViewById(R.id.tvLeft);
-		tvLeft.setText("è®¾ç½®");
+		tvLeft.setText("ÉèÖÃ");
 		tvLeft.setOnClickListener(this);
 
 		tvRightT = (TextView) findViewById(R.id.tvRightT);
-		tvRightT.setText("ä¸€å‘¨");
+		tvRightT.setText("Ò»ÖÜ");
 		tvRightT.setOnClickListener(this);
 
 		tvTitle = (TextView) findViewById(R.id.tvTitle);
@@ -1051,8 +830,8 @@ public class MainActivity extends Activity implements OnClickListener,
 																		// do;
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			AlertDialog dialog = null;
-			builder.setTitle("æ·»åŠ è¯¾ç¨‹ä¹‹å‰ï¼Œè¯·å…ˆè®¾ç½®æœ¬å‘¨æ¬¡æ•°åŠç›¸å…³é‡è¦å‚æ•°å…ˆ");
-			builder.setPositiveButton("ç¡®å®š",
+			builder.setTitle("Ìí¼Ó¿Î³ÌÖ®Ç°£¬ÇëÏÈÉèÖÃ±¾ÖÜ´ÎÊı¼°Ïà¹ØÖØÒª²ÎÊıÏÈ");
+			builder.setPositiveButton("È·¶¨",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -1062,7 +841,7 @@ public class MainActivity extends Activity implements OnClickListener,
 							dialog.dismiss();
 						}
 					});
-			builder.setNegativeButton("å–æ¶ˆ",
+			builder.setNegativeButton("È¡Ïû",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -1109,14 +888,14 @@ public class MainActivity extends Activity implements OnClickListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 					SensorManager.SENSOR_DELAY_NORMAL)) {
 				if (preferences.getBoolean(CommonConstants.IS_FIRST_RUN, true)) {
-					Toast.makeText(this, "æ‚¨çš„æ‰‹æœºä¸æ”¯æŒæ‘‡ä¸€æ‘‡å›åˆ°å½“å¤©è¯¾ç¨‹è¡¨åŠŸèƒ½",
+					Toast.makeText(this, "ÄúµÄÊÖ»ú²»Ö§³ÖÒ¡Ò»Ò¡»Øµ½µ±Ìì¿Î³Ì±í¹¦ÄÜ",
 							Toast.LENGTH_SHORT).show();
 					editor.putBoolean(
 							CommonConstants.IS_ACCELEREMETER_SUPPORTED, false);
 				}
 			} else {
 				if (preferences.getBoolean(CommonConstants.IS_FIRST_RUN, true)) {
-					Toast.makeText(this, "æ‘‡ä¸€æ‘‡å›åˆ°å½“å¤©è¯¾ç¨‹å“¦ï¼", Toast.LENGTH_SHORT)
+					Toast.makeText(this, "Ò¡Ò»Ò¡»Øµ½µ±Ìì¿Î³ÌÅ¶£¡", Toast.LENGTH_SHORT)
 							.show();
 					editor.putBoolean(
 							CommonConstants.IS_ACCELEREMETER_SUPPORTED, true);
@@ -1180,7 +959,7 @@ public class MainActivity extends Activity implements OnClickListener,
 				// intent.putExtra("fromMainActivity", true);
 				startActivity(intent);
 			} else {
-				Toast.makeText(this, "æ‚¨çš„ç½‘ç»œæ²¡æœ‰æ‰“å¼€ï¼ŒåŒæ­¥å‰è¯·å…ˆæ‰“å¼€ç½‘ç»œ", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "ÄúµÄÍøÂçÃ»ÓĞ´ò¿ª£¬Í¬²½Ç°ÇëÏÈ´ò¿ªÍøÂç", Toast.LENGTH_SHORT)
 						.show();
 			}
 			break;
@@ -1190,7 +969,6 @@ public class MainActivity extends Activity implements OnClickListener,
 			// this.finish();
 			break;
 		case R.id.memu_exiting:
-			ShareSDK.stopSDK(this);//é‡Šæ”¾ç»Ÿè®¡èµ„æº
 			SyllabusApplication.getInstance().exitApplication();
 			break;
 		case R.id.menu_help:
@@ -1238,7 +1016,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.tvTitle:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("è¯·é€‰æ‹©");
+			builder.setTitle("ÇëÑ¡Ôñ");
 			builder.setItems(CommonConstants.DAYOFWEEKS_INCHN,
 					new DialogInterface.OnClickListener() {
 						@Override
@@ -1378,11 +1156,11 @@ public class MainActivity extends Activity implements OnClickListener,
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
-			// å‚æ•°è§£é‡Šï¼š
-			// e1ï¼šç¬¬1ä¸ªACTION_DOWN MotionEvent
-			// e2ï¼šæœ€åä¸€ä¸ªACTION_MOVE MotionEvent
-			// velocityXï¼šXè½´ä¸Šçš„ç§»åŠ¨é€Ÿåº¦ï¼Œåƒç´ /ç§’
-			// velocityYï¼šYè½´ä¸Šçš„ç§»åŠ¨é€Ÿåº¦ï¼Œåƒç´ /ç§’
+			// ²ÎÊı½âÊÍ£º
+			// e1£ºµÚ1¸öACTION_DOWN MotionEvent
+			// e2£º×îºóÒ»¸öACTION_MOVE MotionEvent
+			// velocityX£ºXÖáÉÏµÄÒÆ¶¯ËÙ¶È£¬ÏñËØ/Ãë
+			// velocityY£ºYÖáÉÏµÄÒÆ¶¯ËÙ¶È£¬ÏñËØ/Ãë
 			if (null != e1 && null != e2) {// sometimes, there will be some Null
 											// Pointer Exception about e1 or e2,
 											// so we need to ensure the validity
@@ -1457,7 +1235,7 @@ public class MainActivity extends Activity implements OnClickListener,
 								MainActivity.this);
 						AlertDialog dialog = null;
 
-						builder.setPositiveButton("ä¿®æ”¹",
+						builder.setPositiveButton("ĞŞ¸Ä",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -1478,7 +1256,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setNeutralButton("åˆ é™¤",
+						builder.setNeutralButton("É¾³ı",
 								new DialogInterface.OnClickListener() {
 									AlertDialog deleteDialog = null;
 
@@ -1488,14 +1266,14 @@ public class MainActivity extends Activity implements OnClickListener,
 										AlertDialog.Builder builder = new AlertDialog.Builder(
 												MainActivity.this);
 										StringBuilder str = new StringBuilder(
-												"ä½ ç¡®å®šè¦åˆ é™¤ ");
+												"ÄãÈ·¶¨ÒªÉ¾³ı ");
 										str.append(oneWeekCourses
 												.get(dayOfWeek - 1).get(pos)
 												.getcName());
-										str.append(" è¿™é—¨è¯¾ä¹ˆ?");
+										str.append(" ÕâÃÅ¿ÎÃ´?");
 										builder.setTitle(str.toString());
 										builder.setPositiveButton(
-												"ç¡®å®š",
+												"È·¶¨",
 												new DialogInterface.OnClickListener() {
 
 													@Override
@@ -1514,7 +1292,7 @@ public class MainActivity extends Activity implements OnClickListener,
 													}
 												});
 										builder.setNegativeButton(
-												"å–æ¶ˆ",
+												"È¡Ïû",
 												new DialogInterface.OnClickListener() {
 													@Override
 													public void onClick(
@@ -1530,7 +1308,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setNegativeButton("å–æ¶ˆ",
+						builder.setNegativeButton("È¡Ïû",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -1540,7 +1318,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setTitle("ä½ è¦å¯¹è¯¥èŠ‚è¯¾åš");
+						builder.setTitle("ÄãÒª¶Ô¸Ã½Ú¿Î×ö");
 						dialog = builder.create();
 
 						dialog.show();
@@ -1611,7 +1389,7 @@ public class MainActivity extends Activity implements OnClickListener,
 						updateViewFlipper();
 						tvTitle.setText(CommonConstants
 								.getStrFromWeekNum(dayOfWeek));
-						Toast.makeText(this, "ç¬¬" + weekOfSemister + "å‘¨è¯¾è¡¨",
+						Toast.makeText(this, "µÚ" + weekOfSemister + "ÖÜ¿Î±í",
 								Toast.LENGTH_SHORT).show();
 					}
 					Log.i(LOGTAG, "weekOfSemister = " + weekOfSemister);
@@ -1628,7 +1406,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		switch (v.getId()) {
 		case R.id.tvTitle:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);// )
-			builder.setTitle("é€‰æ‹©å‘¨æ¬¡");
+			builder.setTitle("Ñ¡ÔñÖÜ´Î");
 			builder.setItems(CommonConstants.WEEKOFSEMISTER_INNUMBER,
 					new DialogInterface.OnClickListener() {
 
@@ -1639,7 +1417,7 @@ public class MainActivity extends Activity implements OnClickListener,
 								updateViewFlipper();
 							}
 							Toast.makeText(MainActivity.this,
-									"è¿™æ˜¯ç¬¬" + which + "å‘¨", Toast.LENGTH_SHORT)
+									"ÕâÊÇµÚ" + which + "ÖÜ", Toast.LENGTH_SHORT)
 									.show();
 						}
 					});
@@ -1658,7 +1436,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			case 1:
 				updateViewFlipper();
 				tvTitle.setText(CommonConstants.getStrFromWeekNum(dayOfWeek));
-				Toast.makeText(MainActivity.this, "ç¬¬" + weekOfSemister + "å‘¨è¯¾è¡¨",
+				Toast.makeText(MainActivity.this, "µÚ" + weekOfSemister + "ÖÜ¿Î±í",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2:
