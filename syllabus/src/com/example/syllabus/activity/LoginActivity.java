@@ -22,7 +22,7 @@ import com.example.syllabus.utils.CommonConstants;
 import com.example.syllabus.utils.LogUtil;
 
 /**
- * 登陆界面，可以跳过，跳过之后就不能下在课表
+ * 登陆界面，可以跳过，跳过之后就不能下载课表
  * 
  * @author Administrator
  * 
@@ -133,8 +133,8 @@ public class LoginActivity extends Activity implements OnClickListener
             // for test
             etDepartmentName.setText("计算机科学与工程学院");
             etUniversityName.setText("安徽理工大学");
-            etGradeNum.setText("2011");
-            etMajorName.setText("计算机应用技术");
+            etGradeNum.setText("2010");
+            etMajorName.setText("电子信息技术及仪器");
             etClassName.setText("1");
         }
         else

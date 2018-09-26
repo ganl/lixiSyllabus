@@ -37,7 +37,6 @@ import com.example.syllabus.utils.LogUtil;
 public class SetUpActivity extends Activity implements OnClickListener
 {
     private static final String LOGTAG = LogUtil.makeLogTag(OneWeekCourseListActivity.class);
-    
     private static final String SELECTED = "selected";
     
     private static final int SET_END_TIME = 1;
@@ -102,24 +101,6 @@ public class SetUpActivity extends Activity implements OnClickListener
     
     private TextView tvSixthClassEndTime;
     
-    private LinearLayout[] linearLayouts = {llFirstClass, llSecondClass, llThirdClass, llFourthClass, llFifthClass,
-        llSixthClass};
-    
-    private TextView[] tViewsStartTime = {tvFirstClassStartTime, tvSecondClassStartTime, tvThirdClassStartTime,
-        tvFourthClassStartTime, tvFifthClassStartTime, tvSixthClassStartTime};
-    
-    private TextView[] tViewsEndTime = {tvFirstClassEndTime, tvSecondClassEndTime, tvThirdClassEndTime,
-        tvFourthClassEndTime, tvFifthClassEndTime, tvSixthClassEndTime};
-    
-    private int[] llviewResources = {R.id.firstclass, R.id.secondclass, R.id.thirdclass, R.id.fourthclass,
-        R.id.fifthclass, R.id.sixthclass};
-    
-    private int[] tvViewResourcesStart = {R.id.firstclassstart, R.id.secondclassstart, R.id.thirdclassstart,
-        R.id.fourthclassstart, R.id.fifthclassstart, R.id.sixthclassstart};
-    
-    private int[] tvViewResourcesEnd = {R.id.firstclassend, R.id.secondclassend, R.id.thirdclassend,
-        R.id.fourthclassend, R.id.fifthclassend, R.id.sixthclassend};
-    
     private LinearLayout llCurrentWeek;
     
     private SharedPreferences preference;
@@ -171,31 +152,67 @@ public class SetUpActivity extends Activity implements OnClickListener
         tvWeekNum = (TextView)findViewById(R.id.weeknumtv);
         weekOfSemister = preference.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
         String weekNum = weekOfSemister + "";
+        // Integer.toString(preference.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKNUM));
         tvWeekNum.setText(weekNum);
         tvWeekNum.setOnClickListener(this);
         
         llCurrentWeek = (LinearLayout)findViewById(R.id.currentweek);
         llCurrentWeek.setOnClickListener(this);
         
-        for (int i = 0; i < linearLayouts.length; i++)
-        {
-            linearLayouts[i] = (LinearLayout)findViewById(llviewResources[i]);
-            linearLayouts[i].setOnClickListener(this);
-            
-            tViewsStartTime[i] = (TextView)findViewById(tvViewResourcesStart[i]);
-            tViewsEndTime[i] = (TextView)findViewById(tvViewResourcesEnd[i]);
-            
-            tViewsStartTime[i].setText(preference.getString(CommonConstants.STR_START_TIME[i],
-                CommonConstants.STARTTIME[i]));
-            tViewsEndTime[i].setText(preference.getString(CommonConstants.STR_END_TIME[i], CommonConstants.ENDTIME[i]));
-            
-            tViewsStartTime[i].setOnClickListener(this);
-            tViewsEndTime[i].setOnClickListener(this);
-            
-            tvStartTimeList.add(tViewsStartTime[i]);
-            tvEndTimeList.add(tViewsEndTime[i]);
-            
-        }
+        tvFirstClassStartTime = (TextView)findViewById(R.id.firstclassstart);
+        tvStartTimeList.add(tvFirstClassStartTime);
+        tvFirstClassStartTime.setText(preference.getString(CommonConstants.FIRST_CLASS_START,
+            CommonConstants.FIRST_CLASS_START_TIME));
+        tvFirstClassEndTime = (TextView)findViewById(R.id.firstclassend);
+        tvEndTimeList.add(tvFirstClassEndTime);
+        tvFirstClassEndTime.setText(preference.getString(CommonConstants.FIRST_CLASS_END,
+            CommonConstants.FIRST_CLASS_END_TIME));
+        
+        tvSecondClassStartTime = (TextView)findViewById(R.id.secondclassstart);
+        tvStartTimeList.add(tvSecondClassStartTime);
+        tvSecondClassStartTime.setText(preference.getString(CommonConstants.SECOND_CLASS_START,
+            CommonConstants.SECOND_CLASS_START_TIME));
+        tvSecondClassEndTime = (TextView)findViewById(R.id.secondclassend);
+        tvEndTimeList.add(tvSecondClassEndTime);
+        tvSecondClassEndTime.setText(preference.getString(CommonConstants.SECOND_CLASS_END,
+            CommonConstants.SECOND_CLASS_END_TIME));
+        
+        tvThirdClassStartTime = (TextView)findViewById(R.id.thirdclassstart);
+        tvStartTimeList.add(tvThirdClassStartTime);
+        tvThirdClassStartTime.setText(preference.getString(CommonConstants.THIRD_CLASS_START,
+            CommonConstants.THIRD_CLASS_START_TIME));
+        tvThirdClassEndTime = (TextView)findViewById(R.id.thirdclassend);
+        tvEndTimeList.add(tvThirdClassEndTime);
+        tvThirdClassEndTime.setText(preference.getString(CommonConstants.THIRD_CLASS_END,
+            CommonConstants.THIRD_CLASS_END_TIME));
+        
+        tvFourthClassStartTime = (TextView)findViewById(R.id.fourthclassstart);
+        tvStartTimeList.add(tvFourthClassStartTime);
+        tvFourthClassStartTime.setText(preference.getString(CommonConstants.FOURTH_CLASS_START,
+            CommonConstants.FOURTH_CLASS_START_TIME));
+        tvFourthClassEndTime = (TextView)findViewById(R.id.fourthclassend);
+        tvEndTimeList.add(tvFourthClassEndTime);
+        tvFourthClassEndTime.setText(preference.getString(CommonConstants.FOURTH_CLASS_END,
+            CommonConstants.FOURTH_CLASS_END_TIME));
+        
+        tvFifthClassStartTime = (TextView)findViewById(R.id.fifthclassstart);
+        tvStartTimeList.add(tvFifthClassStartTime);
+        tvFifthClassStartTime.setText(preference.getString(CommonConstants.FIFTH_CLASS_START,
+            CommonConstants.FIFTH_CLASS_START_TIME));
+        tvFifthClassEndTime = (TextView)findViewById(R.id.fifthclassend);
+        tvEndTimeList.add(tvFifthClassEndTime);
+        tvFifthClassEndTime.setText(preference.getString(CommonConstants.FIFTH_CLASS_END,
+            CommonConstants.FIFTH_CLASS_END_TIME));
+        
+        tvSixthClassStartTime = (TextView)findViewById(R.id.sixthclassstart);
+        tvStartTimeList.add(tvSixthClassStartTime);
+        tvSixthClassStartTime.setText(preference.getString(CommonConstants.SIXTH_CLASS_START,
+            CommonConstants.SIXTH_CLASS_START_TIME));
+        
+        tvSixthClassEndTime = (TextView)findViewById(R.id.sixthclassend);
+        tvEndTimeList.add(tvSixthClassEndTime);
+        tvSixthClassEndTime.setText(preference.getString(CommonConstants.SIXTH_CLASS_END,
+            CommonConstants.SIXTH_CLASS_END_TIME));
         
         tvTitle = (TextView)findViewById(R.id.tvTitle);
         tvTitle.setText("全局设置");
@@ -207,6 +224,34 @@ public class SetUpActivity extends Activity implements OnClickListener
         tvLeft = (TextView)findViewById(R.id.tvLeft);
         tvLeft.setText("返回");
         tvLeft.setOnClickListener(this);
+        
+        llFirstClass = (LinearLayout)findViewById(R.id.firstclass);
+        llSecondClass = (LinearLayout)findViewById(R.id.secondclass);
+        llThirdClass = (LinearLayout)findViewById(R.id.thirdclass);
+        llFourthClass = (LinearLayout)findViewById(R.id.fourthclass);
+        llFifthClass = (LinearLayout)findViewById(R.id.fifthclass);
+        llSixthClass = (LinearLayout)findViewById(R.id.sixthclass);
+        
+        llFirstClass.setOnClickListener(this);
+        llSecondClass.setOnClickListener(this);
+        llThirdClass.setOnClickListener(this);
+        llFourthClass.setOnClickListener(this);
+        llFifthClass.setOnClickListener(this);
+        llSixthClass.setOnClickListener(this);
+        
+        tvFirstClassEndTime.setOnClickListener(this);
+        tvSecondClassEndTime.setOnClickListener(this);
+        tvThirdClassEndTime.setOnClickListener(this);
+        tvFourthClassEndTime.setOnClickListener(this);
+        tvFifthClassEndTime.setOnClickListener(this);
+        tvSixthClassEndTime.setOnClickListener(this);
+        
+        tvFirstClassStartTime.setOnClickListener(this);
+        tvSecondClassStartTime.setOnClickListener(this);
+        tvFourthClassStartTime.setOnClickListener(this);
+        tvThirdClassStartTime.setOnClickListener(this);
+        tvFifthClassStartTime.setOnClickListener(this);
+        tvSixthClassStartTime.setOnClickListener(this);
         
         tvShieldOnOff = (TextView)findViewById(R.id.shieldonoff);
         ivShieldChecked = (ImageView)findViewById(R.id.shield);
@@ -243,6 +288,7 @@ public class SetUpActivity extends Activity implements OnClickListener
         if (null == ivShieldChecked.getTag())
         {
             etSmsText.setEnabled(false);
+            
         }
         else
         {
@@ -263,22 +309,24 @@ public class SetUpActivity extends Activity implements OnClickListener
         {
             case R.id.tvRightT:
                 Editor editor = preference.edit();
-                for (int i = 0; i < tViewsStartTime.length; i++)
+                for (int i = 0; i < tvStartTimeList.size(); i++)
                 {
-                    editor.putString(CommonConstants.STR_START_TIME[i], tViewsStartTime[i].getText().toString());
+                    editor.putString(CommonConstants.STR_START_TIME[i], tvStartTimeList.get(i).getText().toString());
                 }
-                for (int i = 0; i < tViewsEndTime.length; i++)
+                for (int i = 0; i < tvEndTimeList.size(); i++)
                 {
-                    editor.putString(CommonConstants.STR_END_TIME[i], tViewsEndTime[i].getText().toString());
+                    editor.putString(CommonConstants.STR_END_TIME[i], tvEndTimeList.get(i).getText().toString());
                 }
-                // 如果屏蔽打开，那么需要保存短信内容，如果短信内容为空，那么保存默认内容
+                
                 if (null != ivShieldChecked.getTag())
                 {
                     editor.putBoolean(CommonConstants.SHIELDED, true);
                     if (null == etSmsText.getText() || "".equals(etSmsText.getText().toString()))
                     {
                         editor.putString(CommonConstants.SMS_TEXT, CommonConstants.DEFAULT_SMSTEXT);
+                        Log.i(LOGTAG, "nothing is inputted");
                     }
+                    Log.i(LOGTAG, "something is there:" + etSmsText.getText().toString());
                     editor.putString(CommonConstants.SMS_TEXT, etSmsText.getText().toString());
                 }
                 else
@@ -286,7 +334,6 @@ public class SetUpActivity extends Activity implements OnClickListener
                     editor.putBoolean(CommonConstants.SHIELDED, false);
                 }
                 
-                // 保存当前周次及当前星期数（在一年中的数目），每次程序启动，都要更新
                 int weekInYear = CommonConstants.getCurrentWeekInYear();
                 if (weekOfSemister != preference.getInt(CommonConstants.WEEKOFSEMISTER,
                     CommonConstants.DEFAULT_WEEKOFSEMISTER))
@@ -303,6 +350,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                     intent.setClass(this, MainActivity.class);
                     startActivity(intent);
                 }
+                
                 this.finish();
                 break;
             case R.id.tvLeft:
@@ -325,7 +373,9 @@ public class SetUpActivity extends Activity implements OnClickListener
                 
                 break;
             case R.id.firstclass:
+                Log.i(LOGTAG, "first class activated: firstclass");
             case R.id.firstclassstart:
+                Log.i(LOGTAG, "first class activated: firstclassstart");
                 courseIndex = 1;
                 showTimePickerDialog(courseIndex, SET_START_TIME);
                 break;
@@ -342,6 +392,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                 courseIndex = 2;
                 showTimePickerDialog(courseIndex, SET_END_TIME);
                 break;
+            
             case R.id.thirdclass:
             case R.id.thirdclassstart:
                 courseIndex = 3;
@@ -351,6 +402,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                 courseIndex = 3;
                 showTimePickerDialog(courseIndex, SET_END_TIME);
                 break;
+            
             case R.id.fourthclass:
             case R.id.fourthclassstart:
                 courseIndex = 4;
@@ -360,6 +412,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                 courseIndex = 4;
                 showTimePickerDialog(courseIndex, SET_END_TIME);
                 break;
+            
             case R.id.fifthclassstart:
                 courseIndex = 5;
                 showTimePickerDialog(courseIndex, SET_START_TIME);
@@ -381,7 +434,6 @@ public class SetUpActivity extends Activity implements OnClickListener
             case R.id.llshield:
             case R.id.shieldonoff:
             case R.id.shield:
-                // 屏蔽是否被打开，在于ImageView的Tag是否被设置为SELECTED。
                 if (null != ivShieldChecked.getTag())
                 {
                     tvShieldOnOff.setText("点击打开上课来电屏蔽");
@@ -473,6 +525,7 @@ public class SetUpActivity extends Activity implements OnClickListener
             switch (msg.what)
             {
                 case SET_END_TIME:
+                    Log.i(LOGTAG, "message received : set end time");
                     courseIndex = msg.arg1;
                     callBack = new MyTimePickerListener(courseIndex, false);
                     time =
@@ -486,6 +539,7 @@ public class SetUpActivity extends Activity implements OnClickListener
                     dialog.show();
                     break;
                 case SET_START_TIME:
+                    Log.i(LOGTAG, "message received : set end time");
                     courseIndex = msg.arg1;
                     callBack = new MyTimePickerListener(courseIndex, true);
                     time =

@@ -2,7 +2,7 @@ package com.example.syllabus.utils;
 
 public class Urls
 {
-    final static String base_url = "http://do.jhost.cn/leoking870/";
+    final static String base_url = "http://10.0.2.2:8008/Syllabus_server/";
     
     public static String getStudentLoginUrl()
     {

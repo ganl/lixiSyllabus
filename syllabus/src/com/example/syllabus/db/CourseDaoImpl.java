@@ -83,7 +83,6 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
             c.close();
             return course2.getId();
         }
-        c.close();
         return 0;
     }
     
@@ -123,9 +122,7 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         if (isTeacher)
         {
             where = new StringBuilder("tNo" + " = ?");
-            whereArgs =
-                new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID,
-                    CommonConstants.DEFAULT_TEACHER_ID))};
+            whereArgs = new String[] {Integer.toString(preferences.getInt(CommonConstants.TEACHER_ID, CommonConstants.DEFAULT_TEACHER_ID))};
             c = db.query(COURSE_NAME, null, where.toString(), whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
         }
         else
@@ -322,4 +319,31 @@ public class CourseDaoImpl extends DBService<Course> implements CourseDao
         return listOfWeek;
     }
     
+    // public List<List<Course>> getCourseByTeacherID(int currentWeek, int teacherid)
+    // {
+    // db = this.getReadableDatabase();
+    // List<List<Course>> listOfWeek = new ArrayList<List<Course>>();
+    // for (int i = 0; i < 7; i++)
+    // {
+    // listOfWeek.add(new ArrayList<Course>());
+    // }
+    // String where = "TNO" + " = ?" + " and " + CSTARTWEEK + " <= ?" + " and " + CENDWEEK + " >= ?";
+    // String[] whereArgs = {Integer.toString(teacherid), currentWeek + "", currentWeek + ""};
+    // Cursor c = db.query(COURSE_NAME, null, where, whereArgs, null, null, CWEEKDAY + " , " + COURSEINDEX);
+    //
+    // List<Course> courseList = buildList(c);
+    // List<Course> oneDay = new ArrayList<Course>();
+    // for (int i = 0; i < courseList.size(); i++)
+    // {
+    // oneDay.add(courseList.get(i));
+    // if ((i + 1) == courseList.size() || courseList.get(i).getcWeekday() != courseList.get(i + 1).getcWeekday())
+    // {
+    // listOfWeek.set(courseList.get(i).getcWeekday() - 1, oneDay);// add(oneDay);
+    // oneDay = new ArrayList<Course>();
+    // }
+    // }
+    // c.close();
+    // db.close();
+    // return listOfWeek;
+    // }
 }

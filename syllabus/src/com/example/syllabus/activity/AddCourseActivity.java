@@ -368,10 +368,6 @@ public class AddCourseActivity extends Activity implements OnClickListener, OnLo
                         addCourseToServer(course, idOfLocalCourse, UPDATE_COURSE);
                     }
                     ((SyllabusApplication)getApplication()).isDataHasBeenMotifyed = true;
-                    
-                    Intent intent = new Intent("com.example.syllabus.activity.CLICK");
-                    this.sendBroadcast(intent);
-                    
                     this.finish();
                     
                 }

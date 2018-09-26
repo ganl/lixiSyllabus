@@ -1,15 +1,15 @@
 <resources>
 
-    <string name="app_name">syllabus</string>
+    <string name="app_name">syllabus课表</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
-    <string name="title_activity_main">理信课程表</string>
+    <string name="title_activity_main">屏蔽来电课表</string>
     <string name="morning">上午</string>
     <string name="afternoon">下午</string>
     <string name="evening">晚上</string>
     <string name="default_text">默认课程</string>
     <string name="default_time">9:00en dash11:00</string>
-    <string name="default_roomnumber">新教301</string>
+    <string name="default_roomnumber">新教501</string>
     <string name="default_teacher">潘地林</string>
 
 </resources>

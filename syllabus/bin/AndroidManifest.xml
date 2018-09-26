@@ -27,6 +27,7 @@
 
     <application
         android:name="com.example.syllabus.SyllabusApplication"
+        android:enabled="true"
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
@@ -43,6 +44,12 @@
         </activity>
         <activity
             android:name=".activity.SetUpActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name=".activity.WelcomeActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
@@ -66,15 +73,27 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
-
+        <activity
+            android:name=".activity.UpLoadedActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        <!--
+        <activity
+            android:name="cn.appmedia.adshelf.activity.ApkList"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
+        -->
         <service android:name=".service.PhoneStateService" />
         <service android:name=".service.AddCourseToServer" />
         <service android:name="cn.appmedia.adshelf.download.DownLoadService" />
 
         <receiver
             android:name=".receiver.PhoneStateReceiver"
-            android:enabled="true" >
-            <intent-filter>
+            android:enabled="true"
+            android:exported="true" >
+            <intent-filter android:priority="2147483647" >
                 <action android:name="android.intent.action.PHONE_STATE" />
 
                 <category android:name="android.intent.category.DEFAULT" />

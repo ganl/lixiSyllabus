@@ -14,12 +14,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import cn.appmedia.adshelf.AdshelfManager;
 import cn.appmedia.adshelf.ShelfView;
 
@@ -42,7 +42,6 @@ import com.example.syllabus.utils.LogUtil;
 public class OneWeekCourseListActivity extends ExpandableListActivity implements OnClickListener
 {
     private static final String LOGTAG = LogUtil.makeLogTag(OneWeekCourseListActivity.class);
-    
     private TextView tvLeft;
     
     private TextView tvTitle;
@@ -65,9 +64,13 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
     
     private AlertDialog alertDialog;
     
-    private int code;
+    private ShelfView shelfView;
     
     private boolean isTeacher;
+    static
+    {
+        AdshelfManager.setAid(CommonConstants.AID);
+    }
     
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -85,6 +88,7 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
             Map<String, String> map = new HashMap<String, String>();
             groupList.add(map);
         }
+        
         initViews();
         
         progressDialog = new ProgressDialog(this);
@@ -137,6 +141,8 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
         tvRightT.setOnClickListener(this);
         
         lvOneWeekListView = getExpandableListView();
+        
+//        shelfView = new ShelfView(this);
         
     }
     
@@ -288,6 +294,7 @@ public class OneWeekCourseListActivity extends ExpandableListActivity implements
                 }
                 break;
             case R.id.tvTitle:
+//                shelfView.getShelf();
                 break;
             default:
                 break;

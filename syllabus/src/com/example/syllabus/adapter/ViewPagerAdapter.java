@@ -18,12 +18,14 @@ public class ViewPagerAdapter extends PagerAdapter
     @Override
     public void destroyItem(View container, int position, Object object)
     {
+        // TODO Auto-generated method stub
         ((ViewPager)container).removeView(views.get(position));
     }
     
     @Override
     public int getCount()
     {
+        // TODO Auto-generated method stub
         if (views != null)
         {
             return views.size();
@@ -34,7 +36,8 @@ public class ViewPagerAdapter extends PagerAdapter
     @Override
     public Object instantiateItem(View container, int position)
     {
-        ((ViewPager)container).addView(views.get(position));
+        // TODO Auto-generated method stub
+        ((ViewPager)container).addView(views.get(position), 0);
         return views.get(position);
     }
     

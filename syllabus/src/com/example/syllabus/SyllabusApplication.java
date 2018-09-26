@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-
 import cn.appmedia.adshelf.AdshelfManager;
 
 import com.example.syllabus.utils.CommonConstants;
@@ -60,14 +59,15 @@ public class SyllabusApplication extends Application
         System.exit(0);
     }
     
-    static
-    {
-        AdshelfManager.setAid(CommonConstants.AID);
-    }
+//    static
+//    {
+//        AdshelfManager.setAid(CommonConstants.AID);
+//    }
     
     @Override
     public void onCreate()
     {
+        // TODO Auto-generated method stub
         super.onCreate();
         
         preferences = getSharedPreferences(CommonConstants.SHARED_NAME, 0);
@@ -77,10 +77,9 @@ public class SyllabusApplication extends Application
         Editor editor = preferences.edit();
         if (0 != oldWeekOfYear)
         {
-            int weekOfSemister =
-                preferences.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER);
-            weekOfSemister = weekOfSemister + (currentWeekOfYear - oldWeekOfYear);
-            editor.putInt(CommonConstants.WEEKOFSEMISTER, weekOfSemister);
+            editor.putInt(CommonConstants.WEEKOFSEMISTER,
+                preferences.getInt(CommonConstants.WEEKOFSEMISTER, CommonConstants.DEFAULT_WEEKOFSEMISTER)
+                    + (currentWeekOfYear - oldWeekOfYear));
         }
         else
         {
@@ -90,7 +89,6 @@ public class SyllabusApplication extends Application
         
         editor.commit();
         notificationID = 2;
-        
     }
     
     public boolean isTeacher()

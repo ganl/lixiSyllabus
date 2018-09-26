@@ -4,12 +4,15 @@
     android:layout_height="fill_parent"
     android:background="@drawable/bcg"
     android:gravity="center_horizontal" >
-
+
+
     <include
         android:id="@+id/include1"
         android:layout_alignParentTop="true"
         layout="@layout/common_head" />
-
+
+
+
     <TextView
         android:id="@+id/login"
         android:layout_width="fill_parent"
@@ -20,7 +23,9 @@
         android:gravity="center"
         android:text="点击以获取课表"
         android:textColor="@color/shalowyellow" />
-
+
+
+
     <LinearLayout
         android:id="@+id/department"
         android:layout_width="fill_parent"
@@ -31,7 +36,8 @@
         android:layout_marginTop="68dp"
         android:background="@drawable/transparentpressed"
         android:gravity="center_vertical" >
-
+
+
         <TextView
             android:id="@+id/tvdeparment"
             android:layout_width="wrap_content"
@@ -88,7 +94,8 @@
             android:hint="请输入学校名称"
             android:paddingLeft="3dp" />
     </LinearLayout>
-
+
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="fill_parent"
@@ -105,7 +112,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
-
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -139,7 +147,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
-
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -157,7 +166,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="5"
                 android:background="@drawable/editor"
-                android:hint="比如&quot;2011&quot;（届）"
+                android:hint="比如&quot;2010&quot;（级）"
                 android:paddingLeft="3dp"
                 android:textColorHint="@color/gray" />
         </LinearLayout>
@@ -173,7 +182,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
-
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -191,7 +201,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="5"
                 android:background="@drawable/editor"
-                android:hint="请输入班级名"
+                android:hint="请输入班级号"
                 android:paddingLeft="3dp"
                 android:textColorHint="@color/gray" />
         </LinearLayout>

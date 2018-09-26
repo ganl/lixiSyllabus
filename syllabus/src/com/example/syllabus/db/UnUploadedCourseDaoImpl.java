@@ -23,16 +23,15 @@ public class UnUploadedCourseDaoImpl extends DBService<UnUploadedCourse> impleme
     
     public boolean isCourseInDB(long courseID)
     {
+        db = this.getReadableDatabase();
         String whereClause = UNUPLOADED_COURSE_ID + " = ?";
         String[] whereArgs = {courseID + ""};
         Cursor c = db.query(UNUPLOADED_NAME, null, whereClause, whereArgs, null, null, null);
         
         if (c.moveToFirst())
         {
-            c.close();
             return true;
         }
-        c.close();
         return false;
         
     }
@@ -84,13 +83,7 @@ public class UnUploadedCourseDaoImpl extends DBService<UnUploadedCourse> impleme
         
         if (isCourseInDB(courseID))
         {
-            // updateCourseUn(courseID, action);
-            String whereClause = UNUPLOADED_COURSE_ID + " = ? and " + ACTION_UNDO + " = ?";
-            String[] whereArgs = {courseID + "", action + ""};
-            UnUploadedCourse t = new UnUploadedCourse();
-            t.setCourseId(courseID);
-            t.setAction(action);
-            db.update(UNUPLOADED_NAME, deconstruct(t), whereClause, whereArgs);
+            updateCourseUn(courseID, action);
         }
         else
         {
@@ -142,15 +135,10 @@ public class UnUploadedCourseDaoImpl extends DBService<UnUploadedCourse> impleme
                 String[] whereValue = {Long.toString(unUploadedCourse.getCourseId())};
                 Cursor c2 = db.query(COURSE_NAME, null, where2, whereValue, null, null, null);
                 Course course = dao.buildOne(c2);
-                c2.close();
+                c.close();
                 
                 courses.add(course);
             }
-            c.close();
-        }
-        else
-        {
-            c.close();
         }
         db.close();
         return courses;
@@ -174,14 +162,10 @@ public class UnUploadedCourseDaoImpl extends DBService<UnUploadedCourse> impleme
                 String[] whereValue = {Long.toString(unUploadedCourse.getCourseId())};
                 Cursor c2 = db.query(COURSE_NAME, null, where2, whereValue, null, null, null);
                 Course course = dao.buildOne(c2);
-                c2.close();
+                c.close();
+                
                 courses.add(course);
             }
-            c.close();
-        }
-        else
-        {
-            c.close();
         }
         db.close();
         return courses;
