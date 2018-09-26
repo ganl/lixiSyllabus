@@ -66,7 +66,7 @@
                 android:text="@string/default_teacher"
                 android:textColor="@color/white"
                 android:textSize="14sp" />
-
+
             <TextView
                 android:id="@+id/roomnumber"
                 android:layout_width="fill_parent"
@@ -77,7 +77,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/yellow"
                 android:textSize="14sp" />
-
         </LinearLayout>
     </LinearLayout>
     <!--
@@ -87,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/divider"
         android:layout_alignParentRight="true"
-        android:src="@drawable/addimage" />
+        android:src="@drawable/addimage" />
     -->
 
 </LinearLayout>

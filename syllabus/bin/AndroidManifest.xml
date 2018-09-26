@@ -24,7 +24,12 @@
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-
+<uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature android:name="android.hardware.camera.autofocus"/>
+      <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.FLASHLIGHT"/>
     <application
         android:name="com.austgl.syllabus.SyllabusApplication"
         android:enabled="true"
@@ -36,7 +41,6 @@
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-
         </activity>
         <activity
             android:name=".activity.SetUpActivity"
@@ -59,8 +63,7 @@
             android:name=".activity.WeekAllListActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
+        </activity>
         -->
         <activity
             android:name=".activity.LoginActivity"
@@ -92,18 +95,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
-        <activity
-            android:name="cn.appmedia.adshelf.activity.ApkList"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
 
-
-        -->
         <service android:name=".service.PhoneStateService" />
         <service android:name=".service.AddCourseToServer" />
-        <service android:name="cn.appmedia.adshelf.download.DownLoadService" />
 
         <receiver
             android:name=".receiver.PhoneStateReceiver"

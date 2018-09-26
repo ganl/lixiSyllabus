@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/bcg" >
@@ -18,7 +17,7 @@
         android:layout_alignParentRight="true"
         android:layout_margin="10dp"
         android:background="@drawable/btn_bcg"
-        android:text="添加课程"
+        android:text="@string/add_course"
         android:textColor="@color/shalowyellow"
         android:textSize="16sp" />
 
@@ -50,5 +49,80 @@
             android:layout_height="fill_parent"
             android:src="@drawable/bt_right_arrows" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/button_composer_lock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_sleep" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_composer_thought"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_lock"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_thought" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_composer_music"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_music" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_composer_place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_music"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_place" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_composer_with"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_place"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_with" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_composer_qcode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_with"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/composer_camera" >
+    </Button>
+
+    <Button
+        android:id="@+id/button_friends_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_qcode"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="10dip"
+        android:background="@drawable/friends_delete" >
+    </Button>
 
 </RelativeLayout>

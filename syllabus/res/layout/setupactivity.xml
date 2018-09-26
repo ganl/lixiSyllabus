@@ -1,5 +1,4 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/bcg"
@@ -442,7 +441,7 @@
                 android:orientation="horizontal"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp" >
-
+
                 <EditText
                     android:id="@+id/smstext"
                     android:layout_width="fill_parent"
@@ -452,7 +451,6 @@
                     android:gravity="left"
                     android:hint="我正在上课，请稍候联系。或者下课后等我给您回电话。"
                     android:padding="3dp" />
-
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

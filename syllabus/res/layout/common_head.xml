@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="47dp"
     android:background="@drawable/head" >
-
+
     <TextView
         android:id="@+id/tvLeft"
         android:layout_width="60dp"
@@ -38,7 +38,7 @@
         android:textColor="@color/white"
         android:textSize="16dp"
         android:visibility="gone" />
-
+
     <TextView
         android:id="@+id/tvRightT"
         android:layout_width="60dp"
