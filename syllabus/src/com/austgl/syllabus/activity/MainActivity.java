@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.austgl.Zxing.CaptureActivity;
 import com.austgl.syllabus.R;
 import com.austgl.syllabus.SyllabusApplication;
 import com.austgl.syllabus.adapter.SimpleCourseAdapter;
@@ -254,6 +255,9 @@ public class MainActivity extends Activity implements OnClickListener,
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+                Intent it = new Intent();
+                it.setClass(MainActivity.this, CaptureActivity.class);
+                startActivity(it);
             }
         });
         buttonWith.setOnClickListener(new OnClickListener()
