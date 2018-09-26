@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.decoding;
+package com.austgl.zxing.decoding;
 
-
-import com.austgl.Zxing.camera.CameraManager;
 import com.austgl.syllabus.R;
-import com.austgl.Zxing.CaptureActivity;
-import com.austgl.Zxing.view.*;
+import com.austgl.zxing.CaptureActivity;
+import com.austgl.zxing.QcodeResult;
+import com.austgl.zxing.camera.CameraManager;
+import com.austgl.zxing.view.ViewfinderResultPointCallback;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -87,7 +87,13 @@ public final class CaptureActivityHandler extends Handler {
         Bundle bundle = message.getData();
         Bitmap barcode = bundle == null ? null :
             (Bitmap) bundle.getParcelable(DecodeThread.BARCODE_BITMAP);
+        String str_result=((Result) message.obj).getText();
         activity.handleDecode((Result) message.obj, barcode);
+    	Intent intent=new Intent(activity,QcodeResult.class);
+		intent.putExtra("code", str_result);
+		activity.startActivity(intent);
+		activity.finish();
+
         break;
       case R.id.decode_failed:
         // We're decoding as fast as possible, so when one decode fails, start another.
@@ -98,13 +104,6 @@ public final class CaptureActivityHandler extends Handler {
         Log.d(TAG, "Got return scan result message");
         activity.setResult(Activity.RESULT_OK, (Intent) message.obj);
         activity.finish();
-        break;
-      case R.id.launch_product_query:
-        Log.d(TAG, "Got product query message");
-        String url = (String) message.obj;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        activity.startActivity(intent);
         break;
     }
   }
@@ -122,6 +121,7 @@ public final class CaptureActivityHandler extends Handler {
 
     // Be absolutely sure we don't send any queued up messages
     removeMessages(R.id.decode_succeeded);
+    //removeMessages(R.id.return_scan_result);
     removeMessages(R.id.decode_failed);
   }
 

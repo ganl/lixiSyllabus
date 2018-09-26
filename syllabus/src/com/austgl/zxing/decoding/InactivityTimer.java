@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.decoding;
+package com.austgl.zxing.decoding;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

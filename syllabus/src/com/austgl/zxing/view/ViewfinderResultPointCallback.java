@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.view;
+package com.austgl.zxing.view;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;

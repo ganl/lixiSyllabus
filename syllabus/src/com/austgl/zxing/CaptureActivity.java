@@ -1,18 +1,22 @@
-package com.austgl.Zxing;
+package com.austgl.zxing;
 
 import java.io.IOException;
 import java.util.Vector;
 
-import com.austgl.Zxing.camera.CameraManager;
-import com.austgl.Zxing.decoding.CaptureActivityHandler;
-import com.austgl.Zxing.decoding.InactivityTimer;
 import com.austgl.syllabus.R;
-import com.austgl.Zxing.view.ViewfinderView;
+import com.austgl.zxing.camera.CameraManager;
+import com.austgl.zxing.decoding.CaptureActivityHandler;
+import com.austgl.zxing.decoding.InactivityTimer;
+import com.austgl.zxing.view.ViewfinderView;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
+//import com.google.zxing.BarcodeFormat;
+//import com.google.zxing.Result;
+
 
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
@@ -20,6 +24,7 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.Vibrator;
 import android.view.SurfaceHolder;
 import android.view.SurfaceHolder.Callback;
@@ -45,9 +50,7 @@ public class CaptureActivity extends Activity implements Callback {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.zxing);
-		//≥ı ºªØ CameraManager
-		CameraManager.init(getApplication());
-
+		CameraManager.init(this);
 		viewfinderView = (ViewfinderView) findViewById(R.id.viewfinder_view);
 		txtResult = (TextView) findViewById(R.id.txtResult);
 		hasSurface = false;
@@ -107,13 +110,11 @@ public class CaptureActivity extends Activity implements Callback {
 		}
 	}
 
-	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 
 	}
 
-	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		if (!hasSurface) {
 			hasSurface = true;
@@ -122,7 +123,6 @@ public class CaptureActivity extends Activity implements Callback {
 
 	}
 
-	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		hasSurface = false;
 
@@ -143,8 +143,6 @@ public class CaptureActivity extends Activity implements Callback {
 
 	public void handleDecode(Result obj, Bitmap barcode) {
 		inactivityTimer.onActivity();
-		viewfinderView.drawResultBitmap(barcode);
-		 playBeepSoundAndVibrate();
 		txtResult.setText(obj.getBarcodeFormat().toString() + ":"
 				+ obj.getText());
 	}

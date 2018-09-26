@@ -13,9 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="47dp"
         android:background="@drawable/btn_bcg"
         android:text="@string/add_course"
         android:textColor="@color/shalowyellow"
@@ -55,7 +57,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_sleep" >
     </Button>
@@ -66,7 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_composer_lock"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_thought" >
     </Button>
@@ -75,8 +77,9 @@
         android:id="@+id/button_composer_music"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@id/button_composer_thought"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_music" >
     </Button>
@@ -87,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_composer_music"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_place" >
     </Button>
@@ -98,7 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_composer_place"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_with" >
     </Button>
@@ -109,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_composer_with"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/composer_camera" >
     </Button>
@@ -120,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/button_composer_qcode"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dip"
+        android:layout_marginBottom="15dip"
         android:layout_marginLeft="10dip"
         android:background="@drawable/friends_delete" >
     </Button>

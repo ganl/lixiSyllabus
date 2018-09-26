@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.camera;
+package com.austgl.zxing.camera;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -134,7 +134,7 @@ public final class CameraManager {
       configManager.setDesiredCameraParameters(camera);
 
  //     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-      //ÊÇ·ñÊ¹ÓÃÇ°µÆ
+      //ï¿½Ç·ï¿½Ê¹ï¿½ï¿½Ç°ï¿½ï¿½
 //      if (prefs.getBoolean(PreferencesActivity.KEY_FRONT_LIGHT, false)) {
 //        FlashlightManager.enableFlashlight();
 //      }
@@ -253,10 +253,16 @@ public final class CameraManager {
       Rect rect = new Rect(getFramingRect());
       Point cameraResolution = configManager.getCameraResolution();
       Point screenResolution = configManager.getScreenResolution();
-      rect.left = rect.left * cameraResolution.x / screenResolution.x;
-      rect.right = rect.right * cameraResolution.x / screenResolution.x;
-      rect.top = rect.top * cameraResolution.y / screenResolution.y;
-      rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
+//      rect.left = rect.left * cameraResolution.x / screenResolution.x;
+//      rect.right = rect.right * cameraResolution.x / screenResolution.x;
+//      rect.top = rect.top * cameraResolution.y / screenResolution.y;
+//      rect.bottom = rect.bottom * cameraResolution.y / screenResolution.y;
+      
+      rect.left = rect.left * cameraResolution.y / screenResolution.x;
+      rect.right = rect.right * cameraResolution.y / screenResolution.x;
+      rect.top = rect.top * cameraResolution.x / screenResolution.y;
+      rect.bottom = rect.bottom * cameraResolution.x / screenResolution.y;
+
       framingRectInPreview = rect;
     }
     return framingRectInPreview;

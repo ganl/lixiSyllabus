@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.camera;
+package com.austgl.zxing.camera;
+
+///import com.google.zxing.LuminanceSource;
 
 import com.google.zxing.LuminanceSource;
 

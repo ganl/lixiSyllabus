@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.camera;
+package com.austgl.zxing.camera;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -73,6 +73,8 @@ final class CameraConfigurationManager {
     parameters.setPreviewSize(cameraResolution.x, cameraResolution.y);
     setFlash(parameters);
     setZoom(parameters);
+    camera.setDisplayOrientation(90);
+    
     //setSharpness(parameters);
     camera.setParameters(parameters);
   }

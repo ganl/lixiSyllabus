@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.camera;
+package com.austgl.zxing.camera;
 
 import android.hardware.Camera;
 import android.os.Handler;

@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/divider"
         android:layout_alignParentRight="true"
-        android:src="@drawable/addimage" />
+        android:src="@drawable/addimage" />
     -->
 
 </LinearLayout>

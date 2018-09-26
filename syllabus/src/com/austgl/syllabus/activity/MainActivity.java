@@ -1,13 +1,19 @@
 package com.austgl.syllabus.activity;
 
 import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.admin.DevicePolicyManager;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -45,7 +51,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.austgl.Zxing.CaptureActivity;
+
+import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.ShareSDK;
+import cn.sharesdk.framework.Platform.ShareParams;
+import cn.sharesdk.onekeyshare.OnekeyShare;
+import cn.sharesdk.onekeyshare.ShareContentCustomizeCallback;
+import cn.sharesdk.twitter.Twitter;
+
 import com.austgl.syllabus.R;
 import com.austgl.syllabus.SyllabusApplication;
 import com.austgl.syllabus.adapter.SimpleCourseAdapter;
@@ -55,6 +68,37 @@ import com.austgl.syllabus.db.CourseDaoImpl;
 import com.austgl.syllabus.utils.CommonConstants;
 import com.austgl.syllabus.utils.HttpConnect;
 import com.austgl.syllabus.utils.LogUtil;
+/*import com.sina.weibo.sdk.WeiboSDK;
+import com.sina.weibo.sdk.api.IWeiboAPI;
+import com.sina.weibo.sdk.api.ImageObject;
+import com.sina.weibo.sdk.api.SendMessageToWeiboRequest;
+import com.sina.weibo.sdk.api.SendMultiMessageToWeiboRequest;
+import com.sina.weibo.sdk.api.TextObject;
+import com.sina.weibo.sdk.api.WeiboMessage;
+import com.sina.weibo.sdk.api.WeiboMultiMessage;
+import com.weibo.sdk.android.Oauth2AccessToken;
+import com.weibo.sdk.android.Weibo;
+import com.weibo.sdk.android.WeiboAuthListener;
+import com.weibo.sdk.android.WeiboDialogError;
+import com.weibo.sdk.android.WeiboException;
+import com.weibo.sdk.android.api.WeiboAPI;
+import com.weibo.sdk.android.sso.SsoHandler;
+import com.weibo.sdk.android.util.AccessTokenKeeper;
+
+
+import com.baidu.cloudsdk.BaiduException;
+import com.baidu.cloudsdk.DefaultBaiduListener;
+import com.baidu.cloudsdk.IBaiduListener;
+import com.baidu.cloudsdk.social.core.MediaType;
+import com.baidu.cloudsdk.social.core.SessionManager;
+import com.baidu.cloudsdk.social.core.SessionManager.Session;
+import com.baidu.cloudsdk.social.core.SocialConstants;
+import com.baidu.cloudsdk.social.oauth.SocialConfig;
+import com.baidu.cloudsdk.social.oauth.SocialOAuthActivity;
+import com.baidu.cloudsdk.social.share.ShareContent;
+import com.baidu.cloudsdk.social.share.SocialShare;
+import com.baidu.cloudsdk.social.share.SocialShare.UIWidgetStyle;
+*/
 
 public class MainActivity extends Activity implements OnClickListener,
 		OnTouchListener, OnItemLongClickListener, SensorEventListener,
@@ -62,17 +106,17 @@ public class MainActivity extends Activity implements OnClickListener,
 	private static final String LOGTAG = LogUtil.makeLogTag(MainActivity.class);
 	public static final String ACTION_ADD_COURSE = "add";
 
-	private TextView tvLeft; // ���
+	private TextView tvLeft; // 左键
 
-	private TextView tvTitle; // ����
+	private TextView tvTitle; // 标题
 
-	private TextView tvRightT; // �Ҽ�
+	private TextView tvRightT; // 右键
 
-	private int dayOfWeek; // ���ڼ�
+	private int dayOfWeek; // 星期几
 
-	private int weekOfSemister; // �ڼ���
+	private int weekOfSemister; // 第几周
 
-	// private ImageView ivAddCourse; // ���ӿγ�
+	// private ImageView ivAddCourse; // 添加课程
 
 	private Button btnAddCourse;
 
@@ -118,13 +162,53 @@ public class MainActivity extends Activity implements OnClickListener,
 	private boolean isTeacher = false;
 
 
-    private Button buttonQcode, buttonDelete, buttonWith, buttonPlace, buttonMusic, buttonThought, buttonLock;
+    private Button buttonQcode, buttonDelete, buttonWith, buttonShare, buttonMusic, buttonThought, buttonLock;
     private Animation animationTranslate, animationRotate, animationScale;
     private static int width, height;
     private RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(0, 0);
     private static Boolean isClick = false;
 
-
+    private DevicePolicyManager policyManager;
+    private ComponentName componentName;
+    private static final String FILE_NAME = "/pic.jpg";
+	public static String TEST_IMAGE;
+    /*
+    private Weibo mWeibo;
+    public static Oauth2AccessToken mAccessToken;    //访问token  
+    private SsoHandler mSsoHandler;
+    private IWeiboAPI mWeiboAPI;*/
+    /** 分享文本 */
+    //private String mWeiboText ="Syllabus课表";
+    /** 分享图片 */
+   // private ImageView   mWeiboImage;
+   /* private	static String clientID;
+    private SocialShare share;
+    private ShareContent content;
+    private String mShareMediaType = MediaType.SINAWEIBO.toString();
+    
+    private ShareContent mPageContent = new ShareContent(
+			"Syllabus",
+			"欢迎使用Syllabus，上课时可屏蔽来电的课表软件",
+			"http://www.iganlei.cn/apps");
+	private ShareContent mImageContent = new ShareContent(
+			"Syllabus",
+			"欢迎使用Syllabus，上课时可屏蔽来电的课表软件",
+			"http://www.iganlei.cn/apps",
+			Uri.parse("http://apps.bdimg.com/developer/static/04171450/developer/images/icon/terminal_adapter.png"));
+    
+    */
+    
+//    private DefaultBaiduListener mDefaultListener;
+//pivate AuthListener mAuthListener;
+    
+ /*   public interface ConstantS{
+    	public static final String APP_KEY ="335456873";
+    	public static final String REDIRECT_URL = "http://www.iganlei.cn/apps";
+    	public static final String SCOPE ="email,direct_messages_read,direct_messages_write," +  
+            "friendships_groups_read,friendships_groups_write,statuses_to_me_read," +  
+                "follow_app_official_microblog";
+    }   */
+    
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -135,9 +219,35 @@ public class MainActivity extends Activity implements OnClickListener,
 		preferences = CommonConstants.getMyPreferences(this);
 		inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
+		  //获取设备管理服务
+        policyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+        
+        //AdminReceiver 继承自 DeviceAdminReceiver
+        componentName = new ComponentName(this, myDeviceAdminReceiver.class);
+		//Share sdk
+		ShareSDK.initSDK(this);
+		
 		/**
-		 * ���û����ʾ����ӭ���棬����ʾ��
+		 *百度社会化分享 
+		 
+		 clientID=SocialConfig.getInstance(this).getClientId(MediaType.BAIDU);
+		 share = SocialShare.getInstance(this,clientID);
+		*/
+		   
+         /**
+          *  构造分享实体对象
+         
+         content = new ShareContent();
+         content.setContent("Syllabus好用的课表软件，可屏蔽上课来电。");//分享的文字内容
+         content.setLinkUrl("http://www.iganlei.cn/apps/");//分享的 url
+         content.setImageUri(Uri.parse("http://www.iganlei.cn/apps/syllabus/icon.png"));//分享的图片 uri 可以为本地地址也可以为网络地址
+          */
+		
+		//mWeibo = Weibo.getInstance(ConstantS.APP_KEY, ConstantS.REDIRECT_URL, ConstantS.SCOPE);
+		//mAccessToken = AccessTokenKeeper.readAccessToken(this);//第一次不可用
+		//ininWeiboSDK();
+		/**
+		 * 如果没有显示过欢迎界面，先显示他
 		 */
 		if (!preferences.getBoolean(CommonConstants.SHOW_WELCOME, false)) {
 			Intent intent = new Intent();
@@ -148,7 +258,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 
 		/**
-		 * ���û����ʾ�����ý��棬����ʾ��
+		 * 如果没有显示过设置界面，先显示他
 		 */
 		if (!isTurningToAnotherActivity
 				&& !preferences.getBoolean(CommonConstants.IS_SETUP_ALREADY,
@@ -174,6 +284,167 @@ public class MainActivity extends Activity implements OnClickListener,
         initialButton();
 	}
 
+	
+	 private void mylock(){
+	    	
+	    	boolean active = policyManager.isAdminActive(componentName);
+	    	if(!active){//若无权限
+	    		activeManage();//去获得权限
+	    		policyManager.lockNow();//并锁屏
+	    	}
+	        if (active) {
+	                policyManager.lockNow();//直接锁屏
+	        }
+	    }
+	    private void activeManage() {
+	        // 启动设备管理(隐式Intent) - 在AndroidManifest.xml中设定相应过滤器
+	        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+	        
+	        //权限列表
+	        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+
+	        //描述(additional explanation)
+	                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "一键锁屏");
+
+	                startActivityForResult(intent, 0);
+	}
+	
+	
+	/*private void ininWeiboSDK() {
+	        // 初始化SDK
+	        mWeiboAPI = WeiboSDK.createWeiboAPI(this, ConstantS.APP_KEY);
+	}
+	
+	private void regWeibo() {
+        // 注册到新浪微博
+        mWeiboAPI.registerApp();
+        // Toast.makeText(this, "已注册到微博", Toast.LENGTH_LONG).show();
+    }
+	*/
+	/*
+	private void reqMsg(boolean hasText, boolean hasImage, boolean hasWebpage, 
+            boolean hasMusic, boolean hasVedio, boolean hasVoice) {
+        
+        if (mWeiboAPI.isWeiboAppSupportAPI()) {
+            //Toast.makeText(this, "当前微博版本支持SDK分享", Toast.LENGTH_SHORT).show();
+            
+            int supportApi = mWeiboAPI.getWeiboAppSupportAPI();
+            if (supportApi >= 10351) {
+               // Toast.makeText(this, "当前微博版本支持多条消息，Voice消息分享", Toast.LENGTH_SHORT).show();
+                reqMultiMsg(hasText, hasImage, hasWebpage, hasMusic, hasVedio, hasVoice);
+            } else {
+               // Toast.makeText(this, "当前微博版本只支持单条消息分享", Toast.LENGTH_SHORT).show();
+                reqSingleMsg(hasText, hasImage, hasWebpage, hasMusic, hasVedio/*, hasVoice*//*);
+            }
+        } else {
+            Toast.makeText(this, "当前微博版本不支持SDK分享", Toast.LENGTH_SHORT).show();
+        }
+    }
+	*/
+	
+	 /**
+     * 第三方应用发送请求消息到微博，唤起微博分享界面。
+     * 注意：当isWeiboAppSupportAPI() >= 10351 时，支持同时分享多条消息，
+     * 同时可以分享文本、图片以及其它媒体资源（网页、音乐、视频、声音中的一种）， 并且支持Voice消息。
+     * 
+     * @param hasText    分享的内容是否有文本
+     * @param hasImage   分享的内容是否有图片
+     * @param hasWebpage 分享的内容是否有网页
+     * @param hasMusic   分享的内容是否有音乐
+     * @param hasVideo   分享的内容是否有视频
+     * @param hasVoice   分享的内容是否有声音
+    
+    private void reqMultiMsg(boolean hasText, boolean hasImage, boolean hasWebpage,
+            boolean hasMusic, boolean hasVideo, boolean hasVoice) {
+        
+        // 1. 初始化微博的分享消息
+        WeiboMultiMessage weiboMessage = new WeiboMultiMessage();
+        if (hasText) {
+            weiboMessage.textObject = getTextObj();
+        }
+        
+        if (hasImage) {
+            weiboMessage.imageObject = getImageObj();
+        }
+        
+      
+        // 2. 初始化从第三方到微博的消息请求
+        SendMultiMessageToWeiboRequest req = new SendMultiMessageToWeiboRequest();
+        // 用transaction唯一标识一个请求
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.multiMessage = weiboMessage;
+        
+        // 3. 发送请求消息到微博，唤起微博分享界面
+        mWeiboAPI.sendRequest(this, req);
+    } */
+
+    /**
+     * 第三方应用发送请求消息到微博，唤起微博分享界面。
+     * 当isWeiboAppSupportAPI() < 10351 只支持分享单条消息，即
+     * 文本、图片、网页、音乐、视频中的一种，不支持Voice消息。
+     * 
+     * @param hasText    分享的内容是否有文本
+     * @param hasImage   分享的内容是否有图片
+     * @param hasWebpage 分享的内容是否有网页
+     * @param hasMusic   分享的内容是否有音乐
+     * @param hasVideo   分享的内容是否有视频
+     
+    private void reqSingleMsg(boolean hasText, boolean hasImage, boolean hasWebpage,
+            boolean hasMusic, boolean hasVideo/*, boolean hasVoice*//*) {
+        
+        // 1. 初始化微博的分享消息
+        // 用户可以分享文本、图片、网页、音乐、视频中的一种
+        WeiboMessage weiboMessage = new WeiboMessage();
+        if (hasText) {
+            weiboMessage.mediaObject = getTextObj();
+        }
+        if (hasImage) {
+            weiboMessage.mediaObject = getImageObj();
+        }
+       
+       
+        
+        // 2. 初始化从第三方到微博的消息请求
+        SendMessageToWeiboRequest req = new SendMessageToWeiboRequest();
+        // 用transaction唯一标识一个请求
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = weiboMessage;
+        
+        // 3. 发送请求消息到微博，唤起微博分享界面
+        mWeiboAPI.sendRequest(this, req);
+    }
+            */
+	/**
+    private String getActionUrl() {
+        return "http://sina.com?eet" + System.currentTimeMillis();
+    }
+	
+	 
+     * 文本消息构造方法。
+     * 
+     * @return 文本消息对象。
+    
+    private TextObject getTextObj() {
+        TextObject textObject = new TextObject();
+        textObject.text = mWeiboText;
+        return textObject;
+    } */
+
+    /**
+     * 图片消息构造方法。
+     * 
+     * @return 图片消息对象。
+    
+    private ImageObject getImageObj() {
+        ImageObject imageObject = new ImageObject();
+        Resources res=getResources(); 
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) res.getDrawable(R.drawable.icon);
+        imageObject.setImageObject(bitmapDrawable.getBitmap());
+        return imageObject;
+    } */
+	
+	
+	
     private void initialButton()
     {
         // TODO Auto-generated method stub
@@ -184,7 +455,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
         params.height = 50;
         params.width = 50;
-        //���ñ߾�  (int left, int top, int right, int bottom)
+        //设置边距  (int left, int top, int right, int bottom)
         params.setMargins(10, height - 98, 0, 10);
 
         buttonLock = (Button) findViewById(R.id.button_composer_lock);
@@ -196,8 +467,8 @@ public class MainActivity extends Activity implements OnClickListener,
         buttonMusic = (Button) findViewById(R.id.button_composer_music);
         buttonMusic.setLayoutParams(params);
 
-        buttonPlace = (Button) findViewById(R.id.button_composer_place);
-        buttonPlace.setLayoutParams(params);
+        buttonShare = (Button) findViewById(R.id.button_composer_place);
+        buttonShare.setLayoutParams(params);
 
         buttonWith = (Button) findViewById(R.id.button_composer_with);
         buttonWith.setLayoutParams(params);
@@ -221,7 +492,7 @@ public class MainActivity extends Activity implements OnClickListener,
                     buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
                     buttonQcode.startAnimation(animTranslate(0.0f, -180.0f, 10, height - 240, buttonQcode, 80));
                     buttonWith.startAnimation(animTranslate(30.0f, -150.0f, 60, height - 230, buttonWith, 100));
-                    buttonPlace.startAnimation(animTranslate(70.0f, -120.0f, 110, height - 210, buttonPlace, 120));
+                    buttonShare.startAnimation(animTranslate(70.0f, -120.0f, 110, height - 210, buttonShare, 120));
                     buttonMusic.startAnimation(animTranslate(80.0f, -110.0f, 150, height - 180, buttonMusic, 140));
                     buttonThought.startAnimation(animTranslate(90.0f, -60.0f, 175, height - 135, buttonThought, 160));
                     buttonLock.startAnimation(animTranslate(170.0f, -30.0f, 190, height - 90, buttonLock, 180));
@@ -233,7 +504,7 @@ public class MainActivity extends Activity implements OnClickListener,
                     buttonDelete.startAnimation(animRotate(90.0f, 0.5f, 0.45f));
                     buttonQcode.startAnimation(animTranslate(0.0f, 140.0f, 10, height - 98, buttonQcode, 180));
                     buttonWith.startAnimation(animTranslate(-50.0f, 130.0f, 10, height - 98, buttonWith, 160));
-                    buttonPlace.startAnimation(animTranslate(-100.0f, 110.0f, 10, height - 98, buttonPlace, 140));
+                    buttonShare.startAnimation(animTranslate(-100.0f, 110.0f, 10, height - 98, buttonShare, 140));
                     buttonMusic.startAnimation(animTranslate(-140.0f, 80.0f, 10, height - 98, buttonMusic, 120));
                     buttonThought.startAnimation(animTranslate(-160.0f, 40.0f, 10, height - 98, buttonThought, 80));
                     buttonLock.startAnimation(animTranslate(-170.0f, 0.0f, 10, height - 98, buttonLock, 50));
@@ -249,14 +520,14 @@ public class MainActivity extends Activity implements OnClickListener,
                 // TODO Auto-generated method stub
                 buttonQcode.startAnimation(setAnimScale(2.5f, 2.5f));
                 buttonWith.startAnimation(setAnimScale(0.0f, 0.0f));
-                buttonPlace.startAnimation(setAnimScale(0.0f, 0.0f));
+                buttonShare.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonMusic.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonThought.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
                 Intent it = new Intent();
-                it.setClass(MainActivity.this, CaptureActivity.class);
+                it.setClass(MainActivity.this, com.austgl.zxing.CaptureActivity.class);
                 startActivity(it);
             }
         });
@@ -269,22 +540,26 @@ public class MainActivity extends Activity implements OnClickListener,
                 // TODO Auto-generated method stub
                 buttonWith.startAnimation(setAnimScale(2.5f, 2.5f));
                 buttonQcode.startAnimation(setAnimScale(0.0f, 0.0f));
-                buttonPlace.startAnimation(setAnimScale(0.0f, 0.0f));
+                buttonShare.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonMusic.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonThought.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+                Uri uri = Uri.parse("http://www.iganlei.cn");  
+                Intent it  = new Intent(Intent.ACTION_VIEW,uri);  
+                startActivity(it); 
+                
             }
         });
-        buttonPlace.setOnClickListener(new OnClickListener()
+        buttonShare.setOnClickListener(new OnClickListener()
         {
 
             @Override
             public void onClick(View v)
             {
                 // TODO Auto-generated method stub
-                buttonPlace.startAnimation(setAnimScale(2.5f, 2.5f));
+                buttonShare.startAnimation(setAnimScale(2.5f, 2.5f));
                 buttonWith.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonQcode.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonMusic.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -292,8 +567,133 @@ public class MainActivity extends Activity implements OnClickListener,
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+                
+               /* 
+                Bundle bundle = new Bundle();
+                bundle.putString(SocialConstants.PARAM_CLIENT_ID,clientID);
+                bundle.putString(SocialConstants.PARAM_MEDIA_TYPE,
+                MediaType.SINAWEIBO.toString());
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, SocialOAuthActivity.class);
+                intent.putExtras(bundle);
+                SocialOAuthActivity.setListener(new mAuthListener());
+
+                SocialShare.getInstance(MainActivity.this,clientID).share(content,mShareMediaType, new mShareContentListener(),true);
+
+                startActivity(intent);
+            
+                Platform weibo = ShareSDK.getPlatform(context, SinaWeibo.NAME).setPlatformActionListener(new PlatformActionListener() {
+                        
+                        public void onError(Platform platform, int action, Throwable t) {
+                                // 操作失败的处理代码
+                        }
+                        
+                        public void onComplete(Platform platform, int action,
+                                        HashMap<String, Object> res) {
+                                // 操作成功的处理代码
+                        }
+                        
+                        public void onCancel(Platform platform, int action) {
+                                // 操作取消的处理代码
+                        }
+                        
+                });*/
+                
+                /**
+                * 快捷分享
+                * 
+                showShare(false, null);
+                
+               
+                
+                
+                Platform.ShareParams sp = new SinaWeibo.ShareParams();
+                sp.text = "Syllabus ";
+               // sp.imagePath = "http://www.iganlei.cn/apps/syllabus/icon.png";
+
+                Platform weibo = ShareSDK.getPlatform(getBaseContext(), SinaWeibo.NAME);
+                weibo.setPlatformActionListener(new PlatformActionListener(){
+
+					@Override
+					public void onCancel(Platform arg0, int arg1) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onComplete(Platform arg0, int arg1,
+							HashMap<String, Object> arg2) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onError(Platform arg0, int arg1, Throwable arg2) {
+						// TODO Auto-generated method stub
+						
+					}
+                	
+                }); // 设置分享事件回调
+                // 执行图文分享
+                weibo.share(sp);*/
+                /*
+                OnekeyShare oks = new OnekeyShare();
+
+             // 分享时Notification的图标和文字
+             oks.setNotification(R.drawable.ic_launcher, 
+             getBaseContext().getString(R.string.app_name));
+             // address是接收人地址，仅在信息和邮件使用
+             oks.setAddress("12345678901");
+             // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+             oks.setTitle(getBaseContext().getString(R.string.share));
+             // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+             oks.setTitleUrl("http://sharesdk.cn");
+             // text是分享文本，所有平台都需要这个字段
+             oks.setText(getBaseContext().getString(R.string.share_content));
+             // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+             oks.setImagePath(MainActivity.TEST_IMAGE);
+             // imageUrl是图片的网络路径，新浪微博、人人网、QQ空间、
+             // 微信的两个平台、Linked-In支持此字段
+             oks.setImageUrl("http://sharesdk.cn/ rest.png");
+             // url仅在微信（包括好友和朋友圈）中使用
+             oks.setUrl("http://sharesdk.cn");
+             // appPath是待分享应用程序的本地路劲，仅在微信中使用
+             oks.setAppPath(MainActivity.TEST_IMAGE);
+             // comment是我对这条分享的评论，仅在人人网和QQ空间使用
+             oks.setComment(getBaseContext().getString(R.string.share));
+             // site是分享此内容的网站名称，仅在QQ空间使用
+             oks.setSite(context.getString(R.string.app_name));
+             // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+             oks.setSiteUrl("http://sharesdk.cn");
+             // venueName是分享社区名称，仅在Foursquare使用
+             oks.setVenueName("Southeast in China");
+             // venueDescription是分享社区描述，仅在Foursquare使用
+             oks.setVenueDescription("This is a beautiful place!");
+             // latitude是维度数据，仅在新浪微博、腾讯微博和Foursquare使用
+             oks.setLatitude(23.122619f);
+             // longitude是经度数据，仅在新浪微博、腾讯微博和Foursquare使用
+             oks.setLongitude(113.372338f);
+             // 是否直接分享（true则直接分享）
+             oks.setSilent(silent);
+             // 指定分享平台，和slient一起使用可以直接分享到指定的平台
+             if (platform != null) {
+                     oks.setPlatform(platform);
+             }
+             // 去除注释可通过OneKeyShareCallback来捕获快捷分享的处理结果
+             // oks.setCallback(new OneKeyShareCallback());
+             //通过OneKeyShareCallback来修改不同平台分享的内容
+             oks.setShareContentCustomizeCallback(
+             new ShareContentCustomizeDemo());
+
+             oks.show(context);       */
+               
+              //  mSsoHandler = new SsoHandler(MainActivity.this, mWeibo);
+              //  mSsoHandler.authorize(new AuthDialogListener(), null);
+                
+               // reqMsg(true,true,false,false,false,false);
             }
         });
+       
         buttonMusic.setOnClickListener(new OnClickListener()
         {
 
@@ -302,13 +702,17 @@ public class MainActivity extends Activity implements OnClickListener,
             {
                 // TODO Auto-generated method stub
                 buttonMusic.startAnimation(setAnimScale(2.5f, 2.5f));
-                buttonPlace.startAnimation(setAnimScale(0.0f, 0.0f));
+                buttonShare.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonWith.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonQcode.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonThought.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonLock.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+ 
+                Intent intent = new Intent("android.intent.action.MUSIC_PLAYER");
+
+                startActivity(intent);
             }
         });
         buttonThought.setOnClickListener(new OnClickListener()
@@ -319,7 +723,7 @@ public class MainActivity extends Activity implements OnClickListener,
             {
                 // TODO Auto-generated method stub
                 buttonThought.startAnimation(setAnimScale(2.5f, 2.5f));
-                buttonPlace.startAnimation(setAnimScale(0.0f, 0.0f));
+                buttonShare.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonWith.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonQcode.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonMusic.startAnimation(setAnimScale(0.0f, 0.0f));
@@ -340,18 +744,87 @@ public class MainActivity extends Activity implements OnClickListener,
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 buttonLock.startAnimation(setAnimScale(2.5f, 2.5f));
-                buttonPlace.startAnimation(setAnimScale(0.0f, 0.0f));
+                buttonShare.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonWith.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonQcode.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonMusic.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonThought.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(setAnimScale(0.0f, 0.0f));
                 buttonDelete.startAnimation(animRotate(-45.0f, 0.5f, 0.45f));
+            
+                mylock();
+                //  killMyself ，锁屏之后就立即kill掉我们的Activity，避免资源的浪费;   
+                    
+                	Intent intent = new Intent(Intent.ACTION_MAIN);
+        			intent.addCategory(Intent.CATEGORY_HOME);
+        			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        			startActivity(intent);
+        			android.os.Process.killProcess(android.os.Process.myPid());
             }
         });
 
     }
+    
+    
+	// 使用快捷分享完成分享
+	private void showShare(boolean silent, String platform) {
+		final OnekeyShare oks = new OnekeyShare();
+		oks.setNotification(R.drawable.icon, getBaseContext().getString(R.string.app_name));
+		oks.setAddress("12345678901");
+		oks.setTitle(getBaseContext().getString(R.string.share));
+		oks.setTitleUrl("http://www.iganlei.cn");
+		oks.setText(getBaseContext().getString(R.string.share_content));
+		oks.setImagePath(MainActivity.TEST_IMAGE);
+		oks.setImageUrl("http://www.iganlei.cn/apps/syllabus/icon.png");
+		oks.setUrl("http://www.iganlei.cn");
+		oks.setFilePath(MainActivity.TEST_IMAGE);
+		oks.setComment(getBaseContext().getString(R.string.share));
+		oks.setSite(getBaseContext().getString(R.string.app_name));
+		oks.setSiteUrl("http://www.iganlei.cn");
+		oks.setVenueName("Southeast in China");
+		oks.setVenueDescription("This is a beautiful syllabus!");
+		oks.setLatitude(32.630883f);
+		oks.setLongitude(117.011108f);
+		oks.setSilent(silent);
+		if (platform != null) {
+			oks.setPlatform(platform);
+		}
 
+		// 去除注释，可令编辑页面显示为Dialog模式
+//		oks.setDialogMode();
+
+		// 去除注释，则快捷分享的操作结果将通过OneKeyShareCallback回调
+//		oks.setCallback(new OneKeyShareCallback());
+		oks.setShareContentCustomizeCallback(new ShareContentCustomizeDemo());
+
+		// 去除注释，演示在九宫格设置自定义的图标
+		//Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+		//String label = getResources().getString(R.string.app_name);
+		//OnClickListener listener = new OnClickListener() {
+		//	public void onClick(View v) {
+		//		String text = "Customer Logo -- Share SDK " + ShareSDK.getSDKVersionName();
+		//		Toast.makeText(getBaseContext(), text, Toast.LENGTH_SHORT).show();
+		//		oks.finish();
+		//	}
+		//};
+		//oks.setCustomerLogo(logo, label, listener);
+
+		oks.show(getBaseContext());
+	}
+	class ShareContentCustomizeDemo implements ShareContentCustomizeCallback {
+
+		public void onShare(Platform platform, ShareParams paramsToShare) {
+			// 改写twitter分享内容中的text字段，否则会超长，
+			// 因为twitter会将图片地址当作文本的一部分去计算长度
+			if (Twitter.NAME.equals(platform.getName())) {
+				Twitter.ShareParams sp = (Twitter.ShareParams) paramsToShare;
+				sp.text = platform.getContext().getString(R.string.share_content_short);
+			}
+		}
+
+	}
+    
+    
     protected Animation setAnimScale(float toX, float toY)
     {
         // TODO Auto-generated method stub
@@ -393,17 +866,17 @@ public class MainActivity extends Activity implements OnClickListener,
         });
         return animationRotate;
     }
-    //�ƶ��Ķ���Ч��
+    //移动的动画效果
 	/*
 	 * TranslateAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta)
 	 *
-	 * float fromXDelta:���������ʾ������ʼ�ĵ��뵱ǰView X�����ϵĲ�ֵ��
+	 * float fromXDelta:这个参数表示动画开始的点离当前View X坐标上的差值；
      *
-����       * float toXDelta, ���������ʾ���������ĵ��뵱ǰView X�����ϵĲ�ֵ��
+　　       * float toXDelta, 这个参数表示动画结束的点离当前View X坐标上的差值；
      *
-����       * float fromYDelta, ���������ʾ������ʼ�ĵ��뵱ǰView Y�����ϵĲ�ֵ��
+　　       * float fromYDelta, 这个参数表示动画开始的点离当前View Y坐标上的差值；
      *
-����       * float toYDelta)���������ʾ������ʼ�ĵ��뵱ǰView Y�����ϵĲ�ֵ��
+　　       * float toYDelta)这个参数表示动画开始的点离当前View Y坐标上的差值；
 	 */
     protected Animation animTranslate(float toX, float toY, final int lastX, final int lastY,
                                       final Button button, long durationMillis)
@@ -444,15 +917,70 @@ public class MainActivity extends Activity implements OnClickListener,
         return animationTranslate;
     }
 
+    /**
+     * 微博认证授权回调类。
+     * 1. SSO登陆时，需要在{@link #onActivityResult}中调用mSsoHandler.authorizeCallBack后，
+     *    该回调才会被执行。
+     * 2. 非SSO登陆时，当授权后，就会被执行。
+     * 当授权成功后，请保存该access_token、expires_in等信息到SharedPreferences中。
+     
+        class AuthDialogListener implements WeiboAuthListener {
+            
+            @Override
+            public void onComplete(Bundle values) {
+                
+                String token = values.getString("access_token");
+                String expires_in = values.getString("expires_in");
+                mAccessToken = new Oauth2AccessToken(token, expires_in);
+                if (mAccessToken.isSessionValid()) {
+                    String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+                            .format(new java.util.Date(mAccessToken.getExpiresTime()));
+                    //mText.setText("认证成功: \r\n access_token: " + token + "\r\n" + "expires_in: "
+                    //        + expires_in + "\r\n有效期：" + date);
 
+                    AccessTokenKeeper.keepAccessToken(MainActivity.this, mAccessToken);
+                    Toast.makeText(MainActivity.this, "认证成功", Toast.LENGTH_SHORT).show();
+                }
+            }
 
+            @Override
+            public void onError(WeiboDialogError e) {
+                Toast.makeText(getApplicationContext(), 
+                        "Auth error : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onCancel() {
+                Toast.makeText(getApplicationContext(), "Auth cancel", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onWeiboException(WeiboException e) {
+                Toast.makeText(getApplicationContext(), 
+                        "Auth exception : " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            
+            // SSO 授权回调
+            // 重要：发起 SSO 登陆的Activity必须重写onActivityResult
+            if (mSsoHandler != null) {
+                mSsoHandler.authorizeCallBack(requestCode, resultCode, data);
+            }else if(mSsoHandler == null){
+            	mWeibo.anthorize(MainActivity.this, new AuthDialogListener());
+            }
+        }
+*/
     private void initViews() {
 		tvLeft = (TextView) findViewById(R.id.tvLeft);
-		tvLeft.setText("����");
+		tvLeft.setText("设置");
 		tvLeft.setOnClickListener(this);
 
 		tvRightT = (TextView) findViewById(R.id.tvRightT);
-		tvRightT.setText("һ��");
+		tvRightT.setText("一周");
 		tvRightT.setOnClickListener(this);
 
 		tvTitle = (TextView) findViewById(R.id.tvTitle);
@@ -523,8 +1051,8 @@ public class MainActivity extends Activity implements OnClickListener,
 																		// do;
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			AlertDialog dialog = null;
-			builder.setTitle("���ӿγ�֮ǰ���������ñ��ܴ����������Ҫ������");
-			builder.setPositiveButton("ȷ��",
+			builder.setTitle("添加课程之前，请先设置本周次数及相关重要参数先");
+			builder.setPositiveButton("确定",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -534,7 +1062,7 @@ public class MainActivity extends Activity implements OnClickListener,
 							dialog.dismiss();
 						}
 					});
-			builder.setNegativeButton("ȡ��",
+			builder.setNegativeButton("取消",
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
@@ -581,14 +1109,14 @@ public class MainActivity extends Activity implements OnClickListener,
 					sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 					SensorManager.SENSOR_DELAY_NORMAL)) {
 				if (preferences.getBoolean(CommonConstants.IS_FIRST_RUN, true)) {
-					Toast.makeText(this, "�����ֻ���֧��ҡһҡ�ص�����γ̱�����",
+					Toast.makeText(this, "您的手机不支持摇一摇回到当天课程表功能",
 							Toast.LENGTH_SHORT).show();
 					editor.putBoolean(
 							CommonConstants.IS_ACCELEREMETER_SUPPORTED, false);
 				}
 			} else {
 				if (preferences.getBoolean(CommonConstants.IS_FIRST_RUN, true)) {
-					Toast.makeText(this, "ҡһҡ�ص�����γ�Ŷ��", Toast.LENGTH_SHORT)
+					Toast.makeText(this, "摇一摇回到当天课程哦！", Toast.LENGTH_SHORT)
 							.show();
 					editor.putBoolean(
 							CommonConstants.IS_ACCELEREMETER_SUPPORTED, true);
@@ -652,7 +1180,7 @@ public class MainActivity extends Activity implements OnClickListener,
 				// intent.putExtra("fromMainActivity", true);
 				startActivity(intent);
 			} else {
-				Toast.makeText(this, "��������û�д򿪣�ͬ��ǰ���ȴ�����", Toast.LENGTH_SHORT)
+				Toast.makeText(this, "您的网络没有打开，同步前请先打开网络", Toast.LENGTH_SHORT)
 						.show();
 			}
 			break;
@@ -662,6 +1190,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			// this.finish();
 			break;
 		case R.id.memu_exiting:
+			ShareSDK.stopSDK(this);//释放统计资源
 			SyllabusApplication.getInstance().exitApplication();
 			break;
 		case R.id.menu_help:
@@ -709,7 +1238,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		case R.id.tvTitle:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("��ѡ��");
+			builder.setTitle("请选择");
 			builder.setItems(CommonConstants.DAYOFWEEKS_INCHN,
 					new DialogInterface.OnClickListener() {
 						@Override
@@ -849,11 +1378,11 @@ public class MainActivity extends Activity implements OnClickListener,
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 				float velocityY) {
-			// �������ͣ�
-			// e1����1��ACTION_DOWN MotionEvent
-			// e2�����һ��ACTION_MOVE MotionEvent
-			// velocityX��X���ϵ��ƶ��ٶȣ�����/��
-			// velocityY��Y���ϵ��ƶ��ٶȣ�����/��
+			// 参数解释：
+			// e1：第1个ACTION_DOWN MotionEvent
+			// e2：最后一个ACTION_MOVE MotionEvent
+			// velocityX：X轴上的移动速度，像素/秒
+			// velocityY：Y轴上的移动速度，像素/秒
 			if (null != e1 && null != e2) {// sometimes, there will be some Null
 											// Pointer Exception about e1 or e2,
 											// so we need to ensure the validity
@@ -928,7 +1457,7 @@ public class MainActivity extends Activity implements OnClickListener,
 								MainActivity.this);
 						AlertDialog dialog = null;
 
-						builder.setPositiveButton("�޸�",
+						builder.setPositiveButton("修改",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -949,7 +1478,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setNeutralButton("ɾ��",
+						builder.setNeutralButton("删除",
 								new DialogInterface.OnClickListener() {
 									AlertDialog deleteDialog = null;
 
@@ -959,14 +1488,14 @@ public class MainActivity extends Activity implements OnClickListener,
 										AlertDialog.Builder builder = new AlertDialog.Builder(
 												MainActivity.this);
 										StringBuilder str = new StringBuilder(
-												"��ȷ��Ҫɾ�� ");
+												"你确定要删除 ");
 										str.append(oneWeekCourses
 												.get(dayOfWeek - 1).get(pos)
 												.getcName());
-										str.append(" ���ſ�ô?");
+										str.append(" 这门课么?");
 										builder.setTitle(str.toString());
 										builder.setPositiveButton(
-												"ȷ��",
+												"确定",
 												new DialogInterface.OnClickListener() {
 
 													@Override
@@ -985,7 +1514,7 @@ public class MainActivity extends Activity implements OnClickListener,
 													}
 												});
 										builder.setNegativeButton(
-												"ȡ��",
+												"取消",
 												new DialogInterface.OnClickListener() {
 													@Override
 													public void onClick(
@@ -1001,7 +1530,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setNegativeButton("ȡ��",
+						builder.setNegativeButton("取消",
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog,
@@ -1011,7 +1540,7 @@ public class MainActivity extends Activity implements OnClickListener,
 									}
 								});
 
-						builder.setTitle("��Ҫ�Ըýڿ���");
+						builder.setTitle("你要对该节课做");
 						dialog = builder.create();
 
 						dialog.show();
@@ -1082,7 +1611,7 @@ public class MainActivity extends Activity implements OnClickListener,
 						updateViewFlipper();
 						tvTitle.setText(CommonConstants
 								.getStrFromWeekNum(dayOfWeek));
-						Toast.makeText(this, "��" + weekOfSemister + "�ܿα�",
+						Toast.makeText(this, "第" + weekOfSemister + "周课表",
 								Toast.LENGTH_SHORT).show();
 					}
 					Log.i(LOGTAG, "weekOfSemister = " + weekOfSemister);
@@ -1099,7 +1628,7 @@ public class MainActivity extends Activity implements OnClickListener,
 		switch (v.getId()) {
 		case R.id.tvTitle:
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);// )
-			builder.setTitle("ѡ���ܴ�");
+			builder.setTitle("选择周次");
 			builder.setItems(CommonConstants.WEEKOFSEMISTER_INNUMBER,
 					new DialogInterface.OnClickListener() {
 
@@ -1110,7 +1639,7 @@ public class MainActivity extends Activity implements OnClickListener,
 								updateViewFlipper();
 							}
 							Toast.makeText(MainActivity.this,
-									"���ǵ�" + which + "��", Toast.LENGTH_SHORT)
+									"这是第" + which + "周", Toast.LENGTH_SHORT)
 									.show();
 						}
 					});
@@ -1129,7 +1658,7 @@ public class MainActivity extends Activity implements OnClickListener,
 			case 1:
 				updateViewFlipper();
 				tvTitle.setText(CommonConstants.getStrFromWeekNum(dayOfWeek));
-				Toast.makeText(MainActivity.this, "��" + weekOfSemister + "�ܿα�",
+				Toast.makeText(MainActivity.this, "第" + weekOfSemister + "周课表",
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2:
@@ -1142,3 +1671,73 @@ public class MainActivity extends Activity implements OnClickListener,
 		}
 	}
 }
+/*
+class mShareContentListener implements IBaiduListener {
+	
+	@Override
+	public void onComplete() {
+		// TODO Auto-generated method stub
+		
+		
+			
+	
+	}
+	
+	@Override
+	public void onComplete(JSONObject data) {
+		// TODO Auto-generated method stub
+	
+	}
+	
+	@Override
+	public void onComplete(JSONArray data) {
+		// TODO Auto-generated method stub
+	
+	}
+	
+	@Override
+	public void onCancel() {
+		// TODO Auto-generated method stub
+		}
+	
+	@Override
+	public void onError(BaiduException ex) {
+		// TODO Auto-generated method stub
+		}
+	
+}
+class mAuthListener implements IBaiduListener {
+	
+	@Override
+	public void onComplete() {
+		// TODO Auto-generated method stub
+		
+		
+			
+	
+	}
+	
+	@Override
+	public void onComplete(JSONObject data) {
+		// TODO Auto-generated method stub
+	
+	}
+	
+	@Override
+	public void onComplete(JSONArray data) {
+		// TODO Auto-generated method stub
+	
+	}
+	
+	@Override
+	public void onCancel() {
+		// TODO Auto-generated method stub
+		}
+	
+	@Override
+	public void onError(BaiduException ex) {
+		// TODO Auto-generated method stub
+		}
+	
+}*/
+

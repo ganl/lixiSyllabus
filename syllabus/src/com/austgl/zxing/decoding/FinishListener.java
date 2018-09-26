@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.decoding;
+package com.austgl.zxing.decoding;
 
 import android.app.Activity;
 import android.content.DialogInterface;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.austgl.Zxing.decoding;
+package com.austgl.zxing.decoding;
 
 /**
  * This class provides the constants to use when sending an Intent to Barcode Scanner.
@@ -130,63 +130,6 @@ public final class Intents {
     public static final String FORMAT = "ENCODE_FORMAT";
 
     private Encode() {
-    }
-  }
-
-  public static final class SearchBookContents {
-    /**
-     * Use Google Book Search to search the contents of the book provided.
-     */
-    public static final String ACTION = "com.google.zxing.client.android.SEARCH_BOOK_CONTENTS";
-
-    /**
-     * The book to search, identified by ISBN number.
-     */
-    public static final String ISBN = "ISBN";
-
-    /**
-     * An optional field which is the text to search for.
-     */
-    public static final String QUERY = "QUERY";
-
-    private SearchBookContents() {
-    }
-  }
-
-  public static final class WifiConnect {
-	    /**
-	     * Internal intent used to trigger connection to a wi-fi network.
-	     */
-	    public static final String ACTION = "com.google.zxing.client.android.WIFI_CONNECT";
-
-	    /**
-	     * The network to connect to, all the configuration provided here.
-	     */
-	    public static final String SSID = "SSID";
-
-	    /**
-	     * The network to connect to, all the configuration provided here.
-	     */
-	    public static final String TYPE = "TYPE";
-
-	    /**
-	     * The network to connect to, all the configuration provided here.
-	     */
-	    public static final String PASSWORD = "PASSWORD";
-
-	    private WifiConnect() {
-	    }
-	  }
-
-
-  public static final class Share {
-    /**
-     * Give the user a choice of items to encode as a barcode, then render it as a QR Code and
-     * display onscreen for a friend to scan with their phone.
-     */
-    public static final String ACTION = "com.google.zxing.client.android.SHARE";
-
-    private Share() {
     }
   }
 }

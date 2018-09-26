@@ -238,7 +238,7 @@ public class PhoneStateService extends Service {
 		notification = new Notification(R.drawable.icon, "有电话进来",
 				System.currentTimeMillis());
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
-		CharSequence contentTitle = "贴心课表";
+		CharSequence contentTitle = "Syllabus课表";
 		CharSequence contentText = "来电:" + getContactName(incomingNumber) + "("
 				+ incomingNumber + ")," + "点击回复电话";
 		Intent notificationIntent = new Intent();
