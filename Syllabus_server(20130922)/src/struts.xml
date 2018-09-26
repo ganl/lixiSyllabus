@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="Login" namespace="/login" extends="struts-default">
+		<action name="login" class="com.aust.syllabus.action.LoginAction"
+			method="login">
+			<result name="success"></result>
+		</action>
+		<action name="teacherlogin" class="com.aust.syllabus.action.TeacherLogin"
+			method="login">
+			<result name="success"></result>
+		</action>
+	</package>
+	<package name="Insert" namespace="/insert" extends="struts-default">
+		<action name="insert" class="com.aust.syllabus.action.InsertAction"
+			method="insert">
+			<result name="success"></result>
+		</action>
+	</package>
+	<package name="Update" namespace="/update" extends="struts-default">
+		<action name="update" class="com.aust.syllabus.action.UpdateAction"
+			method="update">
+			<result name="success"></result>
+		</action>
+	</package>
+</struts>    

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.aust.syllabus.dao.ClassSyllabusMapper">
+	<select id="selectClass" parameterType="java.lang.Integer"
+		resultType="com.aust.syllabus.beans.Course">
+		select * from CLASSSYLLABUS where CLASSID =
+		#{CLASSID}
+	</select>
+	<select id="selectOneClass" parameterType="com.aust.syllabus.beans.Course"
+		resultType="com.aust.syllabus.beans.Course">
+		select * from CLASSSYLLABUS where CLASSID = #{classid} and
+		CNAME = #{cName} and TNAME =
+		#{tName} and CADDRESS = #{cAddress} and
+		CSTARTWEEK = #{cStartWeek} and CENDWEEK = #{cEndWeek} and CWEEKDAY =
+		#{cWeekday} and COURSEINDEX = #{courseIndex}
+	
+	</select>
+	<select id="selectTeacherCourse" parameterType="com.aust.syllabus.beans.Course"
+		resultType="com.aust.syllabus.beans.Course">
+		select * from CLASSSYLLABUS where
+		CNAME = #{cName} and TNAME
+		=
+		#{tName} and CADDRESS = #{cAddress} and
+		CSTARTWEEK = #{cStartWeek} and
+		CENDWEEK = #{cEndWeek} and CWEEKDAY =
+		#{cWeekday} and COURSEINDEX =
+		#{courseIndex}
+	</select>
+	<select id="selectTeacherCourses" parameterType="com.aust.syllabus.beans.Teacher"
+		resultType="com.aust.syllabus.beans.Course">
+		select * from CLASSSYLLABUS where TNAME = #{teacherName}
+	</select>
+	<insert id="insertOneCourse" parameterType="com.aust.syllabus.beans.Course"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		CLASSSYLLABUS(CLASSID,CNAME,TNAME,CADDRESS,CSTARTWEEK,CENDWEEK,CWEEKDAY,COURSEINDEX)
+		values (
+		#{classid},#{cName},#{tName},#{cAddress},#{cStartWeek},#{cEndWeek},#{cWeekday},#{courseIndex}
+		)
+	</insert>
+	<update id="updateOneCourse" parameterType="com.aust.syllabus.beans.Course">
+		update CLASSSYLLABUS
+		set
+		CNAME=#{cName},TNAME=#{tName},CADDRESS=#{cAddress},CSTARTWEEK=#{cStartWeek},CENDWEEK=#{cEndWeek},CWEEKDAY=#{cWeekday},COURSEINDEX=#{courseIndex}
+		where ID=#{id}
+	</update>
+</mapper>

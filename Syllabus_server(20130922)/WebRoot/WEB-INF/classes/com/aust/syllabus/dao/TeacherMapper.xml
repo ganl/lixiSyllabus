@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.aust.syllabus.dao.TeacherMapper">
+	<select id="selectOne" parameterType="com.aust.syllabus.beans.Teacher"
+		resultType="com.aust.syllabus.beans.Teacher">
+		select * from teacher where UNIVERSITY_NAME =
+		#{universityName} and TEACHER_NAME = #{teacherName}
+    </select>
+	<insert id="insertOne" parameterType="com.aust.syllabus.beans.Teacher"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into teacher
+		(UNIVERSITY_NAME,
+		TEACHER_NAME)
+		values
+		(#{universityName},
+		#{teacherName})
+	</insert>
+</mapper>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="Login" location="0,0" size="0,0">
+    <action name="login" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+  </package>
+  <package name="Insert" location="0,0" size="0,0">
+    <action name="insert" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+  </package>
+  <package name="Update" location="0,0" size="0,0">
+    <action name="update" location="0,0" size="0,0">
+      <result name="success" />
+    </action>
+  </package>
+</Struts2Diagram>
+

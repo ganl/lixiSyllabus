@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="Syllabus_server"
+  id="myeclipse.1348399026779"
+  context-root="/Syllabus_server"
+  j2ee-spec="5.0"
+  archive="Syllabus_server.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

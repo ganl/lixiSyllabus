@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>    
+<!DOCTYPE mapper    
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"    
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+
+<mapper namespace="com.aust.syllabus.dao.UserMapper">
+	<parameterMap type="com.aust.syllabus.beans.User" id="userParameterMap">
+		<parameter property="UNIVERSITY_NAME" resultMap="UNIVERSITY_NAME" />
+		<parameter property="DEPARTMENT_NAME" resultMap="DEPARTMENT_NAME" />
+		<parameter property="MAJOR_NAME" resultMap="MAJOR_NAME" />
+		<parameter property="GRADE_NUM" resultMap="GRADE_NUM" />
+		<parameter property="CLASS_NAME" resultMap="CLASS_NAME" />
+	</parameterMap>
+	<select id="selectOne" parameterType="com.aust.syllabus.beans.User"
+		resultType="com.aust.syllabus.beans.User">
+		select * from user where UNIVERSITY_NAME =
+		#{UNIVERSITY_NAME} and DEPARTMENT_NAME = #{DEPARTMENT_NAME}
+		and
+		MAJOR_NAME = #{MAJOR_NAME}
+		and GRADE_NUM = #{GRADE_NUM}
+		and CLASS_NAME =
+		#{CLASS_NAME}
+    </select>
+
+	<insert id="insertOne" parameterType="com.aust.syllabus.beans.User"
+		useGeneratedKeys="true" keyProperty="ID">
+		insert into user (UNIVERSITY_NAME,
+		DEPARTMENT_NAME,
+		MAJOR_NAME,
+		GRADE_NUM, CLASS_NAME)
+		values
+		(#{UNIVERSITY_NAME},
+		#{DEPARTMENT_NAME},
+		#{MAJOR_NAME},
+		#{GRADE_NUM},
+		#{CLASS_NAME})
+
+	</insert>
+</mapper>  
